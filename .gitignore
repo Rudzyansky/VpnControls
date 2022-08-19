@@ -1,0 +1,10 @@
+.idea
+venv
+*.db
+*.session
+*.sqlite
+*.sh
+*.ipynb
+*.service
+
+
