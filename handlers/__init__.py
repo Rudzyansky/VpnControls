@@ -1,10 +1,9 @@
-# from . import module1, module2
+from . import administration, user
 
 
 def register(client):
-    # module1.register(client)
-    # module2.register(client)
-    pass
+    administration.register(client)
+    user.register(client)
 
 
 __all__ = [
