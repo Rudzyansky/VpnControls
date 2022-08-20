@@ -10,7 +10,6 @@ class Token:
     expire: str = None
     used_by: int = None
     owner_id: int = None
-    language: str = None
 
     def __post_init__(self, data) -> None:
         if data is None:

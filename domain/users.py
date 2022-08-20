@@ -19,14 +19,15 @@ class Users:
         return self.languages[user_id]
 
     def add_user(self, user_id: int):
-        success = self.users_db.add_user(user_id)
+        success = self.users_db.add(user_id)
         if success:
             user = self.users_db.fetch(user_id)
             self.registered.append(user.id)
             self.languages[user.id] = user.language
             if user.is_admin:
                 self.admins.append(user.id)
-        return success
+            return user
+        return None
 
     def is_accept_invite(self, user_id: int):
         return self.tokens_db.is_accept_invite(user_id)
@@ -34,8 +35,12 @@ class Users:
     def revoke_token(self, token: Token):
         return self.tokens_db.revoke(token)
 
-    def add_token(self, token: Token):
-        return self.tokens_db.add(token)
+    def create_token(self, user_id: int):
+        token = Token(owner_id=user_id)
+        success = self.tokens_db.add(token)
+        if success:
+            return self.tokens_db.fetch(token)
+        return None
 
     def get_tokens(self, user_id: int):
         """
@@ -47,7 +52,7 @@ class Users:
         """
         Fetch all token's data by token + owner_id
         """
-        return self.tokens_db.get(token)
+        return self.tokens_db.fetch(token)
 
     def use_token(self, token: Token):
         return self.tokens_db.use(token)

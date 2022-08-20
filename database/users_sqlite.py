@@ -61,7 +61,7 @@ class UsersSqlite(Users, BaseSqlite):
 
     @classmethod
     @transaction
-    def add_user(cls, id: int, c) -> bool:
+    def add(cls, id: int, c) -> bool:
         sql = 'INSERT INTO users (id, owner_id, language) ' \
               'SELECT used_by, t.owner_id, language ' \
               'FROM tokens t INNER JOIN users u on u.id = t.owner_id ' \

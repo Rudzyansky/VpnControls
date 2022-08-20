@@ -5,7 +5,6 @@ from telethon.events import register, NewMessage
 
 import utils
 from domain import users
-from entities.token import Token
 from localization import translate
 
 
@@ -29,7 +28,7 @@ async def handler(event: NewMessage.Event, _, _n):
         await event.client.send_message(event.chat_id, '\n'.join(lines))
         return
 
-    token = users.add_token(Token(owner_id=event.chat_id))
+    token = users.create_token(event.chat_id)
 
     if token is None:
         payload = utils.debug_payload(user_id=event.chat_id, timestamp=datetime.utcnow())

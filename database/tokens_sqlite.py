@@ -24,19 +24,11 @@ class TokensSqlite(Tokens, BaseSqlite):
         sql = 'INSERT INTO tokens (token, owner_id, expire) ' \
               'VALUES (?, ?, DATE(CURRENT_DATE, \'+8 days\'))'
         params = (token.bytes, token.owner_id)
-        if not c.execute(sql, params).rowcount == 1:
-            return None
-        sql = 'SELECT expire FROM tokens WHERE token = ?'
-        params = (token.bytes,)
-        result = c.execute(sql, params).fetchone()
-        if result is None:
-            return None
-        token.expire, = result
-        return token
+        return c.execute(sql, params).rowcount == 1
 
     @classmethod
     @transaction
-    def get(cls, token: Token, c) -> Optional[Token]:
+    def fetch(cls, token: Token, c) -> Optional[Token]:
         sql = 'SELECT expire, used_by FROM tokens ' \
               'WHERE token = ? AND owner_id = ? AND CURRENT_DATE < expire ' \
               'AND (used_by NOT LIKE owner_id OR used_by IS NULL)'
@@ -52,11 +44,16 @@ class TokensSqlite(Tokens, BaseSqlite):
     def get_all(cls, owner_id: int, c) -> list:
         sql = 'SELECT token, expire, used_by FROM tokens WHERE owner_id = ? AND CURRENT_DATE < expire'
         params = (owner_id,)
-        return [Token(t, e, u, owner_id) for t, e, u in c.execute(sql, params).fetchall()]
+        return [Token(data=token, expire=expire, used_by=used_by)
+                for token, expire, used_by, language in c.execute(sql, params).fetchall()]
 
     @classmethod
     @transaction
     def use(cls, token: Token, c) -> bool:
+        sql = 'UPDATE tokens SET used_by = NULL WHERE used_by = ? AND CURRENT_DATE < expire'
+        params = (token.used_by,)
+        c.execute(sql, params)
+
         sql = 'UPDATE tokens SET used_by = ? ' \
               'WHERE token = ? AND owner_id = ? AND used_by IS NULL AND CURRENT_DATE < expire'
         params = (token.used_by, token.bytes, token.owner_id)

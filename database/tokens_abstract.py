@@ -16,10 +16,6 @@ class Tokens(ABC):
 
     @classmethod
     @abstractmethod
-    def get(cls, token: Token) -> Optional[Token]: pass
-
-    @classmethod
-    @abstractmethod
     def is_accept_invite(cls, user_id: int) -> bool: pass
 
     @classmethod
@@ -36,4 +32,8 @@ class Tokens(ABC):
 
     @classmethod
     @abstractmethod
-    def add(cls, token: Token) -> Optional[Token]: pass
+    def add(cls, token: Token) -> bool: pass
+
+    @classmethod
+    @abstractmethod
+    def fetch(cls, token: Token) -> Optional[Token]: pass

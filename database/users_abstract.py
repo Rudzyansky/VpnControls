@@ -31,7 +31,7 @@ class Users(ABC):
 
     @classmethod
     @abstractmethod
-    def add_user(cls, id: int) -> bool: pass
+    def add(cls, id: int) -> bool: pass
 
     @classmethod
     @abstractmethod
