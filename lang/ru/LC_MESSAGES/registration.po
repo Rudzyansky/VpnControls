@@ -1,0 +1,108 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"POT-Creation-Date: 2022-08-20 22:53+0300\n"
+"PO-Revision-Date: 2022-08-20 23:12+0300\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: ru\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
+"%10<=4 && (n%100<12 || n%100>14) ? 1 : 2);\n"
+"X-Generator: Poedit 3.1.1\n"
+"X-Poedit-Basepath: ../../../handlers/registration\n"
+"X-Poedit-KeywordsList: _;_n\n"
+"X-Poedit-SearchPath-0: .\n"
+
+#: accept_cq.py:15 decline_cq.py:12 revoke_cq.py:12
+msgid "Access denied"
+msgstr "Доступ запрещён"
+
+#: accept_cq.py:20 decline_cq.py:18 revoke_cq.py:18
+msgid "Invitation is invalid"
+msgstr "Приглашение недействительно"
+
+#: accept_cq.py:28
+msgid "An error has occurred. Please contact your administrator"
+msgstr "Произошла ошибка. Обратитесь к администратору"
+
+#: accept_cq.py:31 register_msg.py:35
+msgid "Something went wrong. Contact the developer"
+msgstr "Что-то пошло не так. Обратитесь к разработчику"
+
+#: decline_cq.py:16 revoke_cq.py:16
+msgid "Invitation turned into a pumpkin"
+msgstr "Приглашение превратилось в тыкву"
+
+#: invite_iq.py:88
+#, python-format
+msgid "Bound to %s"
+msgstr "Связано с %s"
+
+#: invite_iq.py:89
+#, python-format
+msgid "Expires in %s"
+msgstr "Истекает %s"
+
+#: invite_iq.py:91 register_msg.py:42
+msgid "Invite"
+msgstr "Пригласить"
+
+#: invite_iq.py:92
+msgid "You have been invited to use FalseЪ VPN"
+msgstr "Вас пригласили пользоваться FalseЪ VPN"
+
+#: invite_iq.py:93
+msgid "Accept"
+msgstr "Принять"
+
+#: invite_iq.py:94
+msgid "Decline"
+msgstr "Отклонить"
+
+#: register_msg.py:19
+#, python-format
+msgid ""
+"Unable to issue token\n"
+"__The limit of **%d** invitation per week has been reached__"
+msgid_plural ""
+"Unable to issue token\n"
+"__The limit of **%d** invitations per week has been reached__"
+msgstr[0] ""
+"Невозмоно выпустить токен\n"
+"__Вы достигли лимит в **%d** приглашение в неделю__"
+msgstr[1] ""
+"Невозмоно выпустить токен\n"
+"__Вы достигли лимит в **%d** приглашения в неделю__"
+msgstr[2] ""
+"Невозмоно выпустить токен\n"
+"__Вы достигли лимит в **%d** приглашений в неделю__"
+
+#: register_msg.py:24
+#, python-format
+msgid "`%s` __expires in__ **%s**"
+msgstr "`%s` __истекает__ **%s**"
+
+#: register_msg.py:26
+#, python-format
+msgid "__slot will be reset in__ **%s**"
+msgstr "__слот освободится__ **%s**"
+
+#: register_msg.py:39
+#, python-format
+msgid ""
+"Token `%s` issued\n"
+"__Expires in__ **%s**"
+msgstr ""
+"Выпущен токен `%s`\n"
+"__Истекает__ **%s**"
+
+#: register_msg.py:43
+msgid "Revoke"
+msgstr "Отозвать"
+
+#: register_msg.py:45
+msgid "Invite in another language"
+msgstr "Отправить приглашение на другом языке"
