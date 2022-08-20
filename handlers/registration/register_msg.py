@@ -7,16 +7,12 @@ import utils
 from database import tokens
 from handlers.accesslist import admins_al
 from handlers.token import Token
-from . import translations
+from localization import translate
 
 
 @register(NewMessage(admins_al, pattern='/register'))
-async def handler(event: NewMessage.Event):
-    # user = users[event.chat_id]
-    # t = translations[user.language]
-    # _ = t.gettext
-    # _n = t.ngettext
-
+@translate
+async def handler(event: NewMessage.Event, _, _n):
     limit = 2
 
     current_tokens = tokens.get_all(event.chat_id)

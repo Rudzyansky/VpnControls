@@ -5,32 +5,34 @@ from telethon.utils import get_display_name
 
 from database import tokens
 from handlers.accesslist import admins_al
-from handlers.registration import translations
 from handlers.token import Token
+from localization import translate
 
 
 @register(InlineQuery(admins_al, pattern=r'^invite$'))
-async def handler_all(event: InlineQuery.Event):
+@translate
+async def handler_all(event: InlineQuery.Event, _):
     # user = users[event.chat_id]
     # t = translations[user.language]
 
     current_tokens = tokens.get_all(event.chat_id)
     current_tokens = filter(lambda token: token.used_by != token.owner_id, current_tokens)
-    articles = [await invite_article(event, token, t.gettext) for token in current_tokens]
+    articles = [await invite_article(event, token, _) for token in current_tokens]
     await event.answer(articles)
 
 
 @register(InlineQuery(admins_al, pattern=r'^invite ([0-9A-F]{8}(?:-[0-9A-F]{4}){3}-[0-9A-F]{12})$'))
-async def handler_one(event: InlineQuery.Event):
-    user = users[event.chat_id]
-    t = translations[user.language]
+@translate
+async def handler_one(event: InlineQuery.Event, _):
+    # user = users[event.chat_id]
+    # t = translations[user.language]
 
     start, end = event.pattern_match.regs[1]
     token = tokens.get(Token(event.text[start:end], owner_id=event.chat_id))
     if token is None:
         await event.answer()
     else:
-        await event.answer([await invite_article(event, token, t.gettext)])
+        await event.answer([await invite_article(event, token, _)])
 
 
 invite_thumb = InputWebDocument('https://false.team/invite128.png', 6105, 'image/png',

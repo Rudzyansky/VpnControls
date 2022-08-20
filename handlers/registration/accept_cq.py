@@ -6,15 +6,12 @@ import utils
 from database import tokens
 from handlers.accesslist import users_al
 from handlers.token import Token
-from . import translations
+from localization import translate
 
 
 @register(CallbackQuery(pattern=rb'^accept (.{16})$'))
-async def handler(event: CallbackQuery.Event):
-    # user = users[event.chat_id]
-    # t = translations[user.language]
-    # _ = t.gettext
-
+@translate
+async def handler(event: CallbackQuery.Event, _):
     if event.sender_id in users_al:
         await event.answer(_('Access denied'))
         return
