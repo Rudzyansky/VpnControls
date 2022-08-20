@@ -9,16 +9,16 @@ from localization import translate
 
 
 @register(NewMessage(users.admins, pattern='/register'))
-@translate(nums_text=True)
-async def handler(event: NewMessage.Event, _, _n):
+@translate(current=True)
+async def handler(event: NewMessage.Event, _, t):
     limit = 2
 
     current_tokens = users.get_tokens(event.chat_id)
     if len(current_tokens) >= limit:
-        lines = [_n('Unable to issue token\n__The limit of **%d** invitation per week has been reached__',
-                    'Unable to issue token\n__The limit of **%d** invitations per week has been reached__',
-                    limit) % limit,
-                 '']
+        lines = [t.ngettext(
+            'Unable to issue token\n__The limit of **%d** invitation per week has been reached__',
+            'Unable to issue token\n__The limit of **%d** invitations per week has been reached__',
+            limit) % limit, '']
         for token in current_tokens:
             if token.used_by is None:
                 line = _('`%s` __expires in__ **%s**') % (token, token.expire)

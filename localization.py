@@ -1,5 +1,7 @@
+import os
 from functools import wraps
 from gettext import translation, NullTranslations
+from pathlib import Path
 
 from telethon.events.common import EventCommon
 
@@ -10,10 +12,11 @@ languages = ['en', 'ru']
 
 
 def load_translations(domain: str) -> dict[str:NullTranslations]:
+    domain = domain.split('.')[-1]
     return {i: translation(domain, localedir, [i], fallback=True) for i in languages}
 
 
-def translate(text=True, nums_text=False, translations=False):
+def translate(text=True, current=False, translations=False):
     def decorator(func):
         def inject_translations(data):
             setattr(func, 'translations', data)
@@ -26,10 +29,10 @@ def translate(text=True, nums_text=False, translations=False):
             kwargs = {}
             if text:
                 kwargs['_'] = t.gettext
-            if nums_text:
-                kwargs['_n'] = t.ngettext
+            if current:
+                kwargs['t'] = t
             if translations:
-                kwargs['t'] = func.translations
+                kwargs['translations'] = func.translations
             return func(event, **kwargs)
 
         return wrapper

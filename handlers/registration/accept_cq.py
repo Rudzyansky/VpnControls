@@ -9,8 +9,8 @@ from localization import translate
 
 
 @register(CallbackQuery(pattern=rb'^accept (.{16}) ([a-z]{2})$'))
-@translate(nums_text=True)
-async def handler(event: CallbackQuery.Event, _, _n):
+@translate()
+async def handler(event: CallbackQuery.Event, _):
     if event.sender_id in users.registered:
         await event.answer(_('Access denied'))
         return
