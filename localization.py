@@ -3,6 +3,8 @@ from gettext import translation, NullTranslations
 
 from telethon.events.common import EventCommon
 
+from domain import users
+
 localedir = 'lang'
 languages = ['en', 'ru']
 
