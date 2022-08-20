@@ -21,7 +21,7 @@ async def handler_all(event: InlineQuery.Event, _):
 @translate
 async def handler_one(event: InlineQuery.Event, _):
     start, end = event.pattern_match.regs[1]
-    token = users.get_token(Token(event.text[start:end], owner_id=event.chat_id))
+    token = users.fetch_token(Token(event.text[start:end], owner_id=event.chat_id))
     if token is None:
         await event.answer()
     else:

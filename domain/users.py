@@ -38,9 +38,15 @@ class Users:
         return self.tokens_db.add(token)
 
     def get_tokens(self, user_id: int):
+        """
+        Get all tokens owned by user_id
+        """
         return self.tokens_db.get_all(user_id)
 
-    def get_token(self, token: Token):
+    def fetch_token(self, token: Token):
+        """
+        Fetch all token's data by token + owner_id
+        """
         return self.tokens_db.get(token)
 
     def use_token(self, token: Token):

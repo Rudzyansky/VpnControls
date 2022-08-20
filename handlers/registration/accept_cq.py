@@ -16,7 +16,7 @@ async def handler(event: CallbackQuery.Event, _):
         return
 
     start, end = event.data_match.regs[1]
-    token = users.get_token(Token(event.data[start:end], owner_id=event.chat_id))
+    token = users.fetch_token(Token(event.data[start:end], owner_id=event.chat_id))
     if token is None or (token.used_by is not None and token.used_by != event.sender_id):
         await event.edit(_('Invitation is invalid'))
         return
