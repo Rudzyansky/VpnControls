@@ -2,9 +2,9 @@ from types import FunctionType
 
 from telethon import TelegramClient
 
-from . import registration
+from . import registration, privileges, accounting
 
-flows = [registration]
+flows = [registration, privileges, accounting]
 
 _HANDLERS_ATTRIBUTE = '__tl.handlers'  # telethon/events/__init__.py
 
