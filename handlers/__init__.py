@@ -3,7 +3,6 @@ from types import FunctionType
 
 from telethon import TelegramClient
 
-from localization import _TRANSLATIONS_ATTRIBUTE
 from . import registration, privileges, accounting
 
 flows = [registration, privileges, accounting]
@@ -23,7 +22,8 @@ def register(client: TelegramClient):
         for module_name in flow.modules:
             module = import_module('.' + module_name, flow.__name__)
             for func in handlers(module):
-                setattr(func, _TRANSLATIONS_ATTRIBUTE, flow.translations)
+                if hasattr(func, 'inject_translations'):
+                    func.inject_translations(flow.translations)
                 client.add_event_handler(func)
 
 
