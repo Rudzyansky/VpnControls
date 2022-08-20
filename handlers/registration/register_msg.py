@@ -4,13 +4,12 @@ from telethon import Button
 from telethon.events import register, NewMessage
 
 import utils
-from database import tokens
-from handlers.accesslist import admins_al
-from handlers.token import Token
+from domain import users
+from entities.token import Token
 from localization import translate
 
 
-@register(NewMessage(admins_al, pattern='/register'))
+@register(NewMessage(users.admins, pattern='/register'))
 @translate
 async def handler(event: NewMessage.Event, _, _n):
     limit = 2

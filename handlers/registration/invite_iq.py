@@ -3,13 +3,12 @@ from telethon.events import register, InlineQuery
 from telethon.tl.types import InputWebDocument, DocumentAttributeImageSize
 from telethon.utils import get_display_name
 
-from database import tokens
-from handlers.accesslist import admins_al
-from handlers.token import Token
+from domain import users
+from entities.token import Token
 from localization import translate
 
 
-@register(InlineQuery(admins_al, pattern=r'^invite$'))
+@register(InlineQuery(users.admins, pattern=r'^invite$'))
 @translate
 async def handler_all(event: InlineQuery.Event, _):
     # user = users[event.chat_id]
@@ -21,7 +20,7 @@ async def handler_all(event: InlineQuery.Event, _):
     await event.answer(articles)
 
 
-@register(InlineQuery(admins_al, pattern=r'^invite ([0-9A-F]{8}(?:-[0-9A-F]{4}){3}-[0-9A-F]{12})$'))
+@register(InlineQuery(users.admins, pattern=r'^invite ([0-9A-F]{8}(?:-[0-9A-F]{4}){3}-[0-9A-F]{12})$'))
 @translate
 async def handler_one(event: InlineQuery.Event, _):
     # user = users[event.chat_id]

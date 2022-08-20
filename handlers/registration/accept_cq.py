@@ -3,16 +3,15 @@ from datetime import datetime
 from telethon.events import register, CallbackQuery
 
 import utils
-from database import tokens
-from handlers.accesslist import users_al
-from handlers.token import Token
+from domain import users
+from entities.token import Token
 from localization import translate
 
 
 @register(CallbackQuery(pattern=rb'^accept (.{16})$'))
 @translate
 async def handler(event: CallbackQuery.Event, _):
-    if event.sender_id in users_al:
+    if event.sender_id in users.registered:
         await event.answer(_('Access denied'))
         return
 

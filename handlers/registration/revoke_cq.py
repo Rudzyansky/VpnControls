@@ -1,15 +1,14 @@
 from telethon.events import register, CallbackQuery
 
-from database import tokens
-from handlers.accesslist import admins_al
-from handlers.token import Token
+from domain import users
+from entities.token import Token
 from localization import translate
 
 
 @register(CallbackQuery(pattern=rb'^revoke (.{16})$'))
 @translate
 async def handler(event: CallbackQuery.Event, _):
-    if event.sender_id not in admins_al:
+    if event.sender_id not in users.admins:
         await event.answer(_('Access denied'))
         return
 
