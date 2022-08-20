@@ -23,7 +23,7 @@ class UsersSqlite(Users, BaseSqlite):
         cls.transaction(func)
 
     @classmethod
-    def slaves(cls, id: int) -> bool:
+    def slaves(cls, id: int) -> list[int]:
         def func(c):
             sql = 'SELECT id FROM slaves WHERE leaf_id = ?'
             params = (id,)

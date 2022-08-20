@@ -5,7 +5,7 @@ from abc import ABC, abstractmethod
 class Users(ABC):
     @classmethod
     @abstractmethod
-    def slaves(cls, id: int) -> bool: pass
+    def slaves(cls, id: int) -> list[int]: pass
 
     @classmethod
     @abstractmethod
