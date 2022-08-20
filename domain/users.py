@@ -11,9 +11,9 @@ class Users:
 
         users = users_db.fetch_all()
 
-        self.registered: list[int] = list(map(lambda u: u.id, users))
-        self.admins: list[int] = list(map(lambda u: u.id, filter(lambda u: u.is_admin, users)))
-        self.languages: dict[int, str] = dict(map(lambda u: (u.id, u.language), users))
+        self.registered = [u.id for u in users]
+        self.admins = [u.id for u in filter(lambda u: u.is_admin, users)]
+        self.languages: dict[int, str] = {u.id: u.language for u in users}
 
     def language(self, user_id: int):
         return self.languages[user_id]
