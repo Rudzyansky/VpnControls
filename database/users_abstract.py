@@ -1,7 +1,9 @@
 from abc import ABC, abstractmethod
 
-
 # noinspection PyShadowingBuiltins
+from entities.user import User
+
+
 class Users(ABC):
     @classmethod
     @abstractmethod
@@ -9,11 +11,11 @@ class Users(ABC):
 
     @classmethod
     @abstractmethod
-    def fetch_all(cls) -> list[int]: pass
+    def fetch_all(cls) -> list[User]: pass
 
     @classmethod
     @abstractmethod
-    def fetch_admins(cls) -> list[int]: pass
+    def fetch(cls, id: int) -> User: pass
 
     @classmethod
     @abstractmethod

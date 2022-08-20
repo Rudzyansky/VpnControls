@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod
 # noinspection PyShadowingBuiltins
 from typing import Optional
 
-from handlers.token import Token
+from entities.token import Token
 
 
 class Tokens(ABC):
@@ -16,11 +16,11 @@ class Tokens(ABC):
 
     @classmethod
     @abstractmethod
-    def get(cls, token: Token) -> Token: pass
+    def get(cls, token: Token) -> Optional[Token]: pass
 
     @classmethod
     @abstractmethod
-    def check_user(cls, user_id: int) -> bool: pass
+    def is_accept_invite(cls, user_id: int) -> bool: pass
 
     @classmethod
     @abstractmethod
