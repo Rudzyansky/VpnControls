@@ -1,4 +1,5 @@
 import database
+from entities.token import Token
 
 
 class Users:
@@ -14,10 +15,10 @@ class Users:
         self.admins: list[int] = list(map(lambda u: u.id, filter(lambda u: u.is_admin, users)))
         self.languages: dict[int, str] = dict(map(lambda u: (u.id, u.language), users))
 
-    def language(self, user_id):
+    def language(self, user_id: int):
         return self.languages[user_id]
 
-    def add_user(self, user_id):
+    def add_user(self, user_id: int):
         success = self.users_db.add_user(user_id)
         if success:
             user = self.users_db.fetch(user_id)
@@ -27,5 +28,20 @@ class Users:
                 self.admins.append(user.id)
         return success
 
-    def is_accept_invite(self, user_id):
+    def is_accept_invite(self, user_id: int):
         return self.tokens_db.is_accept_invite(user_id)
+
+    def revoke_token(self, token: Token):
+        return self.tokens_db.revoke(token)
+
+    def add_token(self, token: Token):
+        return self.tokens_db.add(token)
+
+    def get_tokens(self, user_id: int):
+        return self.tokens_db.get_all(user_id)
+
+    def get_token(self, token: Token):
+        return self.tokens_db.get(token)
+
+    def use_token(self, token: Token):
+        return self.tokens_db.use(token)

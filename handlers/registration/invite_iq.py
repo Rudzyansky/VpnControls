@@ -11,10 +11,7 @@ from localization import translate
 @register(InlineQuery(users.admins, pattern=r'^invite$'))
 @translate
 async def handler_all(event: InlineQuery.Event, _):
-    # user = users[event.chat_id]
-    # t = translations[user.language]
-
-    current_tokens = tokens.get_all(event.chat_id)
+    current_tokens = users.get_tokens(event.chat_id)
     current_tokens = filter(lambda token: token.used_by != token.owner_id, current_tokens)
     articles = [await invite_article(event, token, _) for token in current_tokens]
     await event.answer(articles)
@@ -23,11 +20,8 @@ async def handler_all(event: InlineQuery.Event, _):
 @register(InlineQuery(users.admins, pattern=r'^invite ([0-9A-F]{8}(?:-[0-9A-F]{4}){3}-[0-9A-F]{12})$'))
 @translate
 async def handler_one(event: InlineQuery.Event, _):
-    # user = users[event.chat_id]
-    # t = translations[user.language]
-
     start, end = event.pattern_match.regs[1]
-    token = tokens.get(Token(event.text[start:end], owner_id=event.chat_id))
+    token = users.get_token(Token(event.text[start:end], owner_id=event.chat_id))
     if token is None:
         await event.answer()
     else:

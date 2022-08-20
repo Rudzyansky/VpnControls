@@ -14,7 +14,7 @@ from localization import translate
 async def handler(event: NewMessage.Event, _, _n):
     limit = 2
 
-    current_tokens = tokens.get_all(event.chat_id)
+    current_tokens = users.get_tokens(event.chat_id)
     if len(current_tokens) >= limit:
         lines = [_n('Unable to issue token. __The limit of **%d** invitation per week has been reached.__',
                     'Unable to issue token. __The limit of **%d** invitations per week has been reached.__',
@@ -29,7 +29,7 @@ async def handler(event: NewMessage.Event, _, _n):
         await event.client.send_message(event.chat_id, '\n'.join(lines))
         return
 
-    token = tokens.add(Token(owner_id=event.chat_id))
+    token = users.add_token(Token(owner_id=event.chat_id))
 
     if token is None:
         payload = utils.debug_payload(user_id=event.chat_id, timestamp=datetime.utcnow())

@@ -16,13 +16,13 @@ async def handler(event: CallbackQuery.Event, _):
         return
 
     start, end = event.data_match.regs[1]
-    token = tokens.get(Token(event.data[start:end], owner_id=event.chat_id))
+    token = users.get_token(Token(event.data[start:end], owner_id=event.chat_id))
     if token is None or (token.used_by is not None and token.used_by != event.sender_id):
         await event.edit(_('Invitation is invalid'))
         return
 
     token.used_by = event.sender_id
-    if tokens.use(token):
+    if users.use_token(token):
         _un = (await event.client.get_me()).username
         await event.answer(url=f'https://t.me/{_un}?start={token}')
     else:
