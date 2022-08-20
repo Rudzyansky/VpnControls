@@ -7,11 +7,12 @@ class UsersSqlite(Users, BaseSqlite):
     def create_table(cls):
         def func(c):
             sql = 'CREATE TABLE IF NOT EXISTS users (' \
-                  'id INT primary key, ' \
-                  'is_admin INT default 0, ' \
-                  'accounts_limit INT default 1, ' \
-                  'owner_id INT default NULL, ' \
-                  'FOREIGN KEY (owner_id) REFERENCES users (id) on delete RESTRICT on update RESTRICT)'
+                  'id INT PRIMARY KEY, ' \
+                  'is_admin INT DEFAULT 0, ' \
+                  'accounts_limit INT DEFAULT 1, ' \
+                  'owner_id INT DEFAULT NULL, ' \
+                  'language TEXT DEFAULT \'en\', ' \
+                  'FOREIGN KEY (owner_id) REFERENCES users (id) ON DELETE RESTRICT ON UPDATE RESTRICT)'
             c.execute(sql)
             sql = 'CREATE VIEW IF NOT EXISTS slaves AS ' \
                   'WITH RECURSIVE slaves (leaf_id, id) AS (' \
