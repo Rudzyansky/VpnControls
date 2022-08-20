@@ -13,12 +13,25 @@ def load_translations(domain: str) -> dict[str:NullTranslations]:
     return {i: translation(domain, localedir, [i], fallback=True) for i in languages}
 
 
-def translate(func):
-    setattr(func, 'inject_translations', lambda data: setattr(func, 'translations', data))
+def translate(text=True, nums_text=False, translations=False):
+    def decorator(func):
+        def inject_translations(data):
+            setattr(func, 'translations', data)
 
-    @wraps(func)
-    def wrapper(event: EventCommon):
-        t = func.translations[users.language(event.chat_id)]
-        return func(event, _=t.gettext, _n=t.ngettext)
+        setattr(func, inject_translations.__name__, inject_translations)
 
-    return wrapper
+        @wraps(func)
+        def wrapper(event: EventCommon):
+            t = func.translations[users.language(event.chat_id)]
+            kwargs = {}
+            if text:
+                kwargs['_'] = t.gettext
+            if nums_text:
+                kwargs['_n'] = t.ngettext
+            if translations:
+                kwargs['t'] = func.translations
+            return func(event, **kwargs)
+
+        return wrapper
+
+    return decorator

@@ -1,6 +1,5 @@
 from abc import ABC, abstractmethod
 
-# noinspection PyShadowingBuiltins
 from entities.user import User
 
 
@@ -19,15 +18,7 @@ class Users(ABC):
 
     @classmethod
     @abstractmethod
-    def is_registered(cls, id: int) -> bool: pass
-
-    @classmethod
-    @abstractmethod
-    def is_admin(cls, id: int) -> bool: pass
-
-    @classmethod
-    @abstractmethod
-    def add(cls, id: int) -> bool: pass
+    def add(cls, id: int, language: str) -> bool: pass
 
     @classmethod
     @abstractmethod

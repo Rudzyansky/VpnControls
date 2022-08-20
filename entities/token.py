@@ -22,6 +22,10 @@ class Token:
             raise RuntimeError(f'Token: Not allowed type "{type(data)}"')
 
     def __str__(self):
+        return self.string
+
+    @property
+    def string(self):
         return str(self._data).upper()
 
     @property

@@ -47,45 +47,31 @@ class UsersSqlite(Users, BaseSqlite):
 
     @classmethod
     @transaction
-    def is_registered(cls, id: int, c) -> bool:
-        sql = 'SELECT count(id) == 1 FROM users WHERE id = ?'
-        params = (id,)
-        return bool(c.execute(sql, params).fetchone()[0])
-
-    @classmethod
-    @transaction
-    def is_admin(cls, id: int, c) -> bool:
-        sql = 'SELECT count(id) == 1 FROM users WHERE id = ? AND is_admin = 1'
-        params = (id,)
-        return bool(c.execute(sql, params).fetchone()[0])
-
-    @classmethod
-    @transaction
-    def add(cls, id: int, c) -> bool:
+    def add(cls, id: int, language: str, c) -> bool:
         sql = 'INSERT INTO users (id, owner_id, language) ' \
-              'SELECT used_by, t.owner_id, language ' \
+              'SELECT ?, t.owner_id, ? ' \
               'FROM tokens t INNER JOIN users u on u.id = t.owner_id ' \
-              'WHERE used_by = ?'
-        params = (id,)
-        return bool(c.execute(sql, params).rowcount == 1)
+              'WHERE t.used_by = ?'
+        params = (id, language, id)
+        return c.execute(sql, params).rowcount == 1
 
     @classmethod
     @transaction
     def remove_user(cls, id: int, c) -> bool:
         sql = 'DELETE FROM users WHERE id = ?'
         params = (id,)
-        return bool(c.execute(sql, params).rowcount == 1)
+        return c.execute(sql, params).rowcount == 1
 
     @classmethod
     @transaction
     def change_owner(cls, id: int, owner_id: int, c) -> bool:
         sql = 'UPDATE users SET owner_id = ? WHERE id = ?'
         params = (owner_id, id)
-        return bool(c.execute(sql, params).rowcount == 1)
+        return c.execute(sql, params).rowcount == 1
 
     @classmethod
     @transaction
     def admin(cls, id: int, is_admin: bool, c) -> bool:
         sql = 'UPDATE users SET is_admin = ? WHERE id = ?'
         params = (is_admin, id)
-        return bool(c.execute(sql, params).rowcount == 1)
+        return c.execute(sql, params).rowcount == 1

@@ -18,8 +18,8 @@ class Users:
     def language(self, user_id: int):
         return self.languages[user_id]
 
-    def add_user(self, user_id: int):
-        success = self.users_db.add(user_id)
+    def add_user(self, user_id: int, language: str):
+        success = self.users_db.add(user_id, language)
         if success:
             user = self.users_db.fetch(user_id)
             self.registered.append(user.id)
@@ -47,6 +47,12 @@ class Users:
         Get all tokens owned by user_id
         """
         return self.tokens_db.get_all(user_id)
+
+    def get_current_tokens(self, user_id: int) -> list[Token]:
+        """
+        Get non-revoked tokens owned by user_id
+        """
+        return list(filter(lambda t: t.used_by is None or t.used_by != t.owner_id, self.get_tokens(user_id)))
 
     def fetch_token(self, token: Token):
         """

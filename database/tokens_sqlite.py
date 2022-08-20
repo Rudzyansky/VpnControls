@@ -45,7 +45,7 @@ class TokensSqlite(Tokens, BaseSqlite):
         sql = 'SELECT token, expire, used_by FROM tokens WHERE owner_id = ? AND CURRENT_DATE < expire'
         params = (owner_id,)
         return [Token(data=token, expire=expire, used_by=used_by)
-                for token, expire, used_by, language in c.execute(sql, params).fetchall()]
+                for token, expire, used_by in c.execute(sql, params).fetchall()]
 
     @classmethod
     @transaction

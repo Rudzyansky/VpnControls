@@ -6,14 +6,13 @@ from localization import translate
 
 
 @register(CallbackQuery(pattern=rb'^revoke (.{16})$'))
-@translate
+@translate()
 async def handler(event: CallbackQuery.Event, _):
     if event.sender_id not in users.admins:
         await event.answer(_('Access denied'))
         return
 
-    start, end = event.data_match.regs[1]
-    if users.revoke_token(Token(event.data[start:end], owner_id=event.chat_id)):
+    if users.revoke_token(Token(event.pattern_match[1], owner_id=event.chat_id)):
         await event.edit(_('Invitation turned into a pumpkin'))
     else:
         await event.edit(_('Invitation is invalid'))

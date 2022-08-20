@@ -9,14 +9,14 @@ from localization import translate
 
 
 @register(NewMessage(users.admins, pattern='/register'))
-@translate
+@translate(nums_text=True)
 async def handler(event: NewMessage.Event, _, _n):
     limit = 2
 
     current_tokens = users.get_tokens(event.chat_id)
     if len(current_tokens) >= limit:
-        lines = [_n('Unable to issue token. __The limit of **%d** invitation per week has been reached.__',
-                    'Unable to issue token. __The limit of **%d** invitations per week has been reached.__',
+        lines = [_n('Unable to issue token\n__The limit of **%d** invitation per week has been reached__',
+                    'Unable to issue token\n__The limit of **%d** invitations per week has been reached__',
                     limit) % limit,
                  '']
         for token in current_tokens:
@@ -37,6 +37,11 @@ async def handler(event: NewMessage.Event, _, _n):
         return
 
     text = _('Token `%s` issued\n__Expires in__ **%s**') % (token, token.expire)
-    await event.client.send_message(event.chat_id, text,
-                                    buttons=[Button.switch_inline(_('Invite'), f'invite {token}', same_peer=False),
-                                             Button.inline(_('Revoke'), b'revoke ' + token.bytes)])
+    buttons = event.client.build_reply_markup([
+        [
+            Button.switch_inline(_('Invite'), f'invite/{token}', same_peer=False),
+            Button.inline(_('Revoke'), b'revoke ' + token.bytes)
+        ],
+        [Button.switch_inline(_('Invite in another language'), f'invite/{token}/', same_peer=False)]
+    ], inline_only=True)
+    await event.client.send_message(event.chat_id, text, buttons=buttons)
