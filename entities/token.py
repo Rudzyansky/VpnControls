@@ -1,32 +1,30 @@
+from dataclasses import dataclass, field, InitVar
+from typing import Union
 from uuid import UUID, uuid4
 
 
+@dataclass
 class Token:
-    data: UUID
-    expire: str
-    used_by: int
-    owner_id: int
+    _data: UUID = field(init=False)
+    data: InitVar[Union[None, str, bytes]] = None
+    expire: str = None
+    used_by: int = None
+    owner_id: int = None
+    language: str = None
 
-    def __init__(self, data=None, expire: str = None, used_by: int = None, owner_id: int = None) -> None:
+    def __post_init__(self, data) -> None:
         if data is None:
-            self.data = uuid4()
+            self._data = uuid4()
         elif isinstance(data, str):
-            self.data = UUID(data.lower())
+            self._data = UUID(data.lower())
         elif isinstance(data, bytes):
-            self.data = UUID(bytes=data)
+            self._data = UUID(bytes=data)
         else:
             raise RuntimeError(f'Token: Not allowed type "{type(data)}"')
-        self.expire = expire
-        self.used_by = used_by
-        self.owner_id = owner_id
 
-    def __str__(self) -> str:
-        return self.str
+    def __str__(self):
+        return str(self._data).upper()
 
     @property
-    def str(self) -> str:
-        return str(self.data).upper()
-
-    @property
-    def bytes(self) -> bytes:
-        return self.data.bytes
+    def bytes(self):
+        return self._data.bytes
