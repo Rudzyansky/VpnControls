@@ -25,10 +25,6 @@ class Users(ABC):
     @abstractmethod
     def is_admin(cls, id: int) -> bool: pass
 
-    # @classmethod
-    # @abstractmethod
-    # def add_user(cls, id: int, owner_id: int) -> bool: pass
-
     @classmethod
     @abstractmethod
     def add(cls, id: int) -> bool: pass
