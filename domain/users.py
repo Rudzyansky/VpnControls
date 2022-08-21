@@ -14,8 +14,8 @@ class Users:
 
         users = self.common_db.get_all_users()
 
-        self.registered = [u.id for u in users]
-        self.admins = [u.id for u in filter(lambda u: u.is_admin, users)]
+        self.registered = {u.id for u in users}
+        self.admins = {u.id for u in filter(lambda u: u.is_admin, users)}
         self.languages: dict[int, str] = {u.id: u.language for u in users}
 
     def language(self, user_id: int):
@@ -27,10 +27,10 @@ class Users:
         if success:
             self.registration_db.revoke_token_by_user_id(user_id, c)
             user = self.common_db.get_user(user_id, c)
-            self.registered.append(user.id)
+            self.registered.add(user.id)
             self.languages[user.id] = user.language
             if user.is_admin:
-                self.admins.append(user.id)
+                self.admins.add(user.id)
             return user
         return None
 

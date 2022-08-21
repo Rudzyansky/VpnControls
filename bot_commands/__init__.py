@@ -12,7 +12,7 @@ async def setup(client):
         await client(ResetBotCommandsRequest(
             scope=BotCommandScopeDefault(), lang_code=lang_code))
 
-    for user_id in set(users.registered) - set(users.admins):
+    for user_id in users.registered - users.admins:
         user = await client.get_entity(user_id)
         lang_code = users.language(user_id)
         await client(SetBotCommandsRequest(
@@ -28,6 +28,5 @@ async def setup(client):
 
 
 __all__ = [
-    'translations',
     'setup'
 ]
