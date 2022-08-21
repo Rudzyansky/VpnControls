@@ -1,27 +1,8 @@
-from database.base_sqlite import BaseSqlite, transaction
 from database.users_abstract import Users
 from entities.user import User
 
 
-class UsersSqlite(Users, BaseSqlite):
-    @classmethod
-    @transaction
-    def create_table(cls, c):
-        sql = 'CREATE TABLE IF NOT EXISTS users (' \
-              'id INT PRIMARY KEY, ' \
-              'is_admin INT DEFAULT 0, ' \
-              'accounts_limit INT DEFAULT 1, ' \
-              'owner_id INT DEFAULT NULL, ' \
-              'language TEXT DEFAULT \'en\', ' \
-              'FOREIGN KEY (owner_id) REFERENCES users (id) ON DELETE RESTRICT ON UPDATE RESTRICT)'
-        c.execute(sql)
-        sql = 'CREATE VIEW IF NOT EXISTS slaves AS ' \
-              'WITH RECURSIVE slaves (leaf_id, id) AS (' \
-              'SELECT id, id FROM users UNION ALL ' \
-              'SELECT s.leaf_id, u.id FROM users u JOIN slaves s ON u.owner_id = s.id' \
-              ') SELECT * FROM slaves'
-        c.execute(sql)
-
+class UsersSqlite(Users):
     @classmethod
     @transaction
     def slaves(cls, id: int, c) -> list[int]:

@@ -1,19 +1,7 @@
 from database.accounts_abstract import Accounts
-from database.base_sqlite import BaseSqlite, transaction
 
 
-class AccountsSqlite(Accounts, BaseSqlite):
-    @classmethod
-    @transaction
-    def create_table(cls, c):
-        sql = 'CREATE TABLE IF NOT EXISTS accounts (' \
-              'id INT not null, ' \
-              'username TEXT not null, ' \
-              'pos INT not null unique, ' \
-              'PRIMARY KEY (id, username), ' \
-              'FOREIGN KEY (id) REFERENCES users (id) on delete RESTRICT on update RESTRICT)'
-        c.execute(sql)
-
+class AccountsSqlite(Accounts):
     @classmethod
     @transaction
     def remove_username(cls, id: int, c) -> bool:

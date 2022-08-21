@@ -1,23 +1,10 @@
 from typing import Optional
 
-from database.base_sqlite import BaseSqlite, transaction
 from database.tokens_abstract import Tokens
 from entities.token import Token
 
 
-class TokensSqlite(Tokens, BaseSqlite):
-    @classmethod
-    @transaction
-    def create_table(cls, c):
-        sql = 'CREATE TABLE IF NOT EXISTS tokens (' \
-              'token BLOB NOT NULL , ' \
-              'owner_id INT NOT NULL, ' \
-              'expire BLOB NOT NULL, ' \
-              'used_by INT DEFAULT NULL, ' \
-              'PRIMARY KEY (token), ' \
-              'FOREIGN KEY (owner_id) REFERENCES users (id) ON DELETE RESTRICT ON UPDATE RESTRICT)'
-        c.execute(sql)
-
+class TokensSqlite(Tokens):
     @classmethod
     @transaction
     def add(cls, token: Token, c) -> Optional[Token]:
