@@ -3,9 +3,9 @@ from types import FunctionType
 
 from telethon import TelegramClient
 
-from . import registration, privileges, accounting
+from . import registration, privileges, accounting, settings
 
-flows = [registration, privileges, accounting]
+flows = [registration, privileges, accounting, settings]
 
 _HANDLERS_ATTRIBUTE = '__tl.handlers'  # telethon/events/__init__.py
 
