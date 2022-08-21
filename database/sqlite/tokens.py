@@ -69,6 +69,13 @@ class TokensSqlite(Tokens, BaseSqlite):
 
     @classmethod
     @transaction
+    def revoke_by_used(cls, user_id: int, c) -> bool:
+        sql = 'UPDATE tokens SET used_by = owner_id WHERE used_by = ? AND CURRENT_DATE < expire'
+        params = (user_id,)
+        return c.execute(sql, params).rowcount == 1
+
+    @classmethod
+    @transaction
     def is_accept_invite(cls, user_id: int, c) -> bool:
         sql = 'SELECT COUNT(token) > 0 FROM tokens WHERE used_by = ? AND CURRENT_DATE < expire'
         params = (user_id,)

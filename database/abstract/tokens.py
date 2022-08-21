@@ -32,6 +32,10 @@ class Tokens(ABC):
 
     @classmethod
     @abstractmethod
+    def revoke_by_used(cls, user_id: int) -> bool: pass
+
+    @classmethod
+    @abstractmethod
     def add(cls, token: Token) -> bool: pass
 
     @classmethod
