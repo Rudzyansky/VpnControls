@@ -1,26 +1,25 @@
 from typing import Optional
 
-from database.tokens_abstract import Tokens
+from database.abstract import Tokens
 from entities.token import Token
+from .transaction import TransactionSqlite, transaction
 
 
 class TokensSqlite(Tokens):
     @classmethod
     @transaction
-    def add(cls, token: Token, c) -> Optional[Token]:
+    def add(cls, token: Token, t: TransactionSqlite) -> Optional[Token]:
         sql = 'INSERT INTO tokens (token, owner_id, expire) ' \
               'VALUES (?, ?, DATE(CURRENT_DATE, \'+8 days\'))'
-        params = (token.bytes, token.owner_id)
-        return c.execute(sql, params).rowcount == 1
+        return t.update_one(sql, token.bytes, token.owner_id)
 
     @classmethod
     @transaction
-    def fetch(cls, token: Token, c) -> Optional[Token]:
+    def fetch(cls, token: Token, t: TransactionSqlite) -> Optional[Token]:
         sql = 'SELECT expire, used_by FROM tokens ' \
               'WHERE token = ? AND owner_id = ? AND CURRENT_DATE < expire ' \
               'AND (used_by NOT LIKE owner_id OR used_by IS NULL)'
-        params = (token.bytes, token.owner_id)
-        result = c.execute(sql, params).fetchone()
+        result = t.fetch_one(sql, token.bytes, token.owner_id)
         if result is None:
             return None
         token.expire, token.used_by = result
@@ -28,55 +27,47 @@ class TokensSqlite(Tokens):
 
     @classmethod
     @transaction
-    def get_all(cls, owner_id: int, c) -> list:
+    def get_all(cls, owner_id: int, t: TransactionSqlite) -> list:
         sql = 'SELECT token, expire, used_by FROM tokens WHERE owner_id = ? AND CURRENT_DATE < expire'
-        params = (owner_id,)
         return [Token(data=token, expire=expire, used_by=used_by)
-                for token, expire, used_by in c.execute(sql, params).fetchall()]
+                for token, expire, used_by in t.fetch_all(sql, owner_id)]
 
     @classmethod
     @transaction
-    def use(cls, token: Token, c) -> bool:
+    def use(cls, token: Token, t: TransactionSqlite) -> bool:
         sql = 'UPDATE tokens SET used_by = NULL WHERE used_by = ? AND CURRENT_DATE < expire'
-        params = (token.used_by,)
-        c.execute(sql, params)
+        t.execute(sql, token.used_by)
 
         sql = 'UPDATE tokens SET used_by = ? ' \
               'WHERE token = ? AND owner_id = ? AND used_by IS NULL AND CURRENT_DATE < expire'
-        params = (token.used_by, token.bytes, token.owner_id)
-        return c.execute(sql, params).rowcount == 1
+        return t.update_one(sql, token.used_by, token.bytes, token.owner_id)
 
     @classmethod
     @transaction
-    def revoke(cls, token: Token, c) -> bool:
+    def revoke(cls, token: Token, t: TransactionSqlite) -> bool:
         sql = 'UPDATE tokens SET used_by = owner_id ' \
               'WHERE token = ? AND owner_id = ? AND CURRENT_DATE < expire'
-        params = (token.bytes, token.owner_id)
-        return c.execute(sql, params).rowcount == 1
+        return t.update_one(sql, token.bytes, token.owner_id)
 
     @classmethod
     @transaction
-    def revoke_by_used(cls, user_id: int, c) -> bool:
+    def revoke_by_used(cls, user_id: int, t: TransactionSqlite) -> bool:
         sql = 'UPDATE tokens SET used_by = owner_id WHERE used_by = ? AND CURRENT_DATE < expire'
-        params = (user_id,)
-        return c.execute(sql, params).rowcount == 1
+        return t.update_one(sql, user_id)
 
     @classmethod
     @transaction
-    def is_accept_invite(cls, user_id: int, c) -> bool:
+    def is_accept_invite(cls, user_id: int, t: TransactionSqlite) -> bool:
         sql = 'SELECT COUNT(token) > 0 FROM tokens WHERE used_by = ? AND CURRENT_DATE < expire'
-        params = (user_id,)
-        return bool(c.execute(sql, params).fetchone()[0])
+        return bool(t.single(sql, user_id))
 
     @classmethod
     @transaction
-    def get_owner(cls, user_id: int, c) -> Optional[int]:
+    def get_owner(cls, user_id: int, t: TransactionSqlite) -> Optional[int]:
         sql = 'SELECT owner_id FROM tokens WHERE used_by = ? AND CURRENT_DATE < expire'
-        params = (user_id,)
-        return c.execute(sql, params).fetchone()[0]
+        return t.single(sql, user_id)
 
     @classmethod
     @transaction
-    def remove_expired(cls, c) -> bool:
-        sql = 'DELETE FROM tokens WHERE CURRENT_DATE >= expire'
-        return bool(c.execute(sql).rowcount > 0)
+    def remove_expired(cls, t: TransactionSqlite) -> bool:
+        return t.update_many('DELETE FROM tokens WHERE CURRENT_DATE >= expire')

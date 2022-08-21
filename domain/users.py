@@ -1,4 +1,6 @@
 import database
+from database import transaction
+from database.abstract import Transaction
 from entities.token import Token
 
 
@@ -18,10 +20,11 @@ class Users:
     def language(self, user_id: int):
         return self.languages[user_id]
 
-    def add_user(self, user_id: int, language: str):
-        success = self.users_db.add(user_id, language)
+    @transaction
+    def add_user(self, user_id: int, language: str, t: Transaction):
+        success = self.users_db.add(user_id, language, t)
         if success:
-            user = self.users_db.fetch(user_id)
+            user = self.users_db.fetch(user_id, t)
             self.registered.append(user.id)
             self.languages[user.id] = user.language
             if user.is_admin:
@@ -35,11 +38,12 @@ class Users:
     def revoke_token(self, token: Token):
         return self.tokens_db.revoke(token)
 
-    def create_token(self, user_id: int):
+    @transaction
+    def create_token(self, user_id: int, t: Transaction):
         token = Token(owner_id=user_id)
-        success = self.tokens_db.add(token)
+        success = self.tokens_db.add(token, t)
         if success:
-            return self.tokens_db.fetch(token)
+            return self.tokens_db.fetch(token, t)
         return None
 
     def get_tokens(self, user_id: int):

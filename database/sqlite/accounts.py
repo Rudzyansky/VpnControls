@@ -1,24 +1,22 @@
-from database.accounts_abstract import Accounts
+from database.abstract import Accounts
+from .transaction import TransactionSqlite, transaction
 
 
 class AccountsSqlite(Accounts):
     @classmethod
     @transaction
-    def remove_username(cls, id: int, c) -> bool:
+    def remove_username(cls, id: int, username: str, t: TransactionSqlite) -> bool:
         sql = 'DELETE FROM accounts WHERE id = ? AND username = ?'
-        params = (id, username)
-        return bool(c.execute(sql, params).rowcount == 1)
+        return t.update_one(sql, id, username)
 
     @classmethod
     @transaction
-    def change_username(cls, id: int, new_username: str, c) -> bool:
-        sql = 'UPDATE users SET username = ? WHERE id = ?'
-        params = (new_username, id)
-        return bool(c.execute(sql, params).rowcount == 1)
+    def change_username(cls, id: int, username: str, new_username: str, t: TransactionSqlite) -> bool:
+        sql = 'UPDATE accounts SET username = ? WHERE id = ? AND username = ?'
+        return t.update_one(sql, new_username, id, username)
 
     @classmethod
     @transaction
-    def change_pos(cls, *set: tuple[int, int], c) -> bool:
-        sql = 'UPDATE users SET pos = ? WHERE id = ?'
-        params = set
-        return bool(c.executemany(sql, params).rowcount == len(set))
+    def change_pos(cls, *data: tuple[int, int], t: TransactionSqlite) -> bool:
+        sql = 'UPDATE accounts SET pos = ? WHERE id = ?'
+        return t.data.executemany(sql, data).rowcount == len(data)
