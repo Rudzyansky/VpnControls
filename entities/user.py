@@ -3,7 +3,7 @@ from dataclasses import dataclass
 
 @dataclass
 class User:
-    id: int = None
-    is_admin: bool = None
-    accounts_limit: int = None
-    language: str = None
+    id: int
+    is_admin: bool = False
+    accounts_limit: int = 1
+    language: str = 'en'

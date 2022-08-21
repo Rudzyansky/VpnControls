@@ -1,6 +1,7 @@
 from typing import Optional
 
 from entities.token import Token
+from entities.user import User
 from . import ConnectionSqlite, connection
 from ..abstract import Registration
 
@@ -13,12 +14,12 @@ class RegistrationSqlite(Registration):
         return bool(c.single(sql, user_id))
 
     @classmethod
-    def add_user(cls, user_id: int, language: str, c: ConnectionSqlite = None) -> bool:
-        sql = 'INSERT INTO users (id, owner_id, language) ' \
-              'SELECT ?, t.owner_id, ? ' \
+    def add_user(cls, user: User, c: ConnectionSqlite = None) -> bool:
+        sql = 'INSERT INTO users (id, is_admin, accounts_limit, owner_id, language) ' \
+              'SELECT ?, t.owner_id, ?, ?, ? ' \
               'FROM tokens t INNER JOIN users u on u.id = t.owner_id ' \
               'WHERE t.used_by = ?'
-        return c.update_one(sql, id, language, id)
+        return c.update_one(sql, user.id, user.is_admin, user.accounts_limit, user.language, user.id)
 
     @classmethod
     @connection()

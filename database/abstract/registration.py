@@ -2,6 +2,7 @@ from abc import ABC, abstractmethod
 from typing import Optional
 
 from entities.token import Token
+from entities.user import User
 from .connection import Connection
 
 
@@ -12,7 +13,7 @@ class Registration(ABC):
 
     @classmethod
     @abstractmethod
-    def add_user(cls, user_id: int, language: str, c: Connection = None) -> bool: pass
+    def add_user(cls, user: User, c: Connection = None) -> bool: pass
 
     @classmethod
     @abstractmethod

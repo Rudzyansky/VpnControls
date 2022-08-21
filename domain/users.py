@@ -1,6 +1,7 @@
 import database
 from database.abstract import Connection
 from entities.token import Token
+from entities.user import User
 
 
 class Users:
@@ -22,7 +23,7 @@ class Users:
 
     @database.connection()
     def register_user(self, user_id: int, language: str, c: Connection):
-        success = self.registration_db.add_user(user_id, language, c)
+        success = self.registration_db.add_user(User(id=user_id, language=language), c)
         if success:
             self.registration_db.revoke_token_by_user_id(user_id, c)
             user = self.common_db.get_user(user_id, c)

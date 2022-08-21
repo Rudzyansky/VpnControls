@@ -8,10 +8,10 @@ def init(c: ConnectionSqlite):
     c.data.executescript(
         'CREATE TABLE IF NOT EXISTS users ('
         'id INT PRIMARY KEY, '
-        'is_admin INT DEFAULT 0, '
-        'accounts_limit INT DEFAULT 1, '
+        'is_admin INT NOT NULL, '
+        'accounts_limit INT NOT NULL, '
         'owner_id INT DEFAULT NULL, '
-        'language TEXT DEFAULT \'en\', '
+        'language TEXT NOT NULL, '
         'FOREIGN KEY (owner_id) REFERENCES users (id) ON DELETE RESTRICT ON UPDATE RESTRICT); '
 
         # SELECT id FROM slaves WHERE leaf_id = ?', id
@@ -26,7 +26,7 @@ def init(c: ConnectionSqlite):
         'owner_id INT NOT NULL, '
         'expire BLOB NOT NULL, '
         'used_by INT DEFAULT NULL, '
-        'PRIMARY KEY (token), '
+        'PRIMARY KEY (token, owner_id), '
         'FOREIGN KEY (owner_id) REFERENCES users (id) ON DELETE RESTRICT ON UPDATE RESTRICT); '
 
         'CREATE TABLE IF NOT EXISTS accounts ('
