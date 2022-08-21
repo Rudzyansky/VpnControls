@@ -1,7 +1,7 @@
 .idea
 venv
-*.db
-*.session
+*.db*
+*.session*
 *.sqlite
 *.sh
 *.ipynb
