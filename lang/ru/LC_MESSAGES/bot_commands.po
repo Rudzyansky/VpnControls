@@ -1,0 +1,52 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"POT-Creation-Date: 2022-08-21 21:21+0300\n"
+"PO-Revision-Date: 2022-08-21 21:25+0300\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: ru\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
+"%10<=4 && (n%100<12 || n%100>14) ? 1 : 2);\n"
+"X-Generator: Poedit 3.1.1\n"
+"X-Poedit-Basepath: ../../../bot_commands\n"
+"X-Poedit-SearchPath-0: .\n"
+
+#: commands.py:14
+msgid "Accounts management"
+msgstr "Управление аккаунтами"
+
+#: commands.py:15
+msgid "New account"
+msgstr "Новый аккаунт"
+
+#: commands.py:18
+msgid "Change language"
+msgstr "Сменить язык"
+
+#: commands.py:22
+msgid "Show token, issue if not exist"
+msgstr "Показать токен (выпустить если отсутствет)"
+
+#: commands.py:23
+msgid "Issue new invitation token"
+msgstr "Выпустить новый токен"
+
+#: commands.py:24
+msgid "Show all invitation tokens"
+msgstr "Показать все токены"
+
+#: commands.py:25
+msgid "Remove user (all invited users assign with admin top level)"
+msgstr "Удалить пользователя (все приглашенные привяжутся админу выше)"
+
+#: commands.py:26
+msgid "Grant admin privileges"
+msgstr "Дать права админа"
+
+#: commands.py:27
+msgid "Revoke admin and remove all invited users"
+msgstr "Разжаловать админа (и удалить всех приглашенных)"
