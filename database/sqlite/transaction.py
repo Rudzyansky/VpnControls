@@ -25,22 +25,22 @@ class TransactionSqlite(Transaction):
         return self.cursor
 
     def execute(self, sql, *params):
-        return self.cursor.execute(sql, *params)
+        return self.cursor.execute(sql, params)
 
     def update_many(self, sql, *params):
-        return self.cursor.execute(sql, *params).rowcount > 0
+        return self.cursor.execute(sql, params).rowcount > 0
 
     def update_one(self, sql, *params):
-        return self.cursor.execute(sql, *params).rowcount == 1
+        return self.cursor.execute(sql, params).rowcount == 1
 
     def fetch_all(self, sql, *params):
-        return self.cursor.execute(sql, *params).fetchall()
+        return self.cursor.execute(sql, params).fetchall()
 
     def fetch_one(self, sql, *params):
-        return self.cursor.execute(sql, *params).fetchone()
+        return self.cursor.execute(sql, params).fetchone()
 
     def single(self, sql, *params):
-        return self.cursor.execute(sql, *params).fetchone()[0]
+        return self.cursor.execute(sql, params).fetchone()[0]
 
 
 transaction = transaction_factory(TransactionSqlite, 'clients.db')
