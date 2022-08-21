@@ -2,8 +2,8 @@ import database
 from .users import Users
 
 users: Users = Users(
-    database.users,
-    database.tokens
+    database.common,
+    database.registration
 )
 
 __all__ = [

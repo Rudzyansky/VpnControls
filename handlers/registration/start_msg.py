@@ -10,5 +10,5 @@ from localization import translate
 async def handler(event: NewMessage.Event):
     if not users.is_accept_invite(event.chat_id):
         return
-    users.add_user(event.chat_id, extract(event.pattern_match, 1, 'en'))
+    users.register_user(event.chat_id, extract(event.pattern_match, 1, 'en'))
     # todo say hello

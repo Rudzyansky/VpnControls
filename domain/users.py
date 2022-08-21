@@ -4,13 +4,14 @@ from entities.token import Token
 
 
 class Users:
-    def __init__(self, users_db: database.Users, tokens_db: database.Tokens) -> None:
+    def __init__(self, common_db: database.Common,
+                 registration_db: database.Registration) -> None:
         super().__init__()
 
-        self.users_db = users_db
-        self.tokens_db = tokens_db
+        self.common_db = common_db
+        self.registration_db = registration_db
 
-        users = users_db.fetch_all()
+        users = self.common_db.get_all_users()
 
         self.registered = [u.id for u in users]
         self.admins = [u.id for u in filter(lambda u: u.is_admin, users)]
@@ -19,11 +20,12 @@ class Users:
     def language(self, user_id: int):
         return self.languages[user_id]
 
-    @database.connection
-    def add_user(self, user_id: int, language: str, c: Connection):
-        success = self.users_db.add(user_id, language, c)
+    @database.connection()
+    def register_user(self, user_id: int, language: str, c: Connection):
+        success = self.registration_db.add_user(user_id, language, c)
         if success:
-            user = self.users_db.fetch(user_id, c)
+            self.registration_db.revoke_token_by_user_id(user_id, c)
+            user = self.common_db.get_user(user_id, c)
             self.registered.append(user.id)
             self.languages[user.id] = user.language
             if user.is_admin:
@@ -32,36 +34,38 @@ class Users:
         return None
 
     def is_accept_invite(self, user_id: int):
-        return self.tokens_db.is_accept_invite(user_id)
+        return self.registration_db.is_accept_invite(user_id)
 
     def revoke_token(self, token: Token):
-        return self.tokens_db.revoke(token)
+        return self.registration_db.revoke_token(token.bytes, token.owner_id)
 
-    @database.connection
+    @database.connection()
     def create_token(self, user_id: int, c: Connection):
         token = Token(owner_id=user_id)
-        success = self.tokens_db.add(token, c)
+        success = self.registration_db.add_token(token.bytes, token.owner_id, c)
         if success:
-            return self.tokens_db.fetch(token, c)
+            return self.registration_db.get_token(token.bytes, token.owner_id, c)
         return None
 
     def get_tokens(self, user_id: int):
         """
         Get all tokens owned by user_id
         """
-        return self.tokens_db.get_all(user_id)
+        return self.registration_db.get_all_tokens(user_id)
 
     def get_current_tokens(self, user_id: int) -> list[Token]:
         """
         Get non-revoked tokens owned by user_id
         """
-        return list(filter(lambda t: t.used_by is None or t.used_by != t.owner_id, self.get_tokens(user_id)))
+        return self.registration_db.get_actual_tokens(user_id)
 
     def fetch_token(self, token: Token):
         """
         Fetch all token's data by token + owner_id
         """
-        return self.tokens_db.fetch(token)
+        return self.registration_db.get_token(token.bytes, token.owner_id)
 
+    @database.connection()
     def use_token(self, token: Token):
-        return self.tokens_db.use(token)
+        self.registration_db.free_token_by_user_id(token.used_by)
+        return self.registration_db.use_token(token.bytes, token.owner_id, token.used_by)

@@ -1,12 +1,10 @@
-from .accounts import Accounts
-from .tokens import Tokens
+from .common import Common
 from .connection import Connection, connection_factory
-from .users import Users
+from .registration import Registration
 
 __all__ = [
-    'Accounts',
-    'Tokens',
-    'Users',
+    'Common',
+    'Registration',
     'Connection',
     'connection_factory'
 ]

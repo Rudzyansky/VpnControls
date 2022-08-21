@@ -1,12 +1,11 @@
-from .abstract import Accounts, Users, Tokens
-from .sqlite import UsersSqlite, TokensSqlite, AccountsSqlite, connection, init
+from .abstract import Common, Registration
+from .sqlite import CommonSqlite, RegistrationSqlite, connection, init
 
 init()
 
-users: Users = UsersSqlite()
-tokens: Tokens = TokensSqlite()
-accounts: Accounts = AccountsSqlite()
+common: Common = CommonSqlite()
+registration: Registration = RegistrationSqlite()
 
 __all__ = [
-    'users', 'tokens', 'accounts', 'connection'
+    'common', 'registration', 'connection'
 ]

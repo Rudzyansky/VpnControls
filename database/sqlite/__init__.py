@@ -1,7 +1,6 @@
-from .accounts import AccountsSqlite
+from .common import CommonSqlite
 from .connection import ConnectionSqlite, connection
-from .tokens import TokensSqlite
-from .users import UsersSqlite
+from .registration import RegistrationSqlite
 
 
 @connection()
@@ -15,6 +14,7 @@ def init(c: ConnectionSqlite):
         'language TEXT DEFAULT \'en\', '
         'FOREIGN KEY (owner_id) REFERENCES users (id) ON DELETE RESTRICT ON UPDATE RESTRICT); '
 
+        # SELECT id FROM slaves WHERE leaf_id = ?', id
         'CREATE VIEW IF NOT EXISTS slaves AS '
         'WITH RECURSIVE slaves (leaf_id, id) AS ('
         'SELECT id, id FROM users UNION ALL '
@@ -39,9 +39,8 @@ def init(c: ConnectionSqlite):
 
 
 __all__ = [
-    'AccountsSqlite',
-    'TokensSqlite',
-    'UsersSqlite',
+    'CommonSqlite',
+    'RegistrationSqlite',
     'connection',
     'init'
 ]
