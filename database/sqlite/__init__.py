@@ -45,5 +45,6 @@ __all__ = [
     'AccountsSqlite',
     'TokensSqlite',
     'UsersSqlite',
-    'transaction'
+    'transaction',
+    'init'
 ]

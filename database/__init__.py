@@ -1,5 +1,7 @@
 from .abstract import Accounts, Users, Tokens
-from .sqlite import UsersSqlite, TokensSqlite, AccountsSqlite, transaction
+from .sqlite import UsersSqlite, TokensSqlite, AccountsSqlite, transaction, init
+
+init()
 
 users: Users = UsersSqlite()
 tokens: Tokens = TokensSqlite()
