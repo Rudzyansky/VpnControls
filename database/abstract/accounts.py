@@ -1,16 +1,17 @@
 from abc import ABC, abstractmethod
 
+from database.abstract import Transaction
 
-# noinspection PyShadowingBuiltins
+
 class Accounts(ABC):
     @classmethod
     @abstractmethod
-    def remove_username(cls, id: int) -> bool: pass
+    def remove_username(cls, id: int, t: Transaction) -> bool: pass
 
     @classmethod
     @abstractmethod
-    def change_username(cls, id: int, new_username: str) -> bool: pass
+    def change_username(cls, id: int, new_username: str, t: Transaction) -> bool: pass
 
     @classmethod
     @abstractmethod
-    def change_pos(cls, *set: tuple[int, int]) -> bool: pass
+    def change_pos(cls, *set: tuple[int, int], t: Transaction) -> bool: pass
