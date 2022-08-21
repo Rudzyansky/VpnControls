@@ -1,5 +1,5 @@
 from .abstract import Accounts, Users, Tokens
-from .sqlite import UsersSqlite, TokensSqlite, AccountsSqlite, transaction, init
+from .sqlite import UsersSqlite, TokensSqlite, AccountsSqlite, connection, init
 
 init()
 
@@ -8,5 +8,5 @@ tokens: Tokens = TokensSqlite()
 accounts: Accounts = AccountsSqlite()
 
 __all__ = [
-    'users', 'tokens', 'accounts', 'transaction'
+    'users', 'tokens', 'accounts', 'connection'
 ]

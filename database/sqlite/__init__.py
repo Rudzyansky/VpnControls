@@ -1,13 +1,12 @@
 from .accounts import AccountsSqlite
+from .connection import ConnectionSqlite, connection
 from .tokens import TokensSqlite
-from .transaction import TransactionSqlite, transaction
 from .users import UsersSqlite
-from ..abstract import Transaction
 
 
-@transaction
-def init(t: Transaction):
-    t.data.executescript(
+@connection()
+def init(c: ConnectionSqlite):
+    c.data.executescript(
         'CREATE TABLE IF NOT EXISTS users ('
         'id INT PRIMARY KEY, '
         'is_admin INT DEFAULT 0, '
@@ -43,6 +42,6 @@ __all__ = [
     'AccountsSqlite',
     'TokensSqlite',
     'UsersSqlite',
-    'transaction',
+    'connection',
     'init'
 ]

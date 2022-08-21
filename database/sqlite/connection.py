@@ -1,24 +1,33 @@
-from sqlite3 import connect, Connection, Cursor
+import sqlite3
 
-from database.abstract.transaction import Transaction, transaction_factory
+from database.abstract.connection import Connection, connection_factory
 
 
-class TransactionSqlite(Transaction):
+class ConnectionSqlite(Connection):
     database: str
-    cursor: Cursor = None
-    connection: Connection = None
+    cursor: sqlite3.Cursor = None
+    connection: sqlite3.Connection = None
 
     def __init__(self, database: str):
         self.database = database
 
-    def begin(self):
-        self.connection = connect(self.database)
+    def open(self):
+        self.connection = sqlite3.connect(self.database)
         self.cursor = self.connection.cursor()
-        return self.cursor
 
-    def end(self):
-        self.connection.commit()
+    def close(self):
         self.connection.close()
+
+    def begin_transaction(self):
+        # self.connection.execute('BEGIN TRANSACTION')
+        pass
+
+    def end_transaction(self):
+        # self.connection.execute('END TRANSACTION')
+        self.connection.commit()
+
+    def rollback_transaction(self):
+        self.connection.rollback()
 
     @property
     def data(self):
@@ -43,4 +52,4 @@ class TransactionSqlite(Transaction):
         return self.cursor.execute(sql, params).fetchone()[0]
 
 
-transaction = transaction_factory(TransactionSqlite, 'clients.db')
+connection = connection_factory(ConnectionSqlite, 'clients.db')
