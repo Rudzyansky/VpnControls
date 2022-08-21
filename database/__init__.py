@@ -1,9 +1,5 @@
-from .accounts_abstract import Accounts
-from .accounts_sqlite import AccountsSqlite
-from .tokens_abstract import Tokens
-from .tokens_sqlite import TokensSqlite
-from .users_abstract import Users
-from .users_sqlite import UsersSqlite
+from .abstract import Accounts, Users, Tokens
+from .sqlite import UsersSqlite, TokensSqlite, AccountsSqlite
 
 users: Users = UsersSqlite()
 tokens: Tokens = TokensSqlite()
