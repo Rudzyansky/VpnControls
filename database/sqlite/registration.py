@@ -76,3 +76,6 @@ class RegistrationSqlite(Registration):
               'AND (used_by IS NULL OR used_by != owner_id) AND CURRENT_DATE < expire'
         return [Token(data=token, expire=expire, used_by=used_by)
                 for token, expire, used_by in c.fetch_all(sql, owner_id)]
+
+
+registration: Registration = RegistrationSqlite()

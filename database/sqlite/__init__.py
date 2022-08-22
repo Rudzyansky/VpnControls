@@ -1,6 +1,6 @@
-from .common import CommonSqlite
+from .common import common
 from .connection import ConnectionSqlite, connection
-from .registration import RegistrationSqlite
+from .registration import registration
 
 
 @connection()
@@ -38,9 +38,10 @@ def init(c: ConnectionSqlite):
     )
 
 
+init()
+
 __all__ = [
-    'CommonSqlite',
-    'RegistrationSqlite',
-    'connection',
-    'init'
+    'common',
+    'registration',
+    'connection'
 ]

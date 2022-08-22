@@ -22,3 +22,6 @@ class CommonSqlite(Common):
     @classmethod
     def remove_expired_tokens(cls, c: ConnectionSqlite = None) -> bool:
         return c.update_many('DELETE FROM tokens WHERE CURRENT_DATE >= expire')
+
+
+common: Common = CommonSqlite()
