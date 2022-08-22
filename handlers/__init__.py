@@ -1,4 +1,3 @@
-from importlib import import_module
 from types import FunctionType
 
 from telethon import TelegramClient
@@ -19,8 +18,7 @@ def handlers(module):
 
 def register(client: TelegramClient):
     for flow in flows:
-        for module_name in flow.modules:
-            module = import_module('.' + module_name, flow.__name__)
+        for module in flow.modules:
             for func in handlers(module):
                 client.add_event_handler(func)
 
