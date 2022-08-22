@@ -13,7 +13,7 @@ from localization import translate, languages
 async def handler(event: InlineQuery.Event, translations):
     current_tokens = registration.get_current_tokens(event.chat_id)
     articles = []
-    lang = common.language(event.chat_id)
+    lang = common._language(event.chat_id)
     articles += [await invite_article(event, token, lang, translations[lang].gettext) for token in current_tokens]
     await event.answer(articles)
 
@@ -48,7 +48,7 @@ async def handler_token(event: InlineQuery.Event, translations):
     if token is None:
         await event.answer()
     else:
-        lang = common.language(event.chat_id)
+        lang = common._language(event.chat_id)
         await event.answer([await invite_article(event, token, lang, translations[lang].gettext)])
 
 
