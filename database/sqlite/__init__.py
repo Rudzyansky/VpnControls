@@ -12,6 +12,7 @@ def init(c: ConnectionSqlite):
         'accounts_limit INT NOT NULL, '
         'owner_id INT DEFAULT NULL, '
         'language TEXT NOT NULL, '
+        'commands INT NOT NULL, '
         'FOREIGN KEY (owner_id) REFERENCES users (id) ON DELETE RESTRICT ON UPDATE RESTRICT); '
 
         # SELECT id FROM slaves WHERE leaf_id = ?', id

@@ -1,6 +1,6 @@
 from telethon.events import register, NewMessage
 
-from bot_commands.commands import Categories
+from bot_commands.categories import Categories
 from domain import registration, common, commands
 from handlers.utils import extract
 from localization import translate

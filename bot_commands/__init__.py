@@ -1,33 +1,14 @@
-from enum import auto, IntFlag
-
 from telethon.tl.types import BotCommand
 
 from localization import get_translations
+from .categories import Categories
 
 _translations = get_translations(__package__)
-
-
-# noinspection PyArgumentList
-class Categories(IntFlag):
-    # User categories
-    NO_ACCOUNTS = auto()
-    ONE_ACCOUNT = auto()
-    MANY_ACCOUNTS = auto()
-    # Administration categories
-    NO_TOKENS = auto()
-    HAS_ACTUAL_TOKENS = auto()
-    CAN_ISSUE_TOKEN = auto()
-    HAS_TOKENS = auto()
-    HAS_SLAVES = auto()
-    GRANT = auto()
-    HAS_INVITED = auto()
-    # Common categories
-    COMMON = auto()
-
 
 _commands: dict[str:dict[Categories:list[BotCommand]]] = dict()
 
 
+# noinspection PyShadowingNames
 def get(language: str, *categories: Categories):
     commands = _commands[language]
     result = list()
@@ -101,3 +82,7 @@ for _language, _translation in _translations.items():
     ]
 
     _commands[_language] = __commands
+
+__all__ = [
+    'get'
+]

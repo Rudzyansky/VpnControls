@@ -3,8 +3,6 @@ from gettext import translation, NullTranslations
 
 from telethon.events.common import EventCommon
 
-from domain import common
-
 localedir = 'lang'
 languages = ['en', 'ru']
 
@@ -34,10 +32,11 @@ def get_translations(package_name: str = None, module_name: str = None) -> dict[
 def translate(text=True, current=False, translations=False):
     def decorator(func):
         setattr(func, 'translations', get_translations(module_name=func.__module__))
+        from domain import common
 
         @wraps(func)
         def wrapper(event: EventCommon):
-            t = func.translations[common._language(event.chat_id)]
+            t = func.translations[common.language(event.chat_id)]
             kwargs = {}
             if text:
                 kwargs['_'] = t.gettext

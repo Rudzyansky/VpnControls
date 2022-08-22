@@ -9,15 +9,20 @@ class CommonSqlite(Common):
     @classmethod
     @connection(False)
     def get_all_users(cls, c: ConnectionSqlite = None) -> list[User]:
-        sql = 'SELECT id, is_admin, accounts_limit, language FROM users'
-        return [User(id=id, is_admin=is_admin, accounts_limit=accounts_limit, language=language)
-                for id, is_admin, accounts_limit, language in c.fetch_all(sql)]
+        sql = 'SELECT id, is_admin, accounts_limit, language, commands FROM users'
+        return [User(id=id, is_admin=is_admin, accounts_limit=accounts_limit, language=language, _commands=commands)
+                for id, is_admin, accounts_limit, language, commands in c.fetch_all(sql)]
 
     @classmethod
     def get_user(cls, user_id: int, c: ConnectionSqlite = None) -> Optional[User]:
-        sql = 'SELECT id, is_admin, accounts_limit, language FROM users WHERE id = ?'
-        id, is_admin, accounts_limit, language = c.fetch_one(sql, user_id)
-        return User(id=id, is_admin=is_admin, accounts_limit=accounts_limit, language=language)
+        sql = 'SELECT id, is_admin, accounts_limit, language, commands FROM users WHERE id = ?'
+        id, is_admin, accounts_limit, language, commands = c.fetch_one(sql, user_id)
+        return User(id=id, is_admin=is_admin, accounts_limit=accounts_limit, language=language, _commands=commands)
+
+    @classmethod
+    @connection()
+    def set_user_commands(cls, user_id: int, commands: int, c: ConnectionSqlite = None) -> bool:
+        return c.update_one('UPDATE users SET commands = ? WHERE id = ?', commands, user_id)
 
     @classmethod
     def remove_expired_tokens(cls, c: ConnectionSqlite = None) -> bool:
