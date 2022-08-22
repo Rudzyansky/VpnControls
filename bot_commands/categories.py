@@ -1,22 +1,21 @@
-from enum import auto, IntFlag
+from enum import IntFlag
 
 
-# noinspection PyArgumentList
 class Categories(IntFlag):
     # User categories
-    NO_ACCOUNTS = auto()
-    ONE_ACCOUNT = auto()
-    MANY_ACCOUNTS = auto()
+    NO_ACCOUNTS = 1 << 0
+    ONE_ACCOUNT = 1 << 1
+    MANY_ACCOUNTS = 1 << 2
     # Administration categories
-    NO_TOKENS = auto()
-    HAS_ACTUAL_TOKENS = auto()
-    CAN_ISSUE_TOKEN = auto()
-    HAS_TOKENS = auto()
-    HAS_SLAVES = auto()
-    GRANT = auto()
-    HAS_INVITED = auto()
+    NO_TOKENS = 1 << 3
+    HAS_ACTUAL_TOKENS = 1 << 4
+    CAN_ISSUE_TOKEN = 1 << 5
+    HAS_TOKENS = 1 << 6
+    HAS_SLAVES = 1 << 7
+    GRANT = 1 << 8
+    HAS_INVITED = 1 << 9
     # Common categories
-    COMMON = auto()
+    COMMON = 1 << 10
 
 
 def decompose_categories(combined_categories: Categories) -> set[Categories]:
