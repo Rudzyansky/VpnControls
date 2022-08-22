@@ -1,8 +1,8 @@
 from telethon.tl.types import BotCommand
 
-from localization import load_translations
+from localization import get_translations
 
-translations = load_translations(__package__)
+translations = get_translations(__package__)
 
 commands_user: dict[str:list[BotCommand]] = {}
 commands_admin: dict[str:list[BotCommand]] = {}
