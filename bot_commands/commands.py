@@ -16,6 +16,7 @@ for language, translation in translations.items():
         # BotCommand('change', _('Change username')),
         # BotCommand('reset', _('Reset password')),
         BotCommand('lang', _('Change language')),
+        BotCommand('refresh', _('Refresh menu')),  # todo установка команд происходит на устройства в онлайне!!!
     ]
 
     _commands_admin = _commands_user + [

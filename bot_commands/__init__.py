@@ -7,7 +7,7 @@ from localization import languages
 from .commands import commands_user, commands_admin
 
 
-async def setup(client):
+async def setup(client):  # todo переделать архитектуру: изменение меню по запросу
     for lang_code in languages:
         await client(ResetBotCommandsRequest(
             scope=BotCommandScopeDefault(), lang_code=lang_code))
