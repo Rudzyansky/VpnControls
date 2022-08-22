@@ -8,7 +8,7 @@ from domain import common
 localedir = 'lang'
 languages = ['en', 'ru']
 
-cache: dict[str:dict[str:NullTranslations]] = {}
+_cache: dict[str:dict[str:NullTranslations]] = {}
 
 
 def _load_translations(domain: str) -> dict[str:NullTranslations]:
@@ -16,9 +16,9 @@ def _load_translations(domain: str) -> dict[str:NullTranslations]:
 
 
 def _get_translations(domain: str) -> dict[str:NullTranslations]:
-    if cache.get(domain) is None:
-        cache[domain] = _load_translations(domain)
-    return cache[domain]
+    if _cache.get(domain) is None:
+        _cache[domain] = _load_translations(domain)
+    return _cache[domain]
 
 
 def get_translations(package_name: str = None, module_name: str = None) -> dict[str:NullTranslations]:
