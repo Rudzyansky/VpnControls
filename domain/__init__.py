@@ -1,11 +1,7 @@
-import database
-from .users import Users
-
-users: Users = Users(
-    database.common,
-    database.registration
-)
+from .common import common
+from .registration import registration
 
 __all__ = [
-    'users'
+    'common',
+    'registration'
 ]

@@ -2,9 +2,10 @@ import database
 from database.abstract import Connection
 from entities.token import Token
 from entities.user import User
+from .common import common
 
 
-class Users:
+class Registration:
     def __init__(self, common_db: database.Common,
                  registration_db: database.Registration) -> None:
         super().__init__()
@@ -12,25 +13,16 @@ class Users:
         self.common_db = common_db
         self.registration_db = registration_db
 
-        users = self.common_db.get_all_users()
-
-        self.registered = {u.id for u in users}
-        self.admins = {u.id for u in filter(lambda u: u.is_admin, users)}
-        self.languages: dict[int, str] = {u.id: u.language for u in users}
-
-    def language(self, user_id: int):
-        return self.languages[user_id]
-
     @database.connection()
     def register_user(self, user_id: int, language: str, c: Connection):
         success = self.registration_db.add_user(User(id=user_id, language=language), c)
         if success:
             self.registration_db.revoke_token_by_user_id(user_id, c)
             user = self.common_db.get_user(user_id, c)
-            self.registered.add(user.id)
-            self.languages[user.id] = user.language
+            common.registered.add(user.id)
+            common.languages[user.id] = user.language
             if user.is_admin:
-                self.admins.add(user.id)
+                common.admins.add(user.id)
             return user
         return None
 
@@ -70,3 +62,9 @@ class Users:
     def use_token(self, token: Token):
         self.registration_db.free_token_by_user_id(token.used_by)
         return self.registration_db.use_token(token.bytes, token.owner_id, token.used_by)
+
+
+registration = Registration(
+    database.common,
+    database.registration
+)

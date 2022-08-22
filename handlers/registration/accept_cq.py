@@ -3,7 +3,7 @@ from datetime import datetime
 from telethon.events import register, CallbackQuery
 
 import utils
-from domain import users
+from domain import registration, common
 from entities.token import Token
 from localization import translate
 
@@ -11,17 +11,17 @@ from localization import translate
 @register(CallbackQuery(pattern=rb'^accept (.{16}) ([a-z]{2})$'))
 @translate()
 async def handler(event: CallbackQuery.Event, _):
-    if event.sender_id in users.registered:
+    if event.sender_id in common.registered:
         await event.answer(_('Access denied'))
         return
 
-    token = users.fetch_token(Token(event.pattern_match[1], owner_id=event.chat_id))
+    token = registration.fetch_token(Token(event.pattern_match[1], owner_id=event.chat_id))
     if token is None or (token.used_by is not None and token.used_by != event.sender_id):
         await event.edit(_('Invitation is invalid'))
         return
 
     token.used_by = event.sender_id
-    if users.use_token(token):
+    if registration.use_token(token):
         _un = (await event.client.get_me()).username
         await event.answer(url=f'https://t.me/{_un}?start={event.pattern_match[2]}')
     else:

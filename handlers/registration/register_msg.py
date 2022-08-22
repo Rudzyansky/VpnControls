@@ -4,16 +4,16 @@ from telethon import Button
 from telethon.events import register, NewMessage
 
 import utils
-from domain import users
+from domain import registration, common
 from localization import translate
 
 
-@register(NewMessage(users.admins, pattern='/register'))
+@register(NewMessage(common.admins, pattern='/register'))
 @translate(current=True)
 async def handler(event: NewMessage.Event, _, t):
     limit = 2
 
-    current_tokens = users.get_tokens(event.chat_id)
+    current_tokens = registration.get_tokens(event.chat_id)
     if len(current_tokens) >= limit:
         lines = [t.ngettext(
             'Unable to issue token\n__The limit of **%d** invitation per week has been reached__',
@@ -28,7 +28,7 @@ async def handler(event: NewMessage.Event, _, t):
         await event.client.send_message(event.chat_id, '\n'.join(lines))
         return
 
-    token = users.create_token(event.chat_id)
+    token = registration.create_token(event.chat_id)
 
     if token is None:
         payload = utils.debug_payload(user_id=event.chat_id, timestamp=datetime.utcnow())

@@ -1,11 +1,9 @@
-import os
 from functools import wraps
 from gettext import translation, NullTranslations
-from pathlib import Path
 
 from telethon.events.common import EventCommon
 
-from domain import users
+from domain import common
 
 localedir = 'lang'
 languages = ['en', 'ru']
@@ -25,7 +23,7 @@ def translate(text=True, current=False, translations=False):
 
         @wraps(func)
         def wrapper(event: EventCommon):
-            t = func.translations[users.language(event.chat_id)]
+            t = func.translations[common.language(event.chat_id)]
             kwargs = {}
             if text:
                 kwargs['_'] = t.gettext
