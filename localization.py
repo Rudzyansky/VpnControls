@@ -37,11 +37,12 @@ def translate(text=True, current=False, translations=False):
 
         @wraps(func)
         def wrapper(event: EventCommon):
+            t = func.translations[common.language(event.chat_id)]
             kwargs = {}
             if text:
-                kwargs['_'] = func.translations[common.language(event.chat_id)].gettext
+                kwargs['_'] = t.gettext
             if current:
-                kwargs['t'] = func.translations[common.language(event.chat_id)]
+                kwargs['t'] = t
             if translations:
                 kwargs['translations'] = func.translations
             return func(event, **kwargs)
