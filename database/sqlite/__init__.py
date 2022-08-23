@@ -15,13 +15,6 @@ def init(c: ConnectionSqlite):
         'commands INT NOT NULL, '
         'FOREIGN KEY (owner_id) REFERENCES users (id) ON DELETE RESTRICT ON UPDATE RESTRICT); '
 
-        # SELECT id FROM slaves WHERE leaf_id = ?', id
-        'CREATE VIEW IF NOT EXISTS slaves AS '
-        'WITH RECURSIVE slaves (leaf_id, id) AS ('
-        'SELECT id, id FROM users UNION ALL '
-        'SELECT s.leaf_id, u.id FROM users u JOIN slaves s ON u.owner_id = s.id'
-        ') SELECT * FROM slaves; '
-
         'CREATE TABLE IF NOT EXISTS tokens ('
         'token BLOB NOT NULL , '
         'owner_id INT NOT NULL, '
@@ -36,6 +29,13 @@ def init(c: ConnectionSqlite):
         'pos INT not null unique, '
         'PRIMARY KEY (id, username), '
         'FOREIGN KEY (id) REFERENCES users (id) on delete RESTRICT on update RESTRICT); '
+
+        # SELECT id FROM slaves WHERE leaf_id = ?
+        'CREATE VIEW IF NOT EXISTS slaves AS '
+        'WITH RECURSIVE slaves (leaf_id, id, tokens_limit) AS ('
+        'SELECT owner_id, id, tokens_limit FROM users UNION ALL '
+        'SELECT s.leaf_id, u.id, u.tokens_limit FROM users u JOIN slaves s ON u.owner_id = s.id '
+        ') SELECT * FROM slaves; '
     )
 
 
