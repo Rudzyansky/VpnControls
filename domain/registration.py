@@ -21,7 +21,7 @@ class Registration:
             user = self.common_db.get_user(user_id, c)
             common.registered.add(user.id)
             common.languages[user.id] = user.language
-            if user.is_admin:
+            if user.tokens_limit > 0:
                 common.admins.add(user.id)
             return user
         return None

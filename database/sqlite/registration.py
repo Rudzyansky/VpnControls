@@ -15,11 +15,12 @@ class RegistrationSqlite(Registration):
 
     @classmethod
     def add_user(cls, user: User, c: ConnectionSqlite = None) -> bool:
-        sql = 'INSERT INTO users (id, is_admin, accounts_limit, owner_id, language, commands) ' \
+        sql = 'INSERT INTO users (id, tokens_limit, accounts_limit, owner_id, language, commands) ' \
               'SELECT ?, t.owner_id, ?, ?, ?, ? ' \
               'FROM tokens t INNER JOIN users u on u.id = t.owner_id ' \
               'WHERE t.used_by = ?'
-        return c.update_one(sql, user.id, user.is_admin, user.accounts_limit, user.language, user.commands_int, user.id)
+        return c.update_one(sql, user.id, user.tokens_limit, user.accounts_limit,
+                            user.language, user.commands_int, user.id)
 
     @classmethod
     @connection()

@@ -7,7 +7,7 @@ from bot_commands.categories import Categories, decompose_categories
 @dataclass
 class User:
     id: int
-    is_admin: bool = False
+    tokens_limit: int = 0
     accounts_limit: int = 1
     language: str = 'en'
     commands: set[Categories] = field(init=False)

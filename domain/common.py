@@ -12,7 +12,7 @@ class Common:
         users = self.common_db.get_all_users()
 
         self.registered = {u.id for u in users}
-        self.admins = {u.id for u in filter(lambda u: u.is_admin, users)}
+        self.admins = {u.id for u in filter(lambda u: u.tokens_limit > 0, users)}
         self.languages: dict[int, str] = {u.id: u.language for u in users}
 
     def language(self, user_id: int):

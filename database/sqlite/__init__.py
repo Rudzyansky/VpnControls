@@ -8,7 +8,7 @@ def init(c: ConnectionSqlite):
     c.data.executescript(
         'CREATE TABLE IF NOT EXISTS users ('
         'id INT PRIMARY KEY, '
-        'is_admin INT NOT NULL, '
+        'tokens_limit INT NOT NULL, '
         'accounts_limit INT NOT NULL, '
         'owner_id INT DEFAULT NULL, '
         'language TEXT NOT NULL, '
