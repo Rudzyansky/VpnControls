@@ -36,6 +36,20 @@ def init(c: ConnectionSqlite):
         'SELECT owner_id, id, tokens_limit FROM users UNION ALL '
         'SELECT s.leaf_id, u.id, u.tokens_limit FROM users u JOIN slaves s ON u.owner_id = s.id '
         ') SELECT * FROM slaves; '
+
+        'CREATE VIEW IF NOT EXISTS metrics AS '
+        'SELECT u.id                                                                  AS user_id, '
+        'COUNT(a.username)                                                            AS accounts, '
+        'COUNT(t.token)                                                               AS tokens, '
+        '(SELECT COUNT(t.token) > 0 WHERE CURRENT_DATE < t.expire)                    AS has_actual_tokens, '
+        'COUNT(t.token) < u.tokens_limit                                              AS can_issue_token, '
+        'COUNT(s.id) > 0                                                              AS has_slaves, '
+        # '(SELECT COUNT(id) > 0 FROM users WHERE tokens_limit > 0 AND owner_id = s.id) AS has_slaves_admins '
+        '(SELECT COUNT(s.id) > 0 WHERE s.tokens_limit > 0) AS has_slaves_admins '
+        'FROM users u '
+        'LEFT JOIN accounts a ON u.id = a.user_id '
+        'LEFT JOIN tokens t ON u.id = t.owner_id '
+        'LEFT JOIN slaves s ON u.id = s.leaf_id; '
     )
 
 
