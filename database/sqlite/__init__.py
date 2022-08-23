@@ -24,11 +24,11 @@ def init(c: ConnectionSqlite):
         'FOREIGN KEY (owner_id) REFERENCES users (id) ON DELETE RESTRICT ON UPDATE RESTRICT); '
 
         'CREATE TABLE IF NOT EXISTS accounts ('
-        'id INT not null, '
-        'username TEXT not null, '
-        'pos INT not null unique, '
-        'PRIMARY KEY (id, username), '
-        'FOREIGN KEY (id) REFERENCES users (id) on delete RESTRICT on update RESTRICT); '
+        'user_id INT NOT NULL, '
+        'username TEXT NOT NULL, '
+        'pos INT NOT NULL, '
+        'PRIMARY KEY (user_id, username), '
+        'FOREIGN KEY (user_id) REFERENCES users (id) ON UPDATE RESTRICT ON UPDATE RESTRICT); '
 
         # SELECT id FROM slaves WHERE leaf_id = ?
         'CREATE VIEW IF NOT EXISTS slaves AS '
