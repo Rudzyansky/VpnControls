@@ -14,10 +14,6 @@ class Common(ABC):
     @abstractmethod
     def get_user(cls, user_id: int, c: Connection = None) -> Optional[User]: pass
 
-    @classmethod
-    @abstractmethod
-    def set_user_commands(cls, user_id: int, commands: int, c: Connection = None) -> bool: pass
-
     #
     # unused code
     #

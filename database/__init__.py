@@ -1,6 +1,6 @@
-from .abstract import Common, Registration
-from .sqlite import connection, common, registration
+from .abstract import Common, Registration, Commands
+from .sqlite import connection, common, registration, commands
 
 __all__ = [
-    'common', 'registration', 'connection'
+    'common', 'registration', 'commands', 'connection'
 ]

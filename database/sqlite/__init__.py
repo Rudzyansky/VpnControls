@@ -1,3 +1,4 @@
+from .commands import commands
 from .common import common
 from .connection import ConnectionSqlite, connection
 from .registration import registration
@@ -58,5 +59,6 @@ init()
 __all__ = [
     'common',
     'registration',
+    'commands',
     'connection'
 ]
