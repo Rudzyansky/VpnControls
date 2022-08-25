@@ -18,11 +18,10 @@ def _recalculate_cache(user: User):
 
 
 def _recalculate_access_lists(user: User):
-    single: set[int] = {user.id}
     for cmd in set(Categories) - user.commands:
-        _access_lists[cmd] -= single
+        _access_lists[cmd].discard(user.id)
     for cmd in user.commands:
-        _access_lists[cmd] |= single
+        _access_lists[cmd].add(user.id)
 
 
 async def _user_scope(user_id: int):
