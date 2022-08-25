@@ -10,10 +10,10 @@ from domain.commands import access_list
 from localization import translate
 
 
-@register(NewMessage(access_list(Categories.CAN_ISSUE_TOKEN), pattern='/register'))
+@register(NewMessage(access_list(Categories.CAN_ISSUE_TOKEN), pattern='^/register$'))
 @translate(current=True)
 async def handler(event: NewMessage.Event, _, t):
-    limit = 2
+    limit = registration.get_tokens_limit(event.chat_id)
 
     current_tokens = registration.get_tokens(event.chat_id)
     if len(current_tokens) >= limit:
