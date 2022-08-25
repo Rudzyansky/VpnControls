@@ -25,7 +25,7 @@ def _recalculate_access_lists(user: User):
 
 
 async def _user_scope(user_id: int):
-    return BotCommandScopePeer(get_input_peer(await common.get_entity(user_id)))
+    return BotCommandScopePeer(get_input_peer(await common.client.get_entity(user_id)))
 
 
 async def _telegram_reset_commands(user: User):

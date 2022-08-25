@@ -4,7 +4,7 @@ from . import common, commands
 
 
 async def init(client: TelegramClient):
-    common._client = client
+    common.client = client
     await commands.init()
 
 
