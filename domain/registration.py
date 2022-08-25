@@ -35,6 +35,13 @@ def create_token(user_id: int, c: Connection):
     return None
 
 
+def get_tokens_limit(user_id: int):
+    """
+    Get all tokens owned by user_id
+    """
+    return database.registration.get_tokens_limit(user_id)
+
+
 def get_tokens(user_id: int):
     """
     Get all tokens owned by user_id
