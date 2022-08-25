@@ -4,8 +4,7 @@ import database
 from entities.user import User
 
 client: TelegramClient
-_users = database.common.get_all_users()
-_languages: dict[int, str] = {u.id: u.language for u in _users}
+_languages: dict[int, str] = {u.id: u.language for u in database.common.get_all_users()}
 
 
 def language(user_id: int):
