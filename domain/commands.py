@@ -53,8 +53,8 @@ def _set_user_commands_db(user: User):
     database.commands.set_user_commands(user.id, user.commands_int)
 
 
-async def refresh_commands(user: User):
-    await _telegram_set_commands(user)
+async def refresh_commands(user_id: int):
+    await _telegram_set_commands(User(user_id, language=common.language(user_id)))
 
 
 async def _update(user: User):
