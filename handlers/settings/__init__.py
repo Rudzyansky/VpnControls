@@ -1,7 +1,7 @@
-from . import refresh
+from . import refresh_msg
 
 modules = [
-    refresh
+    refresh_msg
 ]
 
 __all__ = [
