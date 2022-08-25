@@ -46,3 +46,7 @@ class Registration(ABC):
     @classmethod
     @abstractmethod
     def get_actual_tokens(cls, owner_id: int, c: Connection = None) -> list[Token]: pass
+
+    @classmethod
+    @abstractmethod
+    def get_tokens_limit(cls, user_id: int, c: Connection = None) -> int: pass

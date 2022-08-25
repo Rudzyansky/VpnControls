@@ -78,5 +78,10 @@ class RegistrationSqlite(Registration):
         return [Token(data=token, expire=expire, used_by=used_by)
                 for token, expire, used_by in c.fetch_all(sql, owner_id)]
 
+    @classmethod
+    @connection(False)
+    def get_tokens_limit(cls, user_id: int, c: ConnectionSqlite = None) -> int:
+        return int(c.single('SELECT tokens_limit FROM users WHERE id = ? ', user_id))
+
 
 registration: Registration = RegistrationSqlite()
