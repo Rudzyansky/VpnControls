@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"POT-Creation-Date: 2022-08-20 22:53+0300\n"
-"PO-Revision-Date: 2022-08-20 23:46+0300\n"
+"POT-Creation-Date: 2022-08-25 22:02+0300\n"
+"PO-Revision-Date: 2022-08-25 22:04+0300\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: ru\n"
@@ -16,53 +16,81 @@ msgstr ""
 "X-Poedit-KeywordsList: _;_n\n"
 "X-Poedit-SearchPath-0: .\n"
 
-#: accept_cq.py:15 decline_cq.py:12 revoke_cq.py:12
+#: accept_cq.py:17 decline_cq.py:14
 msgid "Access denied"
 msgstr "Доступ запрещён"
 
-#: accept_cq.py:20 decline_cq.py:18 revoke_cq.py:18
+#: accept_cq.py:22 decline_cq.py:20 revoke_cq.py:16
 msgid "Invitation is invalid"
 msgstr "Приглашение недействительно"
 
-#: accept_cq.py:28
+#: accept_cq.py:30
 msgid "An error has occurred. Please contact your administrator"
 msgstr "Произошла ошибка. Обратитесь к администратору"
 
-#: accept_cq.py:31 register_msg.py:35
+#: accept_cq.py:33 register_msg.py:37
 msgid "Something went wrong. Contact the developer"
 msgstr "Что-то пошло не так. Обратитесь к разработчику"
 
-#: decline_cq.py:16 revoke_cq.py:16
+#: decline_cq.py:18 revoke_cq.py:14
 msgid "Invitation turned into a pumpkin"
 msgstr "Приглашение превратилось в тыкву"
 
-#: invite_iq.py:88
+#: invite_iq.py:93
 #, python-format
 msgid "Bound to %s"
 msgstr "Связано с %s"
 
-#: invite_iq.py:89
+#: invite_iq.py:94
 #, python-format
 msgid "Expires in %s"
 msgstr "Истекает %s"
 
-#: invite_iq.py:91 register_msg.py:42
+#: invite_iq.py:96 invite_msg.py:23 register_msg.py:44
 msgid "Invite"
 msgstr "Пригласить"
 
-#: invite_iq.py:92
+#: invite_iq.py:97
 msgid "You have been invited to use FalseЪ VPN"
 msgstr "Вас пригласили пользоваться FalseЪ VPN"
 
-#: invite_iq.py:93
+#: invite_iq.py:98
 msgid "Accept"
 msgstr "Принять"
 
-#: invite_iq.py:94
+#: invite_iq.py:99
 msgid "Decline"
 msgstr "Отклонить"
 
-#: register_msg.py:19
+#: invite_msg.py:17
+#, python-format
+msgid ""
+"Token `%s`\n"
+"__Expires in__ **%s**"
+msgstr ""
+"Токен `%s`\n"
+"__Истекает__ **%s**"
+
+#: invite_msg.py:20
+#, python-format
+msgid ""
+"Token `%s`\n"
+"__Expires in__ **%s**\n"
+"__Bound to__ **%s**"
+msgstr ""
+"Токен `%s`\n"
+"__Истекает__ **%s**\n"
+"__Связан с__ **%s**"
+
+#: invite_msg.py:24 register_msg.py:45
+msgid "Revoke"
+msgstr "Отозвать"
+
+#: invite_msg.py:26 register_msg.py:47
+msgid "Invite in another language"
+msgstr "Отправить приглашение на другом языке"
+
+#: register_msg.py:21
 #, python-format
 msgid ""
 "Unable to issue token\n"
@@ -80,17 +108,17 @@ msgstr[2] ""
 "Невозмоно выпустить токен\n"
 "__Вы достигли лимита в **%d** приглашений в неделю__"
 
-#: register_msg.py:24
+#: register_msg.py:26 tokens_msg.py:17
 #, python-format
 msgid "`%s` __expires in__ **%s**"
 msgstr "`%s` __истекает__ **%s**"
 
-#: register_msg.py:26
+#: register_msg.py:28
 #, python-format
 msgid "__slot will be reset in__ **%s**"
 msgstr "__слот освободится__ **%s**"
 
-#: register_msg.py:39
+#: register_msg.py:41
 #, python-format
 msgid ""
 "Token `%s` issued\n"
@@ -99,10 +127,15 @@ msgstr ""
 "Выпущен токен `%s`\n"
 "__Истекает__ **%s**"
 
-#: register_msg.py:43
-msgid "Revoke"
-msgstr "Отозвать"
+#: start_msg.py:17
+msgid "Something went wrong. Contact with developer"
+msgstr "Что-то пошло не так. Обратитесь к разработчику"
 
-#: register_msg.py:45
-msgid "Invite in another language"
-msgstr "Отправить приглашение на другом языке"
+#: tokens_msg.py:14
+msgid "**List of tokens**"
+msgstr "**Список токенов**"
+
+#: tokens_msg.py:20
+#, python-format
+msgid "`%s` __expires in__ **%s**, __bound to__ **%s**"
+msgstr "`%s` __истекает__ **%s**, __связан с__ **%s**"
