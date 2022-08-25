@@ -4,11 +4,13 @@ from telethon import Button
 from telethon.events import register, NewMessage
 
 import utils
-from domain import registration, common
+from bot_commands.categories import Categories
+from domain import registration
+from domain.commands import access_list
 from localization import translate
 
 
-@register(NewMessage(common.admins, pattern='/register'))
+@register(NewMessage(access_list(Categories.CAN_ISSUE_TOKEN), pattern='/register'))
 @translate(current=True)
 async def handler(event: NewMessage.Event, _, t):
     limit = 2

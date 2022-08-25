@@ -1,6 +1,8 @@
 from telethon.events import register, CallbackQuery
 
-from domain import registration, common
+from bot_commands.categories import Categories
+from domain import registration
+from domain.commands import access_list
 from entities.token import Token
 from localization import translate
 
@@ -8,7 +10,7 @@ from localization import translate
 @register(CallbackQuery(pattern=rb'^decline (.{16})$'))
 @translate()
 async def handler(event: CallbackQuery.Event, _):
-    if event.sender_id in common.registered:
+    if event.sender_id in access_list(Categories.COMMON):
         await event.answer(_('Access denied'))
         return
 
