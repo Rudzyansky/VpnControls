@@ -22,21 +22,11 @@ def _recalculate_access_lists(user: User):
     for cmd in set(Categories) - user.commands:
         _access_lists[cmd] -= single
     for cmd in user.commands:
-        _access_lists[cmd] += single
-
-
-for __user in database.common.get_all_users():
-    _cache_categories[__user.id] = __user.commands
-    _recalculate_cache(__user)
-    _recalculate_access_lists(__user)
-
-
-def access_list(category: Categories) -> set[int]:
-    return _access_lists[category]
+        _access_lists[cmd] |= single
 
 
 async def _user_scope(user_id: int):
-    return BotCommandScopePeer(get_input_peer(await common.client.get_entity(user_id)))
+    return BotCommandScopePeer(get_input_peer(await common.get_entity(user_id)))
 
 
 async def _telegram_reset_commands(user: User):
@@ -47,8 +37,21 @@ async def _telegram_set_commands(user: User):
     await common.client(SetBotCommandsRequest(await _user_scope(user.id), user.language, _cache[user.id]))
 
 
+async def init():
+    database.commands.recalculate_commands()
+    for __user in database.common.get_all_users():
+        _cache_categories[__user.id] = __user.commands
+        _recalculate_cache(__user)
+        _recalculate_access_lists(__user)
+        await _telegram_set_commands(__user)
+
+
+def access_list(category: Categories) -> set[int]:
+    return _access_lists[category]
+
+
 def _set_user_commands_db(user: User):
-    database.common.set_user_commands(user.id, user.commands_int)
+    database.commands.set_user_commands(user.id, user.commands_int)
 
 
 async def refresh_commands(user: User):

@@ -1,10 +1,11 @@
 from telethon import TelegramClient
 
-from . import common
+from . import common, commands
 
 
-def init(client: TelegramClient):
+async def init(client: TelegramClient):
     common._client = client
+    await commands.init()
 
 
 __all__ = [
