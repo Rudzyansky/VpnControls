@@ -12,13 +12,17 @@ from entities.user import User
 class Commands:
     _cache: dict[int:list[BotCommand]] = dict()
     _cache_categories: dict[int:set[Categories]] = dict()
+    _access_lists = {c: set() for c in Categories}
 
     def __init__(self, common_db: database.Common) -> None:
         super().__init__()
+
         self.common_db = common_db
+
         for user in common_db.get_all_users():
             self._cache_categories[user.id] = user.commands
             self._recalculate_cache(user)
+            self._recalculate_access_lists(user)
 
     # noinspection PyMethodMayBeStatic
     async def _telegram_reset_commands(self, client: TelegramClient, user: User):
@@ -28,6 +32,12 @@ class Commands:
     async def _telegram_set_commands(self, client: TelegramClient, user: User):
         scope = BotCommandScopePeer(get_input_peer(await client.get_entity(user.id)))
         await client(SetBotCommandsRequest(scope, user.language, self._cache[user.id]))
+
+    def _recalculate_access_lists(self, user: User):
+        for cmd in set(Categories) - user.commands:
+            self._access_lists[cmd].remove(user.id)
+        for cmd in user.commands:
+            self._access_lists[cmd].add(user.id)
 
     def _recalculate_cache(self, user: User):
         self._cache[user.id] = bot_commands.get(user.language, self._cache_categories[user.id])
@@ -41,18 +51,21 @@ class Commands:
     async def set_commands(self, client: TelegramClient, user: User, *categories: Categories):
         self._cache_categories[user.id] = set(categories)
         self._recalculate_cache(user)
+        self._recalculate_access_lists(user)
         self._set_user_commands_db(user)
         await self._telegram_set_commands(client, user)
 
     async def add_commands(self, client: TelegramClient, user: User, *categories: Categories):
         self._cache_categories[user.id] += set(categories)
         self._recalculate_cache(user)
+        self._recalculate_access_lists(user)
         self._set_user_commands_db(user)
         await self._telegram_set_commands(client, user)
 
     async def delete_commands(self, client: TelegramClient, user: User, *categories: Categories):
         self._cache_categories[user.id] -= set(categories)
         self._recalculate_cache(user)
+        self._recalculate_access_lists(user)
         self._set_user_commands_db(user)
         await self._telegram_set_commands(client, user)
 
