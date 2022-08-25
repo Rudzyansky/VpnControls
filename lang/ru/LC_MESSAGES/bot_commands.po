@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: 2022-08-25 18:30+0300\n"
-"PO-Revision-Date: 2022-08-25 18:31+0300\n"
+"PO-Revision-Date: 2022-08-25 20:54+0300\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: ru\n"
@@ -37,7 +37,7 @@ msgstr "Выпустить токен"
 
 #: __init__.py:52
 msgid "Show actual token"
-msgstr "Показать все действующие токены"
+msgstr "Показать действующие токены"
 
 #: __init__.py:56
 msgid "Issue new invitation token"
