@@ -77,7 +77,7 @@ for _language, _translation in _translations.items():
     #
 
     __commands[Categories.COMMON] = [
-        BotCommand('lang', _('Change language')),
+        BotCommand('language', _('Change language')),
         BotCommand('refresh', _('Refresh menu')),
     ]
 
