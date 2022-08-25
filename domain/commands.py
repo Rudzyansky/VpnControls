@@ -31,23 +31,20 @@ for __user in database.common.get_all_users():
     _recalculate_access_lists(__user)
 
 
-def access_list(*categories: Categories) -> set[int]:
-    result = set()
-    for category in categories:
-        result |= _access_lists.get(category)
-    return result
+def access_list(category: Categories) -> set[int]:
+    return _access_lists[category]
 
 
-def _user_scope(user_id: int):
+async def _user_scope(user_id: int):
     return BotCommandScopePeer(get_input_peer(await common.client.get_entity(user_id)))
 
 
 async def _telegram_reset_commands(user: User):
-    await common.client(ResetBotCommandsRequest(_user_scope(user.id), user.language))
+    await common.client(ResetBotCommandsRequest(await _user_scope(user.id), user.language))
 
 
 async def _telegram_set_commands(user: User):
-    await common.client(SetBotCommandsRequest(_user_scope(user.id), user.language, _cache[user.id]))
+    await common.client(SetBotCommandsRequest(await _user_scope(user.id), user.language, _cache[user.id]))
 
 
 def _set_user_commands_db(user: User):
