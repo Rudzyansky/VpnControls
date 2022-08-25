@@ -38,14 +38,16 @@ def access_list(*categories: Categories) -> set[int]:
     return result
 
 
+def _user_scope(user_id: int):
+    return BotCommandScopePeer(get_input_peer(await common.client.get_entity(user_id)))
+
+
 async def _telegram_reset_commands(user: User):
-    scope = BotCommandScopePeer(get_input_peer(await common.client.get_entity(user.id)))
-    await common.client(ResetBotCommandsRequest(scope, user.language))
+    await common.client(ResetBotCommandsRequest(_user_scope(user.id), user.language))
 
 
 async def _telegram_set_commands(user: User):
-    scope = BotCommandScopePeer(get_input_peer(await common.client.get_entity(user.id)))
-    await common.client(SetBotCommandsRequest(scope, user.language, _cache[user.id]))
+    await common.client(SetBotCommandsRequest(_user_scope(user.id), user.language, _cache[user.id]))
 
 
 def _set_user_commands_db(user: User):
