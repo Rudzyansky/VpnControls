@@ -31,7 +31,6 @@ def init(c: ConnectionSqlite):
         'PRIMARY KEY (user_id, username), '
         'FOREIGN KEY (user_id) REFERENCES users (id) ON UPDATE RESTRICT ON UPDATE RESTRICT); '
 
-        # SELECT id FROM slaves WHERE leaf_id = ?
         'CREATE VIEW IF NOT EXISTS slaves AS '
         'WITH RECURSIVE slaves (leaf_id, id, tokens_limit) AS ('
         'SELECT owner_id, id, tokens_limit FROM users UNION ALL '
