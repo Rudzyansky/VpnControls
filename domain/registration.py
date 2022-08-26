@@ -1,3 +1,5 @@
+from typing import Optional
+
 import database
 from bot_commands.categories import Categories
 from database.abstract import Connection
@@ -54,6 +56,18 @@ def get_current_tokens(user_id: int) -> list[Token]:
     Get non-revoked tokens owned by user_id
     """
     return database.registration.get_actual_tokens(user_id)
+
+
+def get_next_actual_token(user_id: int, offset: int = 0) -> tuple[int, Optional[Token], int]:
+    """
+    Get non-revoked token owned by user_id
+    """
+    token = database.registration.get_next_actual_token(user_id, offset)
+    if token is None and offset > 0:
+        offset = 0
+        token = database.registration.get_next_actual_token(user_id, offset)
+    count = database.registration.count_of_actual_tokens(user_id)
+    return offset, token, count
 
 
 def fetch_token(token: Token):

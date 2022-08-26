@@ -83,5 +83,23 @@ class RegistrationSqlite(Registration):
     def get_tokens_limit(cls, user_id: int, c: ConnectionSqlite = None) -> int:
         return int(c.single('SELECT tokens_limit FROM users WHERE id = ? ', user_id))
 
+    @classmethod
+    @connection(False)
+    def get_next_actual_token(cls, owner_id: int, offset: int, c: ConnectionSqlite = None) -> Optional[Token]:
+        sql = 'SELECT token, expire, used_by FROM tokens WHERE owner_id = ? ' \
+              'AND (used_by IS NULL OR used_by != owner_id) AND CURRENT_DATE < expire LIMIT ?, 1'
+        result = c.fetch_one(sql, owner_id, offset)
+        if result is None:
+            return None
+        token, expire, used_by = result
+        return Token(data=token, expire=expire, used_by=used_by)
+
+    @classmethod
+    @connection(False)
+    def count_of_actual_tokens(cls, owner_id: int, c: ConnectionSqlite = None) -> int:
+        sql = 'SELECT COUNT(token) FROM tokens WHERE owner_id = ? ' \
+              'AND (used_by IS NULL OR used_by != owner_id) AND CURRENT_DATE < expire'
+        return c.single(sql, owner_id)
+
 
 registration: Registration = RegistrationSqlite()

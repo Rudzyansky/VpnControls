@@ -50,3 +50,11 @@ class Registration(ABC):
     @classmethod
     @abstractmethod
     def get_tokens_limit(cls, user_id: int, c: Connection = None) -> int: pass
+
+    @classmethod
+    @abstractmethod
+    def get_next_actual_token(cls, owner_id: int, offset: int, c: Connection = None) -> Optional[Token]: pass
+
+    @classmethod
+    @abstractmethod
+    def count_of_actual_tokens(cls, owner_id: int, c: Connection = None) -> int: pass
