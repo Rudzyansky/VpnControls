@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"POT-Creation-Date: 2022-08-25 22:02+0300\n"
-"PO-Revision-Date: 2022-08-25 22:04+0300\n"
+"POT-Creation-Date: 2022-08-26 10:42+0300\n"
+"PO-Revision-Date: 2022-08-26 10:43+0300\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: ru\n"
@@ -46,7 +46,7 @@ msgstr "Связано с %s"
 msgid "Expires in %s"
 msgstr "Истекает %s"
 
-#: invite_iq.py:96 invite_msg.py:23 register_msg.py:44
+#: invite_iq.py:96 next_cq.py:34 register_msg.py:44
 msgid "Invite"
 msgstr "Пригласить"
 
@@ -62,7 +62,11 @@ msgstr "Принять"
 msgid "Decline"
 msgstr "Отклонить"
 
-#: invite_msg.py:17
+#: next_cq.py:21
+msgid "No tokens found"
+msgstr "Токены не найдены"
+
+#: next_cq.py:24
 #, python-format
 msgid ""
 "Token `%s`\n"
@@ -71,7 +75,7 @@ msgstr ""
 "Токен `%s`\n"
 "__Истекает__ **%s**"
 
-#: invite_msg.py:20
+#: next_cq.py:27
 #, python-format
 msgid ""
 "Token `%s`\n"
@@ -82,13 +86,18 @@ msgstr ""
 "__Истекает__ **%s**\n"
 "__Связан с__ **%s**"
 
-#: invite_msg.py:24 register_msg.py:45
+#: next_cq.py:35 register_msg.py:45
 msgid "Revoke"
 msgstr "Отозвать"
 
-#: invite_msg.py:26 register_msg.py:47
+#: next_cq.py:37 register_msg.py:47
 msgid "Invite in another language"
 msgstr "Отправить приглашение на другом языке"
+
+#: next_cq.py:40
+#, python-format
+msgid "Next token (%d of %d)"
+msgstr "Следующий токен (%d из %d)"
 
 #: register_msg.py:21
 #, python-format
@@ -136,6 +145,11 @@ msgid "**List of tokens**"
 msgstr "**Список токенов**"
 
 #: tokens_msg.py:20
+#, python-format
+msgid "`%s` **revoked**, __expires in__ **%s**"
+msgstr "`%s` **отозван**, __истекает__ **%s**"
+
+#: tokens_msg.py:23
 #, python-format
 msgid "`%s` __expires in__ **%s**, __bound to__ **%s**"
 msgstr "`%s` __истекает__ **%s**, __связан с__ **%s**"
