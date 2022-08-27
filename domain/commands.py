@@ -57,6 +57,12 @@ async def refresh_commands(user_id: int):
     await _telegram_set_commands(User(user_id, language=common.language(user_id)))
 
 
+async def recalculate_and_refresh(user_id: int):
+    user = User(user_id, language=common.language(user_id))
+    _recalculate_cache(user)
+    await _telegram_set_commands(user)
+
+
 async def _update(user: User):
     _recalculate_cache(user)
     _recalculate_access_lists(user)
