@@ -3,8 +3,12 @@ from gettext import translation, NullTranslations
 
 from telethon.events.common import EventCommon
 
+from localization.languages import _langs
+
 localedir = 'lang'
-languages = ['en', 'ru']
+
+# languages = [k for k, v in _langs.items()]
+languages = _langs
 
 _cache: dict[str:dict[str:NullTranslations]] = {}
 
@@ -19,14 +23,18 @@ def _get_translations(domain: str) -> dict[str:NullTranslations]:
     return _cache[domain]
 
 
-def get_translations(package_name: str = None, module_name: str = None) -> dict[str:NullTranslations]:
-    if package_name is not None and module_name is None:
+def get_translations(package_name: str = None,
+                     module_name: str = None,
+                     domain: str = None) -> dict[str:NullTranslations]:
+    if package_name is not None and module_name is None and domain is None:
         return _get_translations(package_name.split('.')[-1])
-    elif package_name is None and module_name is not None:
+    elif package_name is None and module_name is not None and domain is None:
         return _get_translations(module_name.split('.')[-2])
+    elif package_name is None and module_name is None and domain is not None:
+        return _get_translations(domain)
     else:
         raise RuntimeError('get_translations: wrong input: ' +
-                           str({'package_name': package_name, 'module_name': module_name}))
+                           str({'package_name': package_name, 'module_name': module_name, 'domain': domain}))
 
 
 def translate(text=True, current=False, translations=False):
