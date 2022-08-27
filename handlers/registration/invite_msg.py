@@ -3,7 +3,7 @@ from telethon.events import register, NewMessage
 from bot_commands.categories import Categories
 from domain.commands import access_list
 from localization import translate
-from .next_cq import text_and_buttons
+from .invite_cq import text_and_buttons
 
 
 @register(NewMessage(access_list(Categories.HAS_TOKENS), pattern='^/invite$'))

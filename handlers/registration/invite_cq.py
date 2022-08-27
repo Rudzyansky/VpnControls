@@ -8,7 +8,7 @@ from domain.commands import access_list
 from localization import translate
 
 
-@register(CallbackQuery(access_list(Categories.HAS_ACTUAL_TOKENS), pattern=rb'^next ([0-9]+)$'))
+@register(CallbackQuery(access_list(Categories.HAS_ACTUAL_TOKENS), pattern=rb'^invite ([0-9]+)$'))
 @translate()
 async def handler(event: CallbackQuery.Event, _):
     text, buttons = await text_and_buttons(event.client, _, event.chat_id, int(event.pattern_match[1]))
@@ -37,7 +37,7 @@ async def text_and_buttons(client: TelegramClient, _, user_id: int, offset: int 
         [Button.switch_inline(_('Invite in another language'), f'invite/{token}/', same_peer=False)],
     ]
     if count > 1:
-        buttons_matrix.append([Button.inline(_('Next token (%d of %d)') % (offset + 1, count), f'next {offset + 1}')])
+        buttons_matrix.append([Button.inline(_('Next token (%d of %d)') % (offset + 1, count), f'invite {offset + 1}')])
     buttons = client.build_reply_markup(buttons_matrix, inline_only=True)
 
     return text, buttons
