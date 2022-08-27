@@ -2,6 +2,7 @@ from .commands import commands
 from .common import common
 from .connection import ConnectionSqlite, connection
 from .registration import registration
+from .accounting import accounting
 
 
 @connection()
@@ -55,5 +56,6 @@ __all__ = [
     'common',
     'registration',
     'commands',
+    'accounting',
     'connection'
 ]
