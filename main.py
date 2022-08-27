@@ -1,18 +1,18 @@
 #!/usr/bin/env python3
 # encoding=utf-8
 import asyncio
-from os import getenv
 
 from telethon import TelegramClient
 
 import domain
+import env
 import handlers
 
 
 async def main():
-    client = TelegramClient('vpn', int(getenv('API_ID')), getenv('API_HASH'))
+    client = TelegramClient(env.TOKEN.split(':')[0], env.API_ID, env.API_HASH)
     client.parse_mode = 'markdown'
-    await client.start(bot_token=getenv('TOKEN'))
+    await client.start(bot_token=env.TOKEN)
     await domain.init(client)
     handlers.register(client)
     print('Ready')
