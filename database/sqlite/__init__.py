@@ -26,9 +26,7 @@ def init(c: ConnectionSqlite):
 
         'CREATE TABLE IF NOT EXISTS accounts ('
         'user_id INT NOT NULL, '
-        'username TEXT NOT NULL, '
-        'pos INT NOT NULL, '
-        'PRIMARY KEY (user_id, username), '
+        'position INT NOT NULL, '
         'FOREIGN KEY (user_id) REFERENCES users (id) ON UPDATE RESTRICT ON UPDATE RESTRICT); '
 
         'CREATE VIEW IF NOT EXISTS slaves AS '
@@ -39,7 +37,7 @@ def init(c: ConnectionSqlite):
 
         'CREATE VIEW IF NOT EXISTS metrics AS '
         'SELECT u.id                                                                  AS user_id, '
-        'COUNT(a.username)                                                            AS accounts, '
+        'COUNT(a.ROWID)                                                               AS accounts, '
         'COUNT(t.token)                                                               AS tokens, '
         '(SELECT COUNT(t.token) > 0 WHERE CURRENT_DATE < t.expire)                    AS has_actual_tokens, '
         'COUNT(t.token) < u.tokens_limit                                              AS can_issue_token, '
