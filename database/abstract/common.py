@@ -14,6 +14,10 @@ class Common(ABC):
     @abstractmethod
     def get_user(cls, user_id: int, c: Connection = None) -> Optional[User]: pass
 
+    @classmethod
+    @abstractmethod
+    def set_language(cls, user_id: int, lang_code: str, c: Connection = None) -> bool: pass
+
     #
     # unused code
     #

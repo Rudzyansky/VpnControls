@@ -22,6 +22,11 @@ class CommonSqlite(Common):
                     language=language, _commands=commands)
 
     @classmethod
+    @connection()
+    def set_language(cls, user_id: int, lang_code: str, c: ConnectionSqlite = None) -> bool:
+        return c.update_one('UPDATE users SET language = ? WHERE id = ?', lang_code, user_id)
+
+    @classmethod
     def remove_expired_tokens(cls, c: ConnectionSqlite = None) -> bool:
         return c.update_many('DELETE FROM tokens WHERE CURRENT_DATE >= expire')
 

@@ -29,11 +29,11 @@ async def _user_scope(user_id: int):
 
 
 async def _telegram_reset_commands(user: User):
-    await common.client(ResetBotCommandsRequest(await _user_scope(user.id), user.language))
+    await common.client(ResetBotCommandsRequest(await _user_scope(user.id), ''))
 
 
 async def _telegram_set_commands(user: User):
-    await common.client(SetBotCommandsRequest(await _user_scope(user.id), user.language, _cache[user.id]))
+    await common.client(SetBotCommandsRequest(await _user_scope(user.id), '', _cache[user.id]))
 
 
 async def init():
@@ -55,6 +55,12 @@ def _set_user_commands_db(user: User):
 
 async def refresh_commands(user_id: int):
     await _telegram_set_commands(User(user_id, language=common.language(user_id)))
+
+
+async def recalculate_and_refresh(user_id: int):
+    user = User(user_id, language=common.language(user_id))
+    _recalculate_cache(user)
+    await _telegram_set_commands(user)
 
 
 async def _update(user: User):
