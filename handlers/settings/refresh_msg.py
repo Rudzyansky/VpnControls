@@ -6,7 +6,7 @@ from domain.commands import access_list
 from localization import translate
 
 
-@register(NewMessage(access_list(Categories.COMMON), pattern=r'^/refresh$'))
+@register(NewMessage(access_list(Categories.REGISTERED), pattern=r'^/refresh$'))
 @translate()
 async def handler(event: NewMessage.Event, _):
     await domain.commands.refresh_commands(event.chat_id)

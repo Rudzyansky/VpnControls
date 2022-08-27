@@ -24,10 +24,10 @@ for _language, _translation in _translations.items():
     __commands: dict[Categories:BotCommand] = dict()
 
     #
-    # User commands
+    # Accounts commands
     #
 
-    __commands[Categories.NO_ACCOUNTS] = [
+    __commands[Categories.CAN_CREATE_ACCOUNT] = [
         BotCommand('acquire', _('New account')),
     ]
 
@@ -41,42 +41,34 @@ for _language, _translation in _translations.items():
     ]
 
     #
-    # Administration commands
+    # Tokens commands
     #
 
-    __commands[Categories.NO_TOKENS] = [
-        BotCommand('invite', _('Issue token')),
-    ]
-
     __commands[Categories.HAS_ACTUAL_TOKENS] = [
-        BotCommand('invite', _('Show actual token')),
+        BotCommand('invite', _('Show actual invitation token')),
     ]
 
     __commands[Categories.CAN_ISSUE_TOKEN] = [
-        BotCommand('register', _('Issue new invitation token')),
+        BotCommand('issue', _('Issue new invitation token')),
     ]
 
     __commands[Categories.HAS_TOKENS] = [
         BotCommand('tokens', _('Show all invitation tokens')),
     ]
 
-    __commands[Categories.HAS_SLAVES] = [
-        BotCommand('remove', _('Remove user (all invited users assign with admin top level)')),
-    ]
+    #
+    # Privileged commands
+    #
 
-    __commands[Categories.GRANT] = [
-        BotCommand('grant', _('Grant admin privileges')),
-    ]
-
-    __commands[Categories.HAS_INVITED] = [
-        BotCommand('revoke', _('Revoke admin and remove all invited users')),
+    __commands[Categories.HAS_USERS] = [
+        BotCommand('users', _('Users management')),
     ]
 
     #
     # Common commands
     #
 
-    __commands[Categories.COMMON] = [
+    __commands[Categories.REGISTERED] = [
         BotCommand('language', _('Change language')),
         BotCommand('refresh', _('Refresh menu')),
     ]

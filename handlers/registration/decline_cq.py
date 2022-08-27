@@ -10,7 +10,7 @@ from localization import translate
 @register(CallbackQuery(pattern=rb'^decline (.{16})$'))
 @translate()
 async def handler(event: CallbackQuery.Event, _):
-    if event.sender_id in access_list(Categories.COMMON):
+    if event.sender_id in access_list(Categories.REGISTERED):
         await event.answer(_('Access denied'))
         return
 

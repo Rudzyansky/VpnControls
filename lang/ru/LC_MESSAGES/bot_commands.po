@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"POT-Creation-Date: 2022-08-25 18:30+0300\n"
-"PO-Revision-Date: 2022-08-25 22:26+0300\n"
+"POT-Creation-Date: 2022-08-27 10:28+0300\n"
+"PO-Revision-Date: 2022-08-27 10:28+0300\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: ru\n"
@@ -32,40 +32,43 @@ msgid "Accounts management"
 msgstr "Управление аккаунтами"
 
 #: __init__.py:48
-msgid "Issue token"
-msgstr "Выпустить токен"
-
-#: __init__.py:52
-msgid "Show actual token"
+msgid "Show actual invitation token"
 msgstr "Показать действующий токен"
 
-#: __init__.py:56
+#: __init__.py:52
 msgid "Issue new invitation token"
 msgstr "Выпустить новый токен"
 
-#: __init__.py:60
+#: __init__.py:56
 msgid "Show all invitation tokens"
 msgstr "Показать все токены"
 
 #: __init__.py:64
-msgid "Remove user (all invited users assign with admin top level)"
-msgstr "Удалить пользователя (все приглашенные привяжутся админу выше)"
-
-#: __init__.py:68
-msgid "Grant admin privileges"
-msgstr "Дать права админа"
+msgid "Users management"
+msgstr "Управление пользователями"
 
 #: __init__.py:72
-msgid "Revoke admin and remove all invited users"
-msgstr "Разжаловать админа (и удалить всех приглашенных)"
-
-#: __init__.py:80
 msgid "Change language"
 msgstr "Сменить язык"
 
-#: __init__.py:81
+#: __init__.py:73
 msgid "Refresh menu"
 msgstr "Обновить меню"
+
+#~ msgid "Issue token"
+#~ msgstr "Выпустить токен"
+
+#~ msgid "Show actual token"
+#~ msgstr "Показать действующий токен"
+
+#~ msgid "Remove user (all invited users assign with admin top level)"
+#~ msgstr "Удалить пользователя (все приглашенные привяжутся админу выше)"
+
+#~ msgid "Grant admin privileges"
+#~ msgstr "Дать права админа"
+
+#~ msgid "Revoke admin and remove all invited users"
+#~ msgstr "Разжаловать админа (и удалить всех приглашенных)"
 
 #~ msgid "Show token, issue if not exist"
 #~ msgstr "Показать токен (выпустить если отсутствет)"

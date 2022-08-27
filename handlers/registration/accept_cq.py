@@ -13,7 +13,7 @@ from localization import translate
 @register(CallbackQuery(pattern=rb'^accept (.{16}) ([a-z]{2})$'))
 @translate()
 async def handler(event: CallbackQuery.Event, _):
-    if event.sender_id in access_list(Categories.COMMON):
+    if event.sender_id in access_list(Categories.REGISTERED):
         await event.answer(_('Access denied'))
         return
 

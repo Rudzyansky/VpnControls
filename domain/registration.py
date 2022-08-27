@@ -15,7 +15,7 @@ def register_user(user_id: int, language: str, c: Connection):
         database.registration.revoke_token_by_user_id(user_id, c)
         user = database.common.get_user(user_id, c)
         common.update_language(user)
-        commands.set_categories(user, Categories.COMMON, Categories.NO_ACCOUNTS)
+        commands.set_categories(user, Categories.REGISTERED, Categories.CAN_CREATE_ACCOUNT)
         return user
     return None
 
