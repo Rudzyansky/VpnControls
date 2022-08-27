@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"POT-Creation-Date: 2022-08-27 11:55+0300\n"
-"PO-Revision-Date: 2022-08-27 11:55+0300\n"
+"POT-Creation-Date: 2022-08-27 14:44+0300\n"
+"PO-Revision-Date: 2022-08-27 14:45+0300\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: ru\n"
@@ -15,6 +15,15 @@ msgstr ""
 "X-Poedit-Basepath: ../../../handlers/settings\n"
 "X-Poedit-SearchPath-0: .\n"
 
-#: language_msg.py:12
+#: language_cq.py:14
+#, python-format
+msgid "Unknown language with code `%s`"
+msgstr "Неизвестный язык с кодом `%s`"
+
+#: language_cq.py:21
+msgid "Language changed"
+msgstr "Язык изменён"
+
+#: language_msg.py:13
 msgid "Choose language"
 msgstr "Выберите язык"
