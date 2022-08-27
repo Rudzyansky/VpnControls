@@ -1,7 +1,7 @@
-from . import refresh_msg, language_msg
+from . import refresh_msg, language_msg, language_cq
 
 modules = [
-    refresh_msg, language_msg
+    refresh_msg, language_msg, language_cq
 ]
 
 __all__ = [
