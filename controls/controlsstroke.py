@@ -58,7 +58,7 @@ class StrokeControls(Controls):
         with open(cls.filepath % user_id, 'r+', encoding='utf-8') as f:
             f.seek(pos)
             matches = cls.line_pattern.match(f.readline())
-        return Account(username=matches[0], password=matches[1], position=pos)
+        return Account(username=matches[0], password=matches[1])
 
     @classmethod
     def get_accounts(cls, user_id: int, *positions: int) -> list[Account]:
@@ -67,7 +67,7 @@ class StrokeControls(Controls):
             for pos in positions:
                 f.seek(pos)
                 matches = cls.line_pattern.match(f.readline())
-                result.append(Account(username=matches[0], password=matches[1], position=pos))
+                result.append(Account(username=matches[0], password=matches[1]))
         return result
 
     @classmethod
