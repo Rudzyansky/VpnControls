@@ -19,13 +19,13 @@ class StrokeControls(Controls):
         self.filepath = filepath
 
     @classmethod
-    def add_user(cls, user_id: int, username: str, password: str) -> Optional[Account]:
+    def add_user(cls, user_id: int, username: str, password: str) -> Optional[int]:
         password = utils.gen_password()
         line = f'"#{to_hex(username)}" : EAP "0x{to_hex(password)}"\n'
         with open(cls.filepath % user_id, 'a') as f:
-            pos = f.tell()
+            position = f.tell()
             f.write(line)
-        return Account(username=username, password=password, position=pos)
+        return position
 
     @classmethod
     def remove_user(cls, user_id: int, pos: int) -> int:
