@@ -16,7 +16,7 @@ class ControlsStroke(Controls, FileManipulator):
         super().__init__(file_pattern)
         self.line_pattern = re.compile(r'^"#([A-Z0-9]+)" : EAP "0x([A-Z0-9]+)"\n$', re.IGNORECASE)
 
-    def add_user(self, user_id: int, username: str, password: str) -> Optional[int]:
+    def add_user(self, user_id: int, username: str, password: str) -> int:
         line = '"#%s" : EAP "0x%s"\n' % (to_hex(username), to_hex(password))
         with self.open(user_id, mode='ab') as f:
             return self.append(f, line)

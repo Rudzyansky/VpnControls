@@ -7,7 +7,7 @@ from entities.account import Account
 class Controls(ABC):
     @classmethod
     @abstractmethod
-    def add_user(cls, user_id: int, username: str, password: str) -> Optional[int]: pass
+    def add_user(cls, user_id: int, username: str, password: str) -> int: pass
 
     @classmethod
     @abstractmethod
