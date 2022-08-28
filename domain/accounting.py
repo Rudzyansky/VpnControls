@@ -33,8 +33,7 @@ def delete_account(user_id: int, id: int, c) -> bool:
         if diff:
             if diff != 0:
                 database.accounting.move_accounts(user_id, position, diff, c)
-            database.accounting.remove_account(id, c)
-            return True
+            return database.accounting.remove_account(id, c)
         else:
             raise RuntimeError(f'Out of range {user_id}:{position}')
     return False
