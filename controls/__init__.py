@@ -1,4 +1,4 @@
-from .controlsstroke import controls
+from .controls_stroke import controls
 
 __all__ = [
     'controls',
