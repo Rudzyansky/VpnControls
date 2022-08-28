@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"POT-Creation-Date: 2022-08-27 10:28+0300\n"
-"PO-Revision-Date: 2022-08-27 10:28+0300\n"
+"POT-Creation-Date: 2022-08-28 17:35+0300\n"
+"PO-Revision-Date: 2022-08-28 17:35+0300\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: ru\n"
@@ -20,40 +20,38 @@ msgid "New account"
 msgstr "Новый аккаунт"
 
 #: __init__.py:35
-msgid "Change username"
-msgstr "Изменить имя пользователя"
-
-#: __init__.py:36
-msgid "Reset password"
-msgstr "Сбросить пароль"
-
-#: __init__.py:40
 msgid "Accounts management"
 msgstr "Управление аккаунтами"
 
-#: __init__.py:48
+#: __init__.py:43
 msgid "Show actual invitation token"
 msgstr "Показать действующий токен"
 
-#: __init__.py:52
+#: __init__.py:47
 msgid "Issue new invitation token"
 msgstr "Выпустить новый токен"
 
-#: __init__.py:56
+#: __init__.py:51
 msgid "Show all invitation tokens"
 msgstr "Показать все токены"
 
-#: __init__.py:64
+#: __init__.py:59
 msgid "Users management"
 msgstr "Управление пользователями"
 
-#: __init__.py:72
+#: __init__.py:67
 msgid "Change language"
 msgstr "Сменить язык"
 
-#: __init__.py:73
+#: __init__.py:68
 msgid "Refresh menu"
 msgstr "Обновить меню"
+
+#~ msgid "Change username"
+#~ msgstr "Изменить имя пользователя"
+
+#~ msgid "Reset password"
+#~ msgstr "Сбросить пароль"
 
 #~ msgid "Issue token"
 #~ msgstr "Выпустить токен"

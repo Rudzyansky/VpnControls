@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"POT-Creation-Date: 2022-08-27 21:53+0300\n"
-"PO-Revision-Date: 2022-08-27 21:53+0300\n"
+"POT-Creation-Date: 2022-08-28 17:34+0300\n"
+"PO-Revision-Date: 2022-08-28 17:35+0300\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: ru\n"
@@ -19,15 +19,19 @@ msgstr ""
 msgid "Account removed"
 msgstr "Аккаунт удалён"
 
-#: username_cq.py:16
+#: delete_cq.py:13
+msgid "Account NOT removed"
+msgstr "Аккаунт НЕ удалён"
+
+#: username_cq.py:19
 msgid "Enter username to change it"
 msgstr "Введите новое имя пользователя"
 
-#: username_cq.py:18
+#: username_cq.py:21
 msgid "Cancel"
 msgstr "Отменить"
 
-#: username_cq.py:32
+#: username_cq.py:35
 msgid "Operation canceled"
 msgstr "Операция отменена"
 
