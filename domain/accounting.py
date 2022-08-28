@@ -16,7 +16,7 @@ def _get_account(user_id: int, id: int, position: int):
 @database.connection()
 def get_account(user_id: int, offset: int, c) -> Optional[tuple[int, int, Account]]:
     count = database.accounting.count_of_accounts(user_id, c)
-    if count == 0 or offset >= count:
+    if count == 0:
         return None
 
     if offset >= count:
