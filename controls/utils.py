@@ -10,4 +10,4 @@ def from_hex(_str: str):
 
 
 def to_hex(_str: str):
-    return bytes.hex(_str.encode())
+    return bytes.hex(_str.encode()).upper()
