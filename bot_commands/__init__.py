@@ -31,12 +31,7 @@ for _language, _translation in _translations.items():
         BotCommand('acquire', _('New account')),
     ]
 
-    __commands[Categories.ONE_ACCOUNT] = [
-        BotCommand('change', _('Change username')),
-        BotCommand('reset', _('Reset password')),
-    ]
-
-    __commands[Categories.MANY_ACCOUNTS] = [
+    __commands[Categories.HAS_ACCOUNTS] = [
         BotCommand('accounts', _('Accounts management')),
     ]
 
