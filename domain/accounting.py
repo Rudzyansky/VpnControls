@@ -13,9 +13,17 @@ def _get_account(user_id: int, id: int, position: int):
         raise RuntimeError(f'Account {user_id}:{position} not found')
 
 
-def get_account(user_id: int, id: int) -> Optional[Account]:
-    position = database.accounting.get_account_position(user_id, id)
-    return _get_account(user_id, id, position) if position else None
+@database.connection()
+def get_account(user_id: int, offset: int, c) -> Optional[tuple[int, int, Account]]:
+    count = database.accounting.count_of_accounts(user_id, c)
+    if count == 0 or offset >= count:
+        return None
+
+    if offset >= count:
+        offset = 0
+
+    id, position = database.accounting.get_next_account_data(user_id, offset, c)
+    return offset, count, _get_account(user_id, id, position)
 
 
 def create_account(user_id: int, username: str) -> Account:
