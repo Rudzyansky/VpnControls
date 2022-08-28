@@ -11,23 +11,23 @@ class Controls(ABC):
 
     @classmethod
     @abstractmethod
-    def remove_user(cls, user_id: int, id: int) -> int: pass
+    def remove_user(cls, user_id: int, id: int) -> Optional[int]: pass
 
     @classmethod
     @abstractmethod
-    def set_password(cls, user_id: int, id: int, password: str) -> int: pass
+    def set_password(cls, user_id: int, id: int, password: str) -> Optional[int]: pass
 
     @classmethod
     @abstractmethod
-    def set_username(cls, user_id: int, id: int, username: str) -> int: pass
+    def set_username(cls, user_id: int, id: int, username: str) -> Optional[int]: pass
 
     @classmethod
     @abstractmethod
-    def get_account(cls, user_id: int, id: int) -> Optional[Account]: pass
+    def get_account(cls, user_id: int, id: int) -> Optional[tuple[str, str]]: pass
 
     @classmethod
     @abstractmethod
-    def get_accounts(cls, user_id: int, *ids: int) -> list[Account]: pass
+    def get_accounts(cls, user_id: int, *ids: int) -> list[tuple[str, str]]: pass
 
     @classmethod
     @abstractmethod
