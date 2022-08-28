@@ -28,7 +28,7 @@ class AccountingSqlite(Accounting):
     @classmethod
     def remove_account(cls, user_id: int, position: int, c: ConnectionSqlite = None) -> bool:
         sql = 'DELETE FROM accounts WHERE user_id = ? AND position = ?'
-        return c.update_many(sql, user_id, position)
+        return c.update_one(sql, user_id, position)
 
     @classmethod
     @connection()
