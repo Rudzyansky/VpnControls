@@ -19,5 +19,5 @@ async def handler(event: NewMessage.Event, _):
 
     account = domain.accounting.create_account(event.chat_id, username)
     text = generate_credentials_text(account, _)
-    buttons = generate_buttons(event.client, account, _)
+    buttons = generate_buttons(event.client, account, _=_)
     await event.client.send_message(event.chat_id, text, buttons=buttons)
