@@ -1,0 +1,16 @@
+[Unit]
+Description=VPN Controls telegram bot
+After=network.target
+Wants=network.target
+
+[Service]
+Type=simple
+WorkingDirectory=~
+Environment=PYTHONUNBUFFERED=1
+EnvironmentFile=.env
+ExecStart=/usr/bin/env python src/main.py
+Restart=on-failure
+RestartSec=2s
+
+[Install]
+WantedBy=multi-user.target
