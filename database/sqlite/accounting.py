@@ -36,5 +36,15 @@ class AccountingSqlite(Accounting):
         sql = 'DELETE FROM accounts WHERE user_id = ?'
         return c.update_many(sql, user_id)
 
+    @classmethod
+    def count_of_accounts(cls, user_id: int, c: ConnectionSqlite = None) -> int:
+        sql = 'SELECT COUNT(ROWID) FROM accounts WHERE user_id = ?'
+        return int(c.single(sql, user_id))
+
+    @classmethod
+    def get_next_account_data(cls, user_id: int, offset: int, c: ConnectionSqlite = None) -> tuple[int, int]:
+        sql = 'SELECT ROWID, position FROM accounts WHERE user_id = ? ORDER BY position LIMIT ?, 1'
+        return c.fetch_one(sql, user_id, offset)
+
 
 accounting: Accounting = AccountingSqlite()

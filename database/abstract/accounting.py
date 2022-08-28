@@ -24,3 +24,11 @@ class Accounting(ABC):
     @classmethod
     @abstractmethod
     def remove_all(cls, user_id: int, c: Connection = None) -> bool: pass
+
+    @classmethod
+    @abstractmethod
+    def count_of_accounts(cls, user_id: int, c: Connection = None) -> int: pass
+
+    @classmethod
+    @abstractmethod
+    def get_next_account_data(cls, user_id: int, offset: int, c: Connection = None) -> tuple[int, int]: pass
