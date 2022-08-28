@@ -7,15 +7,14 @@ class CommandsSqlite(Commands):
     @connection()
     def recalculate_commands(cls, user_id: int = None, c: ConnectionSqlite = None):
         sql = ('UPDATE users SET commands = (SELECT '
-               '((accounts == 0)    <<  0) | '  # CAN_CREATE_ACCOUNT
-               '((accounts == 1)    <<  1) | '  # ONE_ACCOUNT
-               '((accounts > 1)     <<  2) | '  # MANY_ACCOUNTS
-               '( has_actual_tokens <<  4) | '  # HAS_ACTUAL_TOKENS
-               '( can_issue_token   <<  5) | '  # CAN_ISSUE_TOKEN
-               '((tokens > 0)       <<  6) | '  # HAS_TOKENS
-               '( has_users         <<  7) | '  # HAS_USERS
-               '( 1                 << 10)   '  # REGISTERED
-               'FROM metrics WHERE users.id == metrics.user_id) ')
+               '((accounts < accounts_limit) <<  1) | '  # CAN_CREATE_ACCOUNT
+               '((accounts > 0)              <<  2) | '  # HAS_ACCOUNTS
+               '( can_issue_token            <<  3) | '  # CAN_ISSUE_TOKEN
+               '( has_actual_tokens          <<  4) | '  # HAS_ACTUAL_TOKENS
+               '((tokens > 0)                <<  5) | '  # HAS_TOKENS
+               '( has_users                  <<  6) | '  # HAS_USERS
+               '( 1                          <<  0)   '  # REGISTERED
+               'FROM metrics WHERE user_id = users.id) ')
         if user_id is None:
             c.update_many(sql)
         else:

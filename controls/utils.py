@@ -6,8 +6,8 @@ def gen_password():
 
 
 def from_hex(_str: str):
-    return bytes.fromhex(_str).decode('utf-8')
+    return bytes.fromhex(_str).decode()
 
 
 def to_hex(_str: str):
-    return bytes.hex(_str.encode("utf-8"))
+    return bytes.hex(_str.encode()).upper()

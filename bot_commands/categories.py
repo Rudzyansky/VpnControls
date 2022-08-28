@@ -3,17 +3,16 @@ from enum import IntFlag
 
 class Categories(IntFlag):
     # Accounts categories
-    CAN_CREATE_ACCOUNT = 1 << 0
-    ONE_ACCOUNT = 1 << 1
-    MANY_ACCOUNTS = 1 << 2
+    CAN_CREATE_ACCOUNT = 1 << 1
+    HAS_ACCOUNTS = 1 << 2
     # Tokens categories
+    CAN_ISSUE_TOKEN = 1 << 3
     HAS_ACTUAL_TOKENS = 1 << 4
-    CAN_ISSUE_TOKEN = 1 << 5
-    HAS_TOKENS = 1 << 6
+    HAS_TOKENS = 1 << 5
     # Privileged categories
-    HAS_USERS = 1 << 7
+    HAS_USERS = 1 << 6
     # Common categories
-    REGISTERED = 1 << 10
+    REGISTERED = 1 << 0
 
 
 def decompose_categories(combined_categories: Categories) -> set[Categories]:
