@@ -1,8 +1,8 @@
+from .accounting import accounting
 from .commands import commands
 from .common import common
 from .connection import ConnectionSqlite, connection
 from .registration import registration
-from .accounting import accounting
 
 
 @connection()
@@ -37,16 +37,17 @@ def init(c: ConnectionSqlite):
         ') SELECT * FROM slaves; '
 
         'CREATE VIEW IF NOT EXISTS metrics AS '
-        'SELECT u.id                                                                  AS user_id, '
-        'COUNT(a.ROWID)                                                               AS accounts, '
-        'COUNT(t.token)                                                               AS tokens, '
-        '(SELECT COUNT(t.token) > 0 WHERE CURRENT_DATE < t.expire)                    AS has_actual_tokens, '
-        'COUNT(t.token) < u.tokens_limit                                              AS can_issue_token, '
-        'COUNT(s.id) > 0                                                              AS has_users '
-        'FROM users u '
-        'LEFT JOIN accounts a ON u.id = a.user_id '
-        'LEFT JOIN tokens t ON u.id = t.owner_id '
-        'LEFT JOIN slaves s ON u.id = s.leaf_id; '
+        'SELECT u.id                                                    AS user_id, '
+        '(SELECT COUNT(a.ROWID) FROM accounts a WHERE a.user_id = u.id) AS accounts, '
+        '(SELECT COUNT(t.token) FROM tokens t WHERE t.owner_id = u.id)  AS tokens, '
+        '(SELECT COUNT(t.token) > 0 FROM tokens t '
+        '  WHERE t.owner_id = u.id '
+        '    AND (t.used_by IS NULL OR t.used_by != t.owner_id) '
+        '    AND CURRENT_DATE < expire)                                 AS has_actual_tokens, '
+        '(SELECT COUNT(t.token) < u.tokens_limit FROM tokens t '
+        '  WHERE t.owner_id = u.id)                                     AS can_issue_token, '
+        '(SELECT COUNT(s.id) > 0 FROM slaves s WHERE u.id = s.leaf_id)  AS has_users '
+        'FROM users u; '
     )
 
 
