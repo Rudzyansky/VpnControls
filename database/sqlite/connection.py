@@ -1,5 +1,6 @@
 import sqlite3
 
+import env
 from database.abstract.connection import Connection, connection_factory
 
 
@@ -52,4 +53,4 @@ class ConnectionSqlite(Connection):
         return self.cursor.execute(sql, params).fetchone()[0]
 
 
-connection = connection_factory(ConnectionSqlite, 'clients.db')
+connection = connection_factory(ConnectionSqlite, env.DB_PATH)
