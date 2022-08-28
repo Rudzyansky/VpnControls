@@ -11,7 +11,7 @@ class Accounting(ABC):
 
     @classmethod
     @abstractmethod
-    def add_account(cls, user_id: int, position: int, c: Connection = None) -> Optional[int]: pass
+    def add_account(cls, user_id: int, position: int, c: Connection = None) -> int: pass
 
     @classmethod
     @abstractmethod

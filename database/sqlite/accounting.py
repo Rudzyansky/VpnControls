@@ -14,7 +14,7 @@ class AccountingSqlite(Accounting):
 
     @classmethod
     @connection()
-    def add_account(cls, user_id: int, position: int, c: ConnectionSqlite = None) -> Optional[int]:
+    def add_account(cls, user_id: int, position: int, c: ConnectionSqlite = None) -> int:
         sql = 'INSERT INTO accounts (user_id, position) VALUES (?, ?)'
         c.update_one(sql, user_id, position)
         return c.data.lastrowid
