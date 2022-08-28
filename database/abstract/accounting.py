@@ -7,7 +7,7 @@ from .connection import Connection
 class Accounting(ABC):
     @classmethod
     @abstractmethod
-    def get_account_position(cls, user_id: int, id: int, c: Connection = None) -> Optional[id]: pass
+    def get_account_position(cls, user_id: int, id: int, c: Connection = None) -> Optional[int]: pass
 
     @classmethod
     @abstractmethod
