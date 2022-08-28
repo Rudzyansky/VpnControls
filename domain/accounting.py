@@ -1,13 +1,19 @@
+from typing import Optional
+
 import database
 from controls import utils, controls
 from entities.account import Account
 
 
-def get_account(user_id: int, id: int) -> Account:
+def get_account(user_id: int, id: int) -> Optional[Account]:
     position = database.accounting.get_account_position(user_id, id)
-    account = controls.get_account(user_id, position)
-    account.id = id
-    return account
+    if position:
+        user_data = controls.get_account(user_id, position)
+        if user_data:
+            return Account(id, user_data[0], user_data[1])
+        else:
+            raise RuntimeError(f'Account {user_id}:{position} not found')
+    return None
 
 
 def create_account(user_id: int, username: str) -> Account:
