@@ -1,9 +1,12 @@
+from datetime import datetime
+
 from telethon import Button
 from telethon.events import register, CallbackQuery, NewMessage
 
 import domain.accounting
 from handlers.accounting.utils import generate_buttons
 from localization import translate
+from utils import contact_with_developer
 
 _queue: dict[int:tuple[int, int]] = dict()
 _access_list: set[int] = set()
@@ -35,10 +38,20 @@ async def handler_cancel(event: CallbackQuery.Event, _):
 @register(NewMessage(_access_list))
 @translate()
 async def handler_text(event: NewMessage.Event, _):
-    _access_list.remove(event.sender_id)
-    id, message_id, message_id_2 = _queue.pop(event.sender_id)
+    _access_list.remove(event.chat_id)
+    id, message_id, message_id_2 = _queue.pop(event.chat_id)
     username = event.message.raw_text
     account = domain.accounting.change_username(event.chat_id, id, username)
-    await event.client.delete_messages(event.sender_id, message_id_2)
-    buttons = generate_buttons(event.client, account, _)
-    await event.client.edit_message(event.chat_id, message_id, buttons=buttons)
+    if account:
+        await event.client.delete_messages(event.sender_id, message_id_2)
+        buttons = generate_buttons(event.client, account, _)
+        await event.client.edit_message(event.chat_id, message_id, buttons=buttons)
+    else:
+        await event.client.send_message(event.sender_id, contact_with_developer(
+            _,
+            timestamp=datetime.utcnow(),
+            action='username',
+            id=id,
+            raw_text=event.message.raw_text,
+            chat_id=event.chat_id,
+        ))

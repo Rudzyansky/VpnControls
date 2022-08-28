@@ -7,5 +7,7 @@ from localization import translate
 @register(CallbackQuery(pattern=rb'^delete ([0-9]+)$'))
 @translate()
 async def handler(event: CallbackQuery.Event, _):
-    domain.accounting.delete_account(event.sender_id, int(event.pattern_match[1]))
-    await event.edit(_('Account removed'))
+    if domain.accounting.delete_account(event.sender_id, int(event.pattern_match[1])):
+        await event.edit(_('Account removed'))
+    else:
+        await event.edit(_('Account NOT removed'))
