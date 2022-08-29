@@ -3,6 +3,7 @@ from .commands import commands
 from .common import common
 from .connection import ConnectionSqlite, connection
 from .registration import registration
+from .privileges import privileges
 
 
 @connection()
@@ -59,6 +60,7 @@ __all__ = [
     'common',
     'registration',
     'commands',
+    'privileges',
     'accounting',
     'connection'
 ]
