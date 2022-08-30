@@ -11,4 +11,6 @@ jobs:
     runs-on: self-hosted
 
     steps:
+    - name: Stopping service
+      run: sudo systemctl stop VpnControls
     - uses: actions/checkout@v3
