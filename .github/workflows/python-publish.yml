@@ -13,5 +13,4 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - name: task1
-      working-directory: .
-      run: touch 123
+      run: touch 12345
