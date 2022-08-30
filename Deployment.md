@@ -1,36 +1,40 @@
 # Setup
 
+## For runner
+
+<details>
+<summary>Oracle Linux 7</summary>
+
+```
+module exec_from_home_dir 1.0;
+
+require {
+        type user_home_t;
+        type init_t;
+        class file { create execute execute_no_trans ioctl lock open read write };
+}
+
+#============= init_t ==============
+
+allow init_t user_home_t:file { create execute execute_no_trans ioctl lock open read write };
+```
+
+</details>
+
+
 Creating user under root<br>
 Other commands under user
 
 ## Create user
 
 ```shell
-useradd -b /opt/vpn-controls -s /usr/bin/bash -mNr vpn-controls
-```
-
-#### Create ssh files
-
-```shell
-sudo -u vpn-controls mkdir ~/.ssh
-sudo -u vpn-controls touch ~/.ssh/authorized_keys
-sudo -u vpn-controls chmod 700 ~/.ssh
-sudo -u vpn-controls chmod 600 ~/.ssh/authorized_keys
-```
-
-#### Generate ssh key
-
-```shell
-ssh-keygen -f /tmp/pipeline.key -b 4096 -C pipeline
-cat /tmp/pipeline.key.pub >> /opt/vpn-controls/.ssh/authorized_keys
-cat /tmp/pipeline.key
-rm -f /tmp/pipeline.key{,.pub}
+useradd -b /opt -s /sbin/nologin -mNr vpn-controls
 ```
 
 ## Clone repository
 
 ```shell
-git clone git@github.com:Rudzyansky/VpnControls.git ~/src
+git clone https://github.com/Rudzyansky/VpnControls.git ~/src
 ```
 
 ## Environment file setup
@@ -59,25 +63,27 @@ mkdir $HOME/users
 chmod 600 $HOME/.env
 chmod 750 $HOME{,/users}
 chgrp root $HOME{,/users}
-sed -ie '/^root/s/$/\nvpn-controls ALL = NOPASSWD: strongswan rereadsecrets/' /etc/sudoers
+sed -ie '/^root/s/$/\nvpn-controls ALL=NOPASSWD: /sbin/strongswan rereadsecrets/' /etc/sudoers
 ```
 
 ## Dependencies
 
 ```shell
-pip install --user $HOME/src/requirements.txt
+pip3 install --user -U pip
+pip3 install --user -r $HOME/src/requirements.txt
 ```
 
 ## Systemd
 
 ```shell
-systemctl --user --now enable $HOME/src/VpnControls.service
+sed -e 's|^(User)=.*$|\1=vpn-controls|' ~/src/VpnControls.service > /etc/systemd/system/VpnControls.service
+systemctl --now enable VpnControls.service
 ```
 
 # Update
 
 ```shell
-systemctl --user stop VpnControls
+sudo systemctl stop VpnControls
 git pull origin master
-systemctl --user start VpnControls
+sudo systemctl start VpnControls
 ```
