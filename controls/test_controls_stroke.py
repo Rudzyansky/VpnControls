@@ -1,27 +1,26 @@
 import os
 import unittest
 
-import env
+from controls.controls_stroke import ControlsStroke
 from controls.utils import to_hex
 
 
 class ControlsTestCase(unittest.TestCase):
+    file_pattern = 'test.%s.txt'
     user_id = 33123
     line_pattern = '"#%s" : EAP "0x%s"\n'
 
     @classmethod
     def setUpClass(cls) -> None:
-        env.SECRETS_PATTERN = 'testfile.%s.txt'
-        from controls_stroke import controls
-        cls.controls = controls
-        open(env.SECRETS_PATTERN % cls.user_id, 'w').close()
+        cls.controls = ControlsStroke(cls.file_pattern)
+        open(cls.file_pattern % cls.user_id, 'w').close()
 
     @classmethod
     def tearDownClass(cls) -> None:
-        os.remove(env.SECRETS_PATTERN % cls.user_id)
+        os.remove(cls.file_pattern % cls.user_id)
 
     def setUp(self) -> None:
-        open(env.SECRETS_PATTERN % self.user_id, 'wb').close()
+        open(self.file_pattern % self.user_id, 'wb').close()
         self.user1, self.pass1 = 'username1', 'password1'
         self.user2, self.pass2 = 'username2', 'password2'
         self.user3, self.pass3 = 'username3', 'password3'
@@ -37,7 +36,7 @@ class ControlsTestCase(unittest.TestCase):
 
     def test_add_users(self):
         expected = self.line1 + self.line2 + self.line3 + self.line4
-        with open(env.SECRETS_PATTERN % self.user_id) as f:
+        with open(self.file_pattern % self.user_id) as f:
             actual = f.read()
         self.assertEqual(0, self.position1)
         self.assertEqual(len(self.line1), self.position2)
@@ -46,7 +45,7 @@ class ControlsTestCase(unittest.TestCase):
     def test_remove_user_middle(self):
         expected = self.line1 + self.line3 + self.line4
         diff = self.controls.remove_user(self.user_id, self.position2)
-        with open(env.SECRETS_PATTERN % self.user_id) as f:
+        with open(self.file_pattern % self.user_id) as f:
             actual = f.read()
         self.assertEqual(len(self.line2), diff)
         self.assertEqual(expected, actual)
@@ -54,7 +53,7 @@ class ControlsTestCase(unittest.TestCase):
     def test_remove_user_last(self):
         expected = self.line1 + self.line2 + self.line3
         diff = self.controls.remove_user(self.user_id, self.position4)
-        with open(env.SECRETS_PATTERN % self.user_id) as f:
+        with open(self.file_pattern % self.user_id) as f:
             actual = f.read()
         self.assertEqual(len(self.line4), diff)
         self.assertEqual(expected, actual)
@@ -62,7 +61,7 @@ class ControlsTestCase(unittest.TestCase):
     def test_remove_user_end_file(self):
         expected = self.line1 + self.line2 + self.line3 + self.line4
         diff = self.controls.remove_user(self.user_id, self.position4 + len(self.line4))
-        with open(env.SECRETS_PATTERN % self.user_id) as f:
+        with open(self.file_pattern % self.user_id) as f:
             actual = f.read()
         self.assertEqual(0, diff)
         self.assertEqual(expected, actual)
@@ -70,7 +69,7 @@ class ControlsTestCase(unittest.TestCase):
     def test_remove_user_out_of_scope(self):
         expected = self.line1 + self.line2 + self.line3 + self.line4
         diff = self.controls.remove_user(self.user_id, self.position4 + len(self.line4) + 1)
-        with open(env.SECRETS_PATTERN % self.user_id) as f:
+        with open(self.file_pattern % self.user_id) as f:
             actual = f.read()
         self.assertIsNone(diff)
         self.assertEqual(expected, actual)
@@ -80,7 +79,7 @@ class ControlsTestCase(unittest.TestCase):
         line2 = self.line_pattern % (to_hex(self.user2), to_hex(password))
         expected = self.line1 + line2 + self.line3 + self.line4
         diff = self.controls.set_password(self.user_id, self.position2, password)
-        with open(env.SECRETS_PATTERN % self.user_id) as f:
+        with open(self.file_pattern % self.user_id) as f:
             actual = f.read()
         self.assertEqual(0, diff)
         self.assertEqual(expected, actual)
@@ -90,7 +89,7 @@ class ControlsTestCase(unittest.TestCase):
         line2 = self.line_pattern % (to_hex(self.user2), to_hex(password))
         expected = self.line1 + line2 + self.line3 + self.line4
         diff = self.controls.set_password(self.user_id, self.position2, password)
-        with open(env.SECRETS_PATTERN % self.user_id) as f:
+        with open(self.file_pattern % self.user_id) as f:
             actual = f.read()
         self.assertEqual(len(to_hex(password)) - len(to_hex(self.pass2)), diff)
         self.assertEqual(expected, actual)
@@ -100,7 +99,7 @@ class ControlsTestCase(unittest.TestCase):
         line2 = self.line_pattern % (to_hex(self.user2), to_hex(password))
         expected = self.line1 + line2 + self.line3 + self.line4
         diff = self.controls.set_password(self.user_id, self.position2, password)
-        with open(env.SECRETS_PATTERN % self.user_id) as f:
+        with open(self.file_pattern % self.user_id) as f:
             actual = f.read()
         self.assertEqual(len(to_hex(password)) - len(to_hex(self.pass2)), diff)
         self.assertEqual(expected, actual)
@@ -108,7 +107,7 @@ class ControlsTestCase(unittest.TestCase):
     def test_set_password_out_of_range(self):
         expected = self.line1 + self.line2 + self.line3 + self.line4
         diff = self.controls.set_password(self.user_id, self.position4 + len(self.line4), 'password')
-        with open(env.SECRETS_PATTERN % self.user_id) as f:
+        with open(self.file_pattern % self.user_id) as f:
             actual = f.read()
         self.assertIsNone(diff)
         self.assertEqual(expected, actual)
@@ -118,7 +117,7 @@ class ControlsTestCase(unittest.TestCase):
         line2 = self.line_pattern % (to_hex(username), to_hex(self.pass2))
         expected = self.line1 + line2 + self.line3 + self.line4
         diff = self.controls.set_username(self.user_id, self.position2, username)
-        with open(env.SECRETS_PATTERN % self.user_id) as f:
+        with open(self.file_pattern % self.user_id) as f:
             actual = f.read()
         self.assertEqual(0, diff)
         self.assertEqual(expected, actual)
@@ -128,7 +127,7 @@ class ControlsTestCase(unittest.TestCase):
         line2 = self.line_pattern % (to_hex(username), to_hex(self.pass2))
         expected = self.line1 + line2 + self.line3 + self.line4
         diff = self.controls.set_username(self.user_id, self.position2, username)
-        with open(env.SECRETS_PATTERN % self.user_id) as f:
+        with open(self.file_pattern % self.user_id) as f:
             actual = f.read()
         self.assertEqual(len(to_hex(username)) - len(to_hex(self.user2)), diff)
         self.assertEqual(expected, actual)
@@ -138,7 +137,7 @@ class ControlsTestCase(unittest.TestCase):
         line2 = self.line_pattern % (to_hex(username), to_hex(self.pass2))
         expected = self.line1 + line2 + self.line3 + self.line4
         diff = self.controls.set_username(self.user_id, self.position2, username)
-        with open(env.SECRETS_PATTERN % self.user_id) as f:
+        with open(self.file_pattern % self.user_id) as f:
             actual = f.read()
         self.assertEqual(len(to_hex(username)) - len(to_hex(self.user2)), diff)
         self.assertEqual(expected, actual)
@@ -146,7 +145,7 @@ class ControlsTestCase(unittest.TestCase):
     def test_set_username_out_of_range(self):
         expected = self.line1 + self.line2 + self.line3 + self.line4
         diff = self.controls.set_username(self.user_id, self.position4 + len(self.line4), 'username')
-        with open(env.SECRETS_PATTERN % self.user_id) as f:
+        with open(self.file_pattern % self.user_id) as f:
             actual = f.read()
         self.assertIsNone(diff)
         self.assertEqual(expected, actual)

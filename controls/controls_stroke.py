@@ -71,6 +71,3 @@ class ControlsStroke(Controls, FileManipulator):
     @classmethod
     def change_hook(cls):
         subprocess.run(['strongswan', 'rereadsecrets'])
-
-
-controls: Controls = ControlsStroke()
