@@ -11,6 +11,8 @@ jobs:
     runs-on: self-hosted
 
     steps:
-    - uses: actions/checkout@v2
-    - name: task1
-      run: touch 123456
+    - name: Stopping service
+      run: sudo systemctl stop VpnControls
+    - uses: actions/checkout@v3
+    - name: Starting service
+      run: sudo systemctl start VpnControls
