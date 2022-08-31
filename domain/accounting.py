@@ -35,13 +35,13 @@ def create_account(user_id: int, username: str) -> Account:
 
 @database.connection()
 def delete_account(user_id: int, id: int, c) -> bool:
-    position = database.accounting.get_account_position(id, c)
+    position = database.accounting.get_account_position(user_id, id, c)
     if position is not None:
         diff = controls.remove_user(user_id, position)
         if diff is not None:
             if diff != 0:
                 database.accounting.move_accounts(user_id, position, diff, c)
-            return database.accounting.remove_account(id, c)
+            return database.accounting.remove_account(user_id, id, c)
         else:
             raise RuntimeError(f'Out of range {user_id}:{position}')
     return False
