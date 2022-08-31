@@ -1,7 +1,9 @@
 # Setup
 
 ```shell
-yum -y install python39{,-pip,-setuptools}  # Oracle Linux 7
+# Oracle Linux 7 setup python
+yum -y install python39{,-pip,-setuptools}
+alternatives --set python3 /usr/bin/python3.9
 ln -s /bin/pip{3,}
 
 # Create user for pipeline
@@ -30,6 +32,9 @@ sudo -u runner sh -c 'cd ~/actions-runner; sudo ./svc.sh install; sudo ./svc.sh 
 # Install dependencies
 sudo -u tgbot sh -c 'pip install --user -U pip; pip install --user -r /usr/src/tgbot/requirements.txt'
 
+# Create directory for store credentials
+sh -c 'cd /etc/strongswan; mkdir users; chown tgbot:root users; chmod 750 users'
+
 # Environment file setup
 sed -re 's|^^^^^^^^^(ADDRESS)=.*$|\1=vpn.example.com|' \
     -re 's|^^^^^^^^^^(API_ID)=.*$|\1=000000|' \
@@ -38,11 +43,10 @@ sed -re 's|^^^^^^^^^(ADDRESS)=.*$|\1=vpn.example.com|' \
     -re 's|^(SECRETS_PATTERN)=.*$|\1=/etc/strongswan/users/ipsec.%s.secrets|' \
 /usr/src/tgbot/template.env > /home/tgbot/.env
 
-# Create directory for store credentials
-sh -c 'cd /etc/strongswan; mkdir users; chown tgbot:root users; chmod 750 users'
-
 # Systemd service setup
-sed -re 's|^(User)=.*$|\1=tgbot|' /usr/src/tgbot/VpnControls.service > /etc/systemd/system/VpnControls.service
+sed -re 's|^(User)=.*$|\1=tgbot|' \
+    -re 's|^(EnvironmentFile=)=.*$|\1=/home/tgbot/.env|' \
+/usr/src/tgbot/VpnControls.service > /etc/systemd/system/VpnControls.service
 
 # Systemd service enable and start
 systemctl --now enable VpnControls.service
