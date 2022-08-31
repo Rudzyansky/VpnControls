@@ -1,0 +1,23 @@
+name: Deployment
+
+on:
+  pull_request:
+    branches: [ master ]
+    types: [ closed ]
+
+jobs:
+  deploy:
+    if: github.event.pull_request.merged == true
+    runs-on: self-hosted
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        ref: ${{ github.event.pull_request.head.sha }}
+    - name: Stopping service
+      run: sudo systemctl stop VpnControls
+    - name: Removing files
+      run: sudo rm -rf /usr/src/tgbot
+    - name: Copying files
+      run: sudo cp -Rf . /usr/src/tgbot
+    - name: Starting service
+      run: sudo systemctl start VpnControls
