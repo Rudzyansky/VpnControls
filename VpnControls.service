@@ -9,7 +9,7 @@ Type=simple
 WorkingDirectory=~
 Environment=PYTHONUNBUFFERED=1
 EnvironmentFile=.env
-ExecStart=/usr/bin/env python src/main.py
+ExecStart=/usr/bin/env python /usr/src/tgbot/main.py
 Restart=on-failure
 RestartSec=2s
 
