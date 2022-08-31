@@ -15,7 +15,7 @@ class User:
 
     @property
     def commands_int(self):
-        return reduce(lambda a, b: a | b, self.commands).conjugate()
+        return reduce(lambda a, b: a | b, self.commands).conjugate() if len(self.commands) > 0 else 0
 
     def __post_init__(self, _commands) -> None:
         super().__init__()
