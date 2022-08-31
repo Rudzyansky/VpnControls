@@ -1,6 +1,7 @@
 import os
 import unittest
 
+from controls_stroke import instance as controls
 import env
 from controls.utils import to_hex
 
@@ -11,9 +12,7 @@ class ControlsTestCase(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls) -> None:
-        env.SECRETS_PATTERN = 'testfile.%s.txt'
-        from controls.controls_stroke import instance
-        cls.controls = instance
+        cls.controls = controls
         open(env.SECRETS_PATTERN % cls.user_id, 'w').close()
 
     @classmethod
