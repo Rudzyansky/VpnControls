@@ -1,0 +1,66 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"POT-Creation-Date: 2022-08-28 17:34+0300\n"
+"PO-Revision-Date: 2022-08-28 17:35+0300\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: ru\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
+"%10<=4 && (n%100<12 || n%100>14) ? 1 : 2);\n"
+"X-Generator: Poedit 3.1.1\n"
+"X-Poedit-Basepath: ../../../handlers/accounting\n"
+"X-Poedit-SearchPath-0: .\n"
+
+#: delete_cq.py:11
+msgid "Account removed"
+msgstr "Аккаунт удалён"
+
+#: delete_cq.py:13
+msgid "Account NOT removed"
+msgstr "Аккаунт НЕ удалён"
+
+#: username_cq.py:19
+msgid "Enter username to change it"
+msgstr "Введите новое имя пользователя"
+
+#: username_cq.py:21
+msgid "Cancel"
+msgstr "Отменить"
+
+#: username_cq.py:35
+msgid "Operation canceled"
+msgstr "Операция отменена"
+
+#: utils.py:10
+#, python-format
+msgid "__Address__ — `%s`"
+msgstr "__Адрес__ — `%s`"
+
+#: utils.py:11
+#, python-format
+msgid "__Username__ — `%s`"
+msgstr "__Имя пользователя__ — `%s`"
+
+#: utils.py:12
+#, python-format
+msgid "__Password__ — `%s`"
+msgstr "__Пароль__ — `%s`"
+
+#: utils.py:19
+msgid "Change username"
+msgstr "Изменить имя пользователя"
+
+#: utils.py:20
+msgid "Reset password"
+msgstr "Сбросить пароль"
+
+#: utils.py:21
+msgid "Delete account"
+msgstr "Удалить аккаунт"
+
+#~ msgid "**IKEv2**"
+#~ msgstr "**IKEv2**"
