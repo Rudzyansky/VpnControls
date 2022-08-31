@@ -1,8 +1,8 @@
 import os
 import unittest
 
-from controls_stroke import instance as controls
 import env
+from controls.controls_stroke import instance as controls
 from controls.utils import to_hex
 
 
