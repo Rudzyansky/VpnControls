@@ -12,8 +12,8 @@ class ControlsTestCase(unittest.TestCase):
     @classmethod
     def setUpClass(cls) -> None:
         env.SECRETS_PATTERN = 'testfile.%s.txt'
-        from сontrols.controls_stroke import controls
-        cls.controls = controls
+        from controls.controls_stroke import instance
+        cls.controls = instance
         open(env.SECRETS_PATTERN % cls.user_id, 'w').close()
 
     @classmethod

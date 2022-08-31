@@ -73,4 +73,4 @@ class ControlsStroke(Controls, FileManipulator):
         subprocess.run(['strongswan', 'rereadsecrets'])
 
 
-controls: Controls = ControlsStroke()
+instance: Controls = ControlsStroke()
