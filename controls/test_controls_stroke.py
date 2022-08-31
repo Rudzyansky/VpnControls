@@ -12,7 +12,7 @@ class ControlsTestCase(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls) -> None:
-        env.SECRETS_PATTERN = '/tmp/test.%s.txt'
+        env.SECRETS_PATTERN = 'test.%s.txt'
         cls.controls = ControlsStroke()
         open(env.SECRETS_PATTERN % cls.user_id, 'w').close()
 
