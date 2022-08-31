@@ -7,7 +7,7 @@ from entities.account import Account
 
 def _get_account(user_id: int, id: int, position: int):
     user_data = controls.get_account(user_id, position)
-    if user_data:
+    if user_data is not None:
         return Account(id, user_data[0], user_data[1])
     else:
         raise RuntimeError(f'Account {user_id}:{position} not found')
@@ -36,9 +36,9 @@ def create_account(user_id: int, username: str) -> Account:
 @database.connection()
 def delete_account(user_id: int, id: int, c) -> bool:
     position = database.accounting.get_account_position(id, c)
-    if position:
+    if position is not None:
         diff = controls.remove_user(user_id, position)
-        if diff:
+        if diff is not None:
             if diff != 0:
                 database.accounting.move_accounts(user_id, position, diff, c)
             return database.accounting.remove_account(id, c)
@@ -50,9 +50,9 @@ def delete_account(user_id: int, id: int, c) -> bool:
 @database.connection()
 def change_username(user_id: int, id: int, new_username: str, c) -> Optional[Account]:
     position = database.accounting.get_account_position(user_id, id, c)
-    if position:
+    if position is not None:
         diff = controls.set_username(user_id, position, new_username)
-        if diff:
+        if diff is not None:
             if diff != 0:
                 database.accounting.move_accounts(user_id, position, diff, c)
             return _get_account(user_id, id, position)
@@ -64,10 +64,10 @@ def change_username(user_id: int, id: int, new_username: str, c) -> Optional[Acc
 @database.connection()
 def reset_password(user_id: int, id: int, c) -> Optional[Account]:
     position = database.accounting.get_account_position(user_id, id, c)
-    if position:
+    if position is not None:
         password = utils.gen_password()
         diff = controls.set_password(user_id, position, password)
-        if diff:
+        if diff is not None:
             if diff != 0:
                 database.accounting.move_accounts(user_id, position, diff, c)
             return _get_account(user_id, id, position)
