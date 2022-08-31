@@ -45,7 +45,7 @@ sed -re 's|^^^^^^^^^(ADDRESS)=.*$|\1=vpn.example.com|' \
 
 # Systemd service setup
 sed -re 's|^(User)=.*$|\1=tgbot|' \
-    -re 's|^(EnvironmentFile=)=.*$|\1=/home/tgbot/.env|' \
+    -re 's|^(EnvironmentFile)=.*$|\1=/home/tgbot/.env|' \
 /usr/src/tgbot/VpnControls.service > /etc/systemd/system/VpnControls.service
 
 # Systemd service enable and start
@@ -57,7 +57,7 @@ systemctl --now enable VpnControls.service
 ## Access denied
 
 ```shell
-yum install policycoreutils-python-utils  # audit2allow (Oracle Linux 7
+yum install policycoreutils-python-utils  # audit2allow (Oracle Linux 7)
 PACKAGE_NAME="actions_runner"
 semodule -DB && setenforce permissive
 sudo -u runner sh -c 'cd ~/actions-runner; sudo ./svc.sh start; sudo ./svc.sh stop'
