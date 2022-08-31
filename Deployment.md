@@ -1,89 +1,65 @@
 # Setup
 
-## For runner
-
-<details>
-<summary>Oracle Linux 7</summary>
-
-```
-module exec_from_home_dir 1.0;
-
-require {
-        type user_home_t;
-        type init_t;
-        class file { create execute execute_no_trans ioctl lock open read write };
-}
-
-#============= init_t ==============
-
-allow init_t user_home_t:file { create execute execute_no_trans ioctl lock open read write };
-```
-
-</details>
-
-
-Creating user under root<br>
-Other commands under user
-
-## Create user
-
 ```shell
-useradd -b /opt -s /sbin/nologin -mNr vpn-controls
-```
+yum -y install python39{,-pip,-setuptools}  # Oracle Linux 7
+ln -s /bin/pip{3,}
 
-## Clone repository
+# Create user for pipeline
+useradd -mNrs /sbin/nologin runner
 
-```shell
-git clone https://github.com/Rudzyansky/VpnControls.git ~/src
-```
+# Create user for app
+useradd -mNrs /sbin/nologin tgbot
 
-## Environment file setup
+# Sudo permissions setup
+sed -e '/^root/s|$|\n'\
+'tgbot\tALL=NOPASSWD:\t/sbin/strongswan rereadsecrets\n'\
+'runner\tALL=NOPASSWD:\t/home/runner/actions-runner/svc.sh, \\\n'\
+'\t\t\t/bin/rm -rf /usr/src/tgbot, \\\n'\
+'\t\t\t/bin/cp -Rf . /usr/src/tgbot, \\\n'\
+'\t\t\t/bin/systemctl stop VpnControls, \\\n'\
+'\t\t\t/bin/systemctl start VpnControls'\
+'|' -i /etc/sudoers
 
-### sed way
+# Follow instructions: https://docs.github.com/en/actions/hosting-your-own-runners/adding-self-hosted-runners
 
-```shell
-sed -re 's|^^(ADDRESS)=.*$|\1=vpn.example.com|' \
-    -re 's|^^^(API_ID)=.*$|\1=000000|' \
-    -re 's|^(API_HASH)=.*$|\1=ffffffffffffffffffffffffffffffff|' \
-    -re 's|^^^^(TOKEN)=.*$|\1=0000000000:XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX|' \
-~/src/template.env > ~/.env
-```
+# Enable and start runner service
+sudo -u runner sh -c 'cd ~/actions-runner; sudo ./svc.sh install; sudo ./svc.sh start; sudo ./svc.sh status'
 
-### vim way
+# Run deploy action (merge PR to master)
 
-```shell
-cp ~/{src/template.env,.env}
-vim ~/.env
-```
+# Install dependencies
+sudo -u tgbot sh -c 'pip install --user -U pip; pip install --user -r /usr/src/tgbot/requirements.txt'
 
-## Directories and Permissions
+# Environment file setup
+sed -re 's|^^^^^^^^^(ADDRESS)=.*$|\1=vpn.example.com|' \
+    -re 's|^^^^^^^^^^(API_ID)=.*$|\1=000000|' \
+    -re 's|^^^^^^^^(API_HASH)=.*$|\1=ffffffffffffffffffffffffffffffff|' \
+    -re 's|^^^^^^^^^^^(TOKEN)=.*$|\1=0000000000:XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX|' \
+    -re 's|^(SECRETS_PATTERN)=.*$|\1=/etc/strongswan/users/ipsec.%s.secrets|' \
+/usr/src/tgbot/template.env > /home/tgbot/.env
 
-```shell
-mkdir $HOME/users
-chmod 600 $HOME/.env
-chmod 750 $HOME{,/users}
-chgrp root $HOME{,/users}
-sed -ie '/^root/s/$/\nvpn-controls ALL=NOPASSWD: /sbin/strongswan rereadsecrets/' /etc/sudoers
-```
+# Create directory for store credentials
+sh -c 'cd /etc/strongswan; mkdir users; chown tgbot:root users; chmod 750 users'
 
-## Dependencies
+# Systemd service setup
+sed -re 's|^(User)=.*$|\1=tgbot|' /usr/src/tgbot/VpnControls.service > /etc/systemd/system/VpnControls.service
 
-```shell
-pip3 install --user -U pip
-pip3 install --user -r $HOME/src/requirements.txt
-```
-
-## Systemd
-
-```shell
-sed -e 's|^(User)=.*$|\1=vpn-controls|' ~/src/VpnControls.service > /etc/systemd/system/VpnControls.service
+# Systemd service enable and start
 systemctl --now enable VpnControls.service
 ```
 
-# Update
+# Troubleshooting
+
+## Access denied
 
 ```shell
-sudo systemctl stop VpnControls
-git pull origin master
-sudo systemctl start VpnControls
+yum install policycoreutils-python-utils  # audit2allow (Oracle Linux 7
+PACKAGE_NAME="actions_runner"
+semodule -DB && setenforce permissive
+sudo -u runner sh -c 'cd ~/actions-runner; sudo ./svc.sh start; sudo ./svc.sh stop'
+audit2allow -M "$PACKAGE_NAME" -b
+setenforce enforcing && semodule -B
+checkmodule -M -m -o "$PACKAGE_NAME".mod "$PACKAGE_NAME".te &&
+semodule_package -o "$PACKAGE_NAME".pp -m "$PACKAGE_NAME".mod &&
+semodule -i "$PACKAGE_NAME".pp
 ```
