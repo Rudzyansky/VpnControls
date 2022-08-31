@@ -1,11 +1,16 @@
+import os.path
 from functools import wraps
 from gettext import translation, NullTranslations
 
 from telethon.events.common import EventCommon
 
+from env import ROOT
 from localization.languages import _langs
 
 localedir = 'lang'
+
+if localedir[0] != '/':
+    localedir = os.path.join(ROOT, localedir)
 
 # languages = [k for k, v in _langs.items()]
 languages = _langs
