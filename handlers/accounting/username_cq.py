@@ -32,8 +32,8 @@ async def handler_cancel(event: CallbackQuery.Event, _):
     _access_list.discard(event.sender_id)
     if _queue.get(event.sender_id) is not None:
         _queue.pop(event.sender_id)
-    await event.client.delete_messages(event.sender_id, event.message_id)
     await event.answer(_('Operation canceled'))
+    await event.client.delete_messages(event.sender_id, event.message_id)
 
 
 @register(NewMessage(_access_list, incoming=True))
