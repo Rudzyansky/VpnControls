@@ -71,15 +71,17 @@ async def _update(user: User):
 
 
 async def set_categories(user: User, *categories: Categories):
-    _cache_categories[user.id] = set(categories)
+    _c = _cache_categories[user.id]
+    _c.clear()
+    _c.update(set(categories))
     await _update(user)
 
 
 async def add_categories(user: User, *categories: Categories):
-    _cache_categories[user.id] += set(categories)
+    _cache_categories[user.id].update(set(categories))
     await _update(user)
 
 
 async def remove_categories(user: User, *categories: Categories):
-    _cache_categories[user.id] -= set(categories)
+    _cache_categories[user.id].difference_update(set(categories))
     await _update(user)
