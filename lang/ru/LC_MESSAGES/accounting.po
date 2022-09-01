@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"POT-Creation-Date: 2022-08-28 17:34+0300\n"
-"PO-Revision-Date: 2022-08-28 17:35+0300\n"
+"POT-Creation-Date: 2022-09-02 01:44+0300\n"
+"PO-Revision-Date: 2022-09-02 01:44+0300\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: ru\n"
@@ -15,23 +15,23 @@ msgstr ""
 "X-Poedit-Basepath: ../../../handlers/accounting\n"
 "X-Poedit-SearchPath-0: .\n"
 
-#: delete_cq.py:11
+#: delete_cq.py:17
 msgid "Account removed"
 msgstr "Аккаунт удалён"
 
-#: delete_cq.py:13
+#: delete_cq.py:19
 msgid "Account NOT removed"
 msgstr "Аккаунт НЕ удалён"
 
-#: username_cq.py:19
+#: username_cq.py:25
 msgid "Enter username to change it"
 msgstr "Введите новое имя пользователя"
 
-#: username_cq.py:21
+#: username_cq.py:27
 msgid "Cancel"
 msgstr "Отменить"
 
-#: username_cq.py:35
+#: username_cq.py:45
 msgid "Operation canceled"
 msgstr "Операция отменена"
 
@@ -50,15 +50,15 @@ msgstr "__Имя пользователя__ — `%s`"
 msgid "__Password__ — `%s`"
 msgstr "__Пароль__ — `%s`"
 
-#: utils.py:19
+#: utils.py:20
 msgid "Change username"
 msgstr "Изменить имя пользователя"
 
-#: utils.py:20
+#: utils.py:21
 msgid "Reset password"
 msgstr "Сбросить пароль"
 
-#: utils.py:21
+#: utils.py:23
 msgid "Delete account"
 msgstr "Удалить аккаунт"
 
