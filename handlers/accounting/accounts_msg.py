@@ -4,7 +4,6 @@ from telethon.events import register, NewMessage
 
 import domain.common
 from bot_commands.categories import Categories
-from domain import accounting
 from domain.commands import access_list
 from handlers.accounting.utils import generate_buttons, generate_credentials_text
 from localization import translate
