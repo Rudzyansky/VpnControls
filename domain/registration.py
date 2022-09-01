@@ -1,23 +1,29 @@
 from typing import Optional
 
 import database
+import domain
 from bot_commands.categories import Categories
 from database.abstract import Connection
 from entities.token import Token
 from entities.user import User
-from . import common, commands
 
 
-@database.connection()
-def register_user(user_id: int, language: str, c: Connection):
+@database.connection(manual=True)
+async def register_user(user_id: int, language: str, c: Connection):
+    c.open()
+    c.begin_transaction()
     success = database.registration.add_user(User(id=user_id, language=language), c)
-    if success:
-        database.registration.revoke_token_by_user_id(user_id, c)
-        user = database.common.get_user(user_id, c)
-        common.update_language(user)
-        commands.set_categories(user, Categories.REGISTERED, Categories.CAN_CREATE_ACCOUNT)
-        return user
-    return None
+    if not success:
+        return None
+
+    database.registration.revoke_token_by_user_id(user_id, c)
+    user = database.common.get_user(user_id, c)
+    domain.common.update_language(user.id, user.language)
+    await domain.commands.update(user.id, {Categories.REGISTERED, Categories.CAN_CREATE_ACCOUNT}, c=c)
+    c.end_transaction()
+    c.close()
+
+    return user
 
 
 def is_accept_invite(user_id: int):
