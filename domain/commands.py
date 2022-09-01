@@ -51,8 +51,7 @@ async def update(user_id: int, append: set[Categories] = None, remove: set[Categ
     database.commands.set_user_commands(user_id, current_int, c=c)
 
     # Commands cache
-    language = domain.common.language(user_id)
-    _commands[user_id] = bot_commands.get(language, current)
+    _commands[user_id] = bot_commands.get(domain.common.language(user_id), current)
 
     # Access lists cache
     for category in append:
@@ -62,6 +61,12 @@ async def update(user_id: int, append: set[Categories] = None, remove: set[Categ
 
     # Telegram update
     await telegram_set_commands(user_id)
+
+
+# Commands
+
+def recalculate_commands(user_id: int):
+    _commands[user_id] = bot_commands.get(domain.common.language(user_id), _categories[user_id])
 
 
 # Telegram interactor

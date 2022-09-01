@@ -7,7 +7,11 @@ from domain.commands import access_list
 from localization import translate
 
 
-@register(NewMessage(access_list(Categories.HAS_TOKENS), pattern='^/tokens$'))
+def handler_filter(event: NewMessage.Event):
+    return event.chat_id in access_list(Categories.HAS_TOKENS)
+
+
+@register(NewMessage(func=handler_filter, pattern='^/tokens$'))
 @translate()
 async def handler(event: NewMessage.Event, _):
     current_tokens = registration.get_tokens(event.chat_id)

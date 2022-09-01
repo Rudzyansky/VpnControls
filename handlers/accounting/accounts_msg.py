@@ -11,7 +11,11 @@ from localization import translate
 from utils import contact_with_developer
 
 
-@register(NewMessage(access_list(Categories.HAS_ACCOUNTS), pattern=r'^/accounts$'))
+def handler_filter(event: NewMessage.Event):
+    return event.chat_id in access_list(Categories.HAS_ACCOUNTS)
+
+
+@register(NewMessage(func=handler_filter, pattern=r'^/accounts$'))
 @translate()
 async def handler(event: NewMessage.Event, _):
     account_data = domain.accounting.get_account(event.chat_id, 0)

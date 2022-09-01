@@ -8,7 +8,11 @@ from domain.commands import access_list
 from localization import translate
 
 
-@register(CallbackQuery(access_list(Categories.HAS_ACTUAL_TOKENS), pattern=rb'^invite ([0-9]+)$'))
+def handler_filter(event: CallbackQuery.Event):
+    return event.sender_id in access_list(Categories.HAS_ACTUAL_TOKENS)
+
+
+@register(CallbackQuery(func=handler_filter, pattern=rb'^invite ([0-9]+)$'))
 @translate()
 async def handler(event: CallbackQuery.Event, _):
     text, buttons = await text_and_buttons(event.client, _, event.chat_id, int(event.pattern_match[1]))
