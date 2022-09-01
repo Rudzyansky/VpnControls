@@ -9,12 +9,12 @@ _commands: dict[str:dict[Categories:list[BotCommand]]] = dict()
 
 
 # noinspection PyShadowingNames
-def get(language: str, *categories: Categories):
+def get(language: str, categories: set[Categories]) -> list[BotCommand]:
     commands = _commands[language]
     result = list()
     for c in Categories:
         if c in categories:
-            result += commands[c]
+            result.extend(commands[c])
     return result
 
 
