@@ -64,13 +64,14 @@ def change_username(user_id: int, id: int, new_username: str, c) -> Optional[Acc
 @database.connection()
 def reset_password(user_id: int, id: int, c) -> Optional[Account]:
     position = database.accounting.get_account_position(user_id, id, c)
-    if position is not None:
-        password = utils.gen_password()
-        diff = controls.set_password(user_id, position, password)
-        if diff is not None:
-            if diff != 0:
-                database.accounting.move_accounts(user_id, position, diff, c)
-            return _get_account(user_id, id, position)
-        else:
-            raise RuntimeError(f'Out of range {user_id}:{position}')
-    return None
+    if position is None:
+        return None
+
+    password = utils.gen_password()
+    diff = controls.set_password(user_id, position, password)
+    if diff is None:
+        raise RuntimeError(f'Out of range {user_id}:{position}')
+
+    if diff != 0:
+        database.accounting.move_accounts(user_id, position, diff, c)
+    return _get_account(user_id, id, position)
