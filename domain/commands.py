@@ -26,7 +26,6 @@ def access_list(category: Categories):
 
 # Commands cache
 
-@database.connection(manual=True)
 async def update(user_id: int, append: set[Categories] = None, remove: set[Categories] = None, c=None):
     if append is None:
         append = set()
