@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: 2022-09-02 01:43+0300\n"
-"PO-Revision-Date: 2022-09-02 02:05+0300\n"
+"PO-Revision-Date: 2022-09-02 02:10+0300\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: ru\n"
@@ -52,11 +52,11 @@ msgstr "Вам предложили использовать FalseЪ VPN"
 
 #: invite_iq.py:102
 msgid "Accept"
-msgstr "Принять"
+msgstr "Согласиться"
 
 #: invite_iq.py:103
 msgid "Decline"
-msgstr "Отклонить"
+msgstr "Отказаться"
 
 #: issue_msg.py:22 utils.py:8
 #, python-format
