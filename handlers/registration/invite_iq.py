@@ -3,8 +3,8 @@ from telethon.events import register, InlineQuery
 from telethon.tl.types import InputWebDocument, DocumentAttributeImageSize
 from telethon.utils import get_display_name
 
+import domain
 from bot_commands.categories import Categories
-from domain import registration, common
 from domain.commands import access_list
 from entities.token import Token
 from localization import translate, languages
@@ -17,9 +17,9 @@ def handler_filter(event: InlineQuery.Event):
 @register(InlineQuery(func=handler_filter, pattern=r'^invite$'))
 @translate(text=False, translations=True)
 async def handler(event: InlineQuery.Event, translations):
-    current_tokens = registration.get_current_tokens(event.chat_id)
+    current_tokens = domain.registration.get_current_tokens(event.chat_id)
     articles = []
-    lang = common.language(event.chat_id)
+    lang = domain.common.language(event.chat_id)
     articles += [await invite_article(event, token, lang, translations[lang].gettext) for token in current_tokens]
     await event.answer(articles)
 
@@ -27,7 +27,7 @@ async def handler(event: InlineQuery.Event, translations):
 @register(InlineQuery(func=handler_filter, pattern=r'^invite/$'))
 @translate(text=False, translations=True)
 async def handler_space(event: InlineQuery.Event, translations):
-    current_tokens = registration.get_current_tokens(event.chat_id)
+    current_tokens = domain.registration.get_current_tokens(event.chat_id)
     articles = []
     for lang in languages:
         _ = translations[lang].gettext
@@ -42,7 +42,7 @@ async def handler_lang(event: InlineQuery.Event, translations):
     if lang not in languages:
         await event.answer()
         return
-    current_tokens = registration.get_current_tokens(event.chat_id)
+    current_tokens = domain.registration.get_current_tokens(event.chat_id)
     articles = [await invite_article(event, token, lang, translations[lang].gettext) for token in current_tokens]
     await event.answer(articles)
 
@@ -51,11 +51,11 @@ async def handler_lang(event: InlineQuery.Event, translations):
                       pattern=r'^invite/([0-9A-F]{8}(?:-[0-9A-F]{4}){3}-[0-9A-F]{12})$'))
 @translate(text=False, translations=True)
 async def handler_token(event: InlineQuery.Event, translations):
-    token = registration.fetch_token(Token(event.pattern_match[1], owner_id=event.chat_id))
+    token = domain.registration.fetch_token(Token(event.pattern_match[1], owner_id=event.chat_id))
     if token is None:
         await event.answer()
     else:
-        lang = common.language(event.chat_id)
+        lang = domain.common.language(event.chat_id)
         await event.answer([await invite_article(event, token, lang, translations[lang].gettext)])
 
 
@@ -63,7 +63,7 @@ async def handler_token(event: InlineQuery.Event, translations):
                       pattern=r'^invite/([0-9A-F]{8}(?:-[0-9A-F]{4}){3}-[0-9A-F]{12})/$'))
 @translate(text=False, translations=True)
 async def handler_token_space(event: InlineQuery.Event, translations):
-    token = registration.fetch_token(Token(event.pattern_match[1], owner_id=event.chat_id))
+    token = domain.registration.fetch_token(Token(event.pattern_match[1], owner_id=event.chat_id))
     if token is None:
         await event.answer()
     else:
@@ -74,7 +74,7 @@ async def handler_token_space(event: InlineQuery.Event, translations):
                       pattern=r'^invite/([0-9A-F]{8}(?:-[0-9A-F]{4}){3}-[0-9A-F]{12})/([a-z]{2})$'))
 @translate(text=False, translations=True)
 async def handler_token_lang(event: InlineQuery.Event, translations):
-    token = registration.fetch_token(Token(event.pattern_match[1], owner_id=event.chat_id))
+    token = domain.registration.fetch_token(Token(event.pattern_match[1], owner_id=event.chat_id))
     if token is None:
         await event.answer()
     else:

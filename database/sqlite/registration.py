@@ -1,14 +1,13 @@
 from typing import Optional
 
+from database.abstract import Registration
+from database.sqlite.connection import ConnectionSqlite
 from entities.token import Token
 from entities.user import User
-from . import ConnectionSqlite, connection
-from ..abstract import Registration
 
 
 class RegistrationSqlite(Registration):
     @classmethod
-    @connection(False)
     def is_accept_invite(cls, user_id: int, c: ConnectionSqlite = None) -> bool:
         sql = 'SELECT COUNT(token) > 0 FROM tokens WHERE used_by = ? AND CURRENT_DATE < expire'
         return bool(c.single(sql, user_id))
@@ -23,7 +22,6 @@ class RegistrationSqlite(Registration):
                             user.language, user.commands_int, user.id)
 
     @classmethod
-    @connection()
     def revoke_token(cls, token: bytes, owner_id: int, c: ConnectionSqlite = None) -> bool:
         sql = 'UPDATE tokens SET used_by = owner_id ' \
               'WHERE token = ? AND owner_id = ? AND CURRENT_DATE < expire'
@@ -52,7 +50,6 @@ class RegistrationSqlite(Registration):
         return c.update_one(sql, token, owner_id)
 
     @classmethod
-    @connection(False)
     def get_token(cls, token: bytes, owner_id: int, c: ConnectionSqlite = None) -> Optional[Token]:
         sql = 'SELECT token, expire, used_by FROM tokens ' \
               'WHERE token = ? AND owner_id = ? AND CURRENT_DATE < expire ' \
@@ -64,14 +61,12 @@ class RegistrationSqlite(Registration):
         return Token(data=token, expire=expire, used_by=used_by)
 
     @classmethod
-    @connection(False)
     def get_all_tokens(cls, owner_id: int, c: ConnectionSqlite = None) -> list[Token]:
         sql = 'SELECT token, expire, used_by FROM tokens WHERE owner_id = ? AND CURRENT_DATE < expire'
         return [Token(data=token, expire=expire, used_by=used_by)
                 for token, expire, used_by in c.fetch_all(sql, owner_id)]
 
     @classmethod
-    @connection(False)
     def get_actual_tokens(cls, owner_id: int, c: ConnectionSqlite = None) -> list[Token]:
         sql = 'SELECT token, expire, used_by FROM tokens WHERE owner_id = ? ' \
               'AND (used_by IS NULL OR used_by != owner_id) AND CURRENT_DATE < expire'
@@ -79,23 +74,23 @@ class RegistrationSqlite(Registration):
                 for token, expire, used_by in c.fetch_all(sql, owner_id)]
 
     @classmethod
-    @connection(False)
+    def count_of_tokens(cls, owner_id: int, c: ConnectionSqlite = None) -> int:
+        return int(c.single('SELECT COUNT(token) FROM tokens WHERE owner_id = ? '
+                            'AND CURRENT_DATE < expire ', owner_id))
+
+    @classmethod
     def get_tokens_limit(cls, user_id: int, c: ConnectionSqlite = None) -> int:
         return int(c.single('SELECT tokens_limit FROM users WHERE id = ? ', user_id))
 
     @classmethod
-    @connection(False)
-    def get_next_actual_token(cls, owner_id: int, offset: int, c: ConnectionSqlite = None) -> Optional[Token]:
+    def get_next_actual_token(cls, owner_id: int, offset: int, c: ConnectionSqlite = None) -> Token:
         sql = 'SELECT token, expire, used_by FROM tokens WHERE owner_id = ? ' \
               'AND (used_by IS NULL OR used_by != owner_id) AND CURRENT_DATE < expire LIMIT ?, 1'
         result = c.fetch_one(sql, owner_id, offset)
-        if result is None:
-            return None
         token, expire, used_by = result
         return Token(data=token, expire=expire, used_by=used_by)
 
     @classmethod
-    @connection(False)
     def count_of_actual_tokens(cls, owner_id: int, c: ConnectionSqlite = None) -> int:
         sql = 'SELECT COUNT(token) FROM tokens WHERE owner_id = ? ' \
               'AND (used_by IS NULL OR used_by != owner_id) AND CURRENT_DATE < expire'

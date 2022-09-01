@@ -1,6 +1,6 @@
 from telethon import TelegramClient
 
-from . import common, commands
+from domain import common, commands, registration, accounting
 
 
 async def init(client: TelegramClient):
@@ -9,5 +9,9 @@ async def init(client: TelegramClient):
 
 
 __all__ = [
-    'init'
+    'init',
+    'common',
+    'commands',
+    'registration',
+    'accounting',
 ]

@@ -1,6 +1,6 @@
 from typing import Generic, TypeVar
 
-from domain.types.Cache import Cache
+from domain.types.cache import Cache
 
 _KT = TypeVar('_KT')
 _VT = TypeVar('_VT')

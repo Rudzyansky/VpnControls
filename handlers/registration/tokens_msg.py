@@ -1,8 +1,8 @@
 from telethon.events import register, NewMessage
 from telethon.utils import get_display_name
 
+import domain
 from bot_commands.categories import Categories
-from domain import registration
 from domain.commands import access_list
 from localization import translate
 
@@ -14,7 +14,7 @@ def handler_filter(event: NewMessage.Event):
 @register(NewMessage(func=handler_filter, pattern='^/tokens$'))
 @translate()
 async def handler(event: NewMessage.Event, _):
-    current_tokens = registration.get_tokens(event.chat_id)
+    current_tokens = domain.registration.get_tokens(event.chat_id)
     lines = [_('**List of tokens**'), '']
     for token in current_tokens:
         if token.used_by is None:

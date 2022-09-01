@@ -53,7 +53,11 @@ class Registration(ABC):
 
     @classmethod
     @abstractmethod
-    def get_next_actual_token(cls, owner_id: int, offset: int, c: Connection = None) -> Optional[Token]: pass
+    def count_of_tokens(cls, owner_id: int, c: Connection = None) -> int: pass
+
+    @classmethod
+    @abstractmethod
+    def get_next_actual_token(cls, owner_id: int, offset: int, c: Connection = None) -> Token: pass
 
     @classmethod
     @abstractmethod
