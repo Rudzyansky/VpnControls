@@ -1,87 +1,83 @@
-from telethon.tl.functions.bots import SetBotCommandsRequest, ResetBotCommandsRequest
-from telethon.tl.types import BotCommand, BotCommandScopePeer
+from functools import reduce
+
+from telethon.tl.functions.bots import SetBotCommandsRequest
+from telethon.tl.types import BotCommandScopePeer
 from telethon.utils import get_input_peer
 
 import bot_commands
 import database
+import domain.common
 from bot_commands.categories import Categories
 from domain import common
-from entities.user import User
+from domain.types import *
 
-_cache: dict[int:list[BotCommand]] = dict()
-_cache_categories: dict[int:set[Categories]] = dict()
-_access_lists = {c: set() for c in Categories}
+# Declarations
 
-
-def _recalculate_cache(user: User):
-    _cache[user.id] = bot_commands.get(user.language, *_cache_categories[user.id])
+_categories: CategoriesCache = CategoriesCache()
+_commands: CommandsCache = CommandsCache()
+_access_lists: AccessListsCache = AccessListsCache()
 
 
-def _recalculate_access_lists(user: User):
-    for cmd in set(Categories) - user.commands:
-        _access_lists[cmd].discard(user.id)
-    for cmd in user.commands:
-        _access_lists[cmd].add(user.id)
+# Access lists cache
+
+def access_list(category: Categories):
+    return _access_lists[category]
 
 
-async def _user_scope(user_id: int):
-    return BotCommandScopePeer(get_input_peer(await common.client.get_entity(user_id)))
+# Commands cache
+
+@database.connection(manual=True)
+async def update(user_id: int, append: set[Categories] = None, remove: set[Categories] = None, c=None):
+    if append is None:
+        append = set()
+    if remove is None:
+        remove = set()
+
+    previous = _categories[user_id]
+    append.difference_update(previous)
+    remove.intersection_update(previous)
+
+    # No updates
+    if len(append) + len(remove) == 0:
+        return
+
+    # Categories cache
+    _categories.add(user_id, append)
+    _categories.remove(user_id, remove)
+    current = _categories[user_id]
+
+    # Database
+    current_int = reduce(lambda a, b: a | b, current).conjugate() if len(current) > 0 else 0
+    database.commands.set_user_commands(user_id, current_int, c=c)
+
+    # Commands cache
+    language = domain.common.language(user_id)
+    _commands[user_id] = bot_commands.get(language, current)
+
+    # Access lists cache
+    for category in append:
+        _access_lists.add(category, {user_id})
+    for category in remove:
+        _access_lists.remove(category, {user_id})
+
+    # Telegram update
+    await telegram_set_commands(user_id)
 
 
-async def _telegram_reset_commands(user: User):
-    await common.client(ResetBotCommandsRequest(await _user_scope(user.id), ''))
+# Telegram interactor
+
+async def telegram_set_commands(user_id: int):
+    scope = BotCommandScopePeer(get_input_peer(await common.client.get_entity(user_id)))
+    await common.client(SetBotCommandsRequest(scope, '', _commands[user_id]))
 
 
-async def _telegram_set_commands(user: User):
-    await common.client(SetBotCommandsRequest(await _user_scope(user.id), '', _cache[user.id]))
-
+# Initialization
 
 async def init():
     database.commands.recalculate_commands()
     for __user in database.common.get_all_users():
-        _cache_categories[__user.id] = __user.commands
-        _recalculate_cache(__user)
-        _recalculate_access_lists(__user)
-        await _telegram_set_commands(__user)
-
-
-def access_list(category: Categories) -> set[int]:
-    return _access_lists[category]
-
-
-def _set_user_commands_db(user: User):
-    database.commands.set_user_commands(user.id, user.commands_int)
-
-
-async def refresh_commands(user_id: int):
-    await _telegram_set_commands(User(user_id, language=common.language(user_id)))
-
-
-async def recalculate_and_refresh(user_id: int):
-    user = User(user_id, language=common.language(user_id))
-    _recalculate_cache(user)
-    await _telegram_set_commands(user)
-
-
-async def _update(user: User):
-    _recalculate_cache(user)
-    _recalculate_access_lists(user)
-    _set_user_commands_db(user)
-    await _telegram_set_commands(user)
-
-
-async def set_categories(user: User, *categories: Categories):
-    _c = _cache_categories[user.id]
-    _c.clear()
-    _c.update(set(categories))
-    await _update(user)
-
-
-async def add_categories(user: User, *categories: Categories):
-    _cache_categories[user.id].update(set(categories))
-    await _update(user)
-
-
-async def remove_categories(user: User, *categories: Categories):
-    _cache_categories[user.id].difference_update(set(categories))
-    await _update(user)
+        _categories.add(__user.id, __user.commands)
+        _commands[__user.id] = bot_commands.get(__user.language, __user.commands)
+        for category in __user.commands:
+            _access_lists.add(category, {__user.id})
+        await telegram_set_commands(__user.id)
