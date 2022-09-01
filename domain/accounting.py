@@ -1,20 +1,10 @@
 from typing import Optional
 
 import database
-import domain.commands
-from bot_commands.categories import Categories
 from controls import utils, controls
 from database.abstract import Connection
+from domain.types import CategoriesUpdater
 from entities.account import Account
-
-
-def _fill(category: Categories, predicate: bool, append: set[Categories], remove: set[Categories]):
-    if predicate:
-        append.add(category)
-        remove.discard(category)
-    else:
-        append.discard(category)
-        remove.add(category)
 
 
 def _get_account(user_id: int, id: int, position: int):
@@ -33,6 +23,7 @@ def get_account(user_id: int, offset: int, c) -> Optional[tuple[int, int, Accoun
 
     if offset >= count:
         offset = 0
+
     id, position = database.accounting.get_next_account_data(user_id, offset, c)
     return offset, count, _get_account(user_id, id, position)
 
@@ -46,14 +37,14 @@ async def create_account(user_id: int, username: str, c: Connection) -> Account:
     account.id = database.accounting.add_account(user_id, account.position, c)
 
     # Commands and access lists
-    user = database.common.get_user(user_id, c)
     accounts = database.accounting.count_of_accounts(user_id, c)
-    append, remove = set(), set()
+    accounts_limit = database.common.get_user(user_id, c).accounts_limit
 
-    _fill(Categories.CAN_CREATE_ACCOUNT, accounts < user.accounts_limit, append, remove)
-    _fill(Categories.HAS_ACCOUNTS, accounts > 0, append, remove)
+    await CategoriesUpdater(user_id) \
+        .can_create_account(accounts, accounts_limit) \
+        .has_accounts(accounts) \
+        .finish(c)
 
-    await domain.commands.update(user_id, append, remove, c)
     c.end_transaction()
 
     c.close()
@@ -79,14 +70,14 @@ async def delete_account(user_id: int, id: int, c) -> bool:
     is_removed = database.accounting.remove_account(user_id, id, c)
 
     # Commands and access lists
-    user = database.common.get_user(user_id, c)
     accounts = database.accounting.count_of_accounts(user_id, c)
-    append, remove = set(), set()
+    accounts_limit = database.common.get_user(user_id, c).accounts_limit
 
-    _fill(Categories.CAN_CREATE_ACCOUNT, accounts < user.accounts_limit, append, remove)
-    _fill(Categories.HAS_ACCOUNTS, accounts > 0, append, remove)
+    await CategoriesUpdater(user_id) \
+        .can_create_account(accounts, accounts_limit) \
+        .has_accounts(accounts) \
+        .finish(c)
 
-    await domain.commands.update(user_id, append, remove, c)
     c.end_transaction()
 
     c.close()
