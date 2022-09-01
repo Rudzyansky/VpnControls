@@ -43,6 +43,9 @@ class ConnectionSqlite(Connection):
     def update_one(self, sql, *params):
         return self.cursor.execute(sql, params).rowcount == 1
 
+    def insert_id(self, sql, *params):
+        return self.cursor.execute(sql, params).lastrowid
+
     def fetch_all(self, sql, *params):
         return self.cursor.execute(sql, params).fetchall()
 
