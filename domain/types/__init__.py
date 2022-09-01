@@ -1,8 +1,8 @@
 from telethon.tl.types import BotCommand
 
 from bot_commands.categories import Categories
-from domain.types.CacheList import CacheList
-from domain.types.CacheSet import CacheSet
+from domain.types.cache_list import CacheList
+from domain.types.cache_set import CacheSet
 
 CategoriesCache = CacheSet[int, Categories]
 CommandsCache = CacheList[int, BotCommand]
