@@ -8,6 +8,15 @@ from database.abstract import Connection
 from entities.account import Account
 
 
+def _fill(category: Categories, predicate: bool, append: set[Categories], remove: set[Categories]):
+    if predicate:
+        append.add(category)
+        remove.discard(category)
+    else:
+        append.discard(category)
+        remove.add(category)
+
+
 def _get_account(user_id: int, id: int, position: int):
     user_data = controls.get_account(user_id, position)
     if user_data is not None:
@@ -35,16 +44,19 @@ async def create_account(user_id: int, username: str, c: Connection) -> Account:
     c.open()
     c.begin_transaction()
     account.id = database.accounting.add_account(user_id, account.position, c)
-    c.end_transaction()
+
+    # Commands and access lists
     user = database.common.get_user(user_id, c)
-    count = database.accounting.count_of_accounts(user_id, c)
+    accounts = database.accounting.count_of_accounts(user_id, c)
+    append, remove = set(), set()
+
+    _fill(Categories.CAN_CREATE_ACCOUNT, accounts < user.accounts_limit, append, remove)
+    _fill(Categories.HAS_ACCOUNTS, accounts > 0, append, remove)
+
+    await domain.commands.update(user_id, append, remove, c)
+    c.end_transaction()
+
     c.close()
-
-    if count >= user.accounts_limit:
-        await domain.commands.remove_categories(user, Categories.CAN_CREATE_ACCOUNT)
-    if count > 0:
-        await domain.commands.add_categories(user, Categories.HAS_ACCOUNTS)
-
     return account
 
 
@@ -65,17 +77,19 @@ async def delete_account(user_id: int, id: int, c) -> bool:
     if diff != 0:
         database.accounting.move_accounts(user_id, position, diff, c)
     is_removed = database.accounting.remove_account(user_id, id, c)
+
+    # Commands and access lists
+    user = database.common.get_user(user_id, c)
+    accounts = database.accounting.count_of_accounts(user_id, c)
+    append, remove = set(), set()
+
+    _fill(Categories.CAN_CREATE_ACCOUNT, accounts < user.accounts_limit, append, remove)
+    _fill(Categories.HAS_ACCOUNTS, accounts > 0, append, remove)
+
+    await domain.commands.update(user_id, append, remove, c)
     c.end_transaction()
 
-    user = database.common.get_user(user_id, c)
-    count = database.accounting.count_of_accounts(user_id, c)
     c.close()
-
-    if count < user.accounts_limit:
-        await domain.commands.add_categories(user, Categories.CAN_CREATE_ACCOUNT)
-    if count == 0:
-        await domain.commands.remove_categories(user, Categories.HAS_ACCOUNTS)
-
     return is_removed
 
 
