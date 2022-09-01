@@ -28,7 +28,7 @@ class Connection(ABC, object):
 
 
 def connection_factory(_type: Type[Connection], *_args, **_kwargs):
-    def factory(auto_transaction=True):
+    def factory(auto_transaction=True, manual=False):
         def decorator(func):
             @wraps(func)
             def wrapper(*args, **kwargs):
@@ -37,6 +37,8 @@ def connection_factory(_type: Type[Connection], *_args, **_kwargs):
                 if in_args or in_kwargs:
                     return func(*args, **kwargs)
                 c = _type(*_args, **_kwargs)
+                if manual:
+                    return func(*args, **kwargs, c=c)
                 c.open()
                 if auto_transaction:
                     c.begin_transaction()

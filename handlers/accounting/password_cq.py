@@ -1,5 +1,6 @@
 from datetime import datetime
 
+from telethon.errors import MessageNotModifiedError
 from telethon.events import register, CallbackQuery
 
 import domain.accounting
@@ -12,8 +13,12 @@ from utils import contact_with_developer
 @translate()
 async def handler(event: CallbackQuery.Event, _):
     account = domain.accounting.reset_password(event.sender_id, int(event.pattern_match[1]))
-    if account:
-        await event.edit(generate_credentials_text(account, _), buttons=generate_buttons(event.client, account, _))
+    if account is not None:
+        try:
+            await event.edit(generate_credentials_text(account, _),
+                             buttons=generate_buttons(event.client, account, _=_))
+        except MessageNotModifiedError:
+            pass
     else:
         await event.client.send_message(event.sender_id, contact_with_developer(
             _,

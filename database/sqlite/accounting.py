@@ -16,8 +16,7 @@ class AccountingSqlite(Accounting):
     @connection()
     def add_account(cls, user_id: int, position: int, c: ConnectionSqlite = None) -> int:
         sql = 'INSERT INTO accounts (user_id, position) VALUES (?, ?)'
-        c.update_one(sql, user_id, position)
-        return c.data.lastrowid
+        return c.insert_id(sql, user_id, position)
 
     @classmethod
     @connection()
@@ -26,9 +25,9 @@ class AccountingSqlite(Accounting):
         return c.update_many(sql, diff, user_id, position)
 
     @classmethod
-    def remove_account(cls, user_id: int, position: int, c: ConnectionSqlite = None) -> bool:
-        sql = 'DELETE FROM accounts WHERE user_id = ? AND position = ?'
-        return c.update_one(sql, user_id, position)
+    def remove_account(cls, user_id: int, id: int, c: ConnectionSqlite = None) -> bool:
+        sql = 'DELETE FROM accounts WHERE user_id = ? AND ROWID = ?'
+        return c.update_one(sql, user_id, id)
 
     @classmethod
     @connection()
