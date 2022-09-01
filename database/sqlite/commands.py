@@ -21,7 +21,6 @@ class CommandsSqlite(Commands):
             c.update_one(sql + 'WHERE u.id = ?', user_id)
 
     @classmethod
-    @connection()
     def set_user_commands(cls, user_id: int, categories: int, c: ConnectionSqlite = None) -> bool:
         return c.update_one('UPDATE users SET commands = ? WHERE id = ?', categories, user_id)
 
