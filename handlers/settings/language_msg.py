@@ -7,7 +7,11 @@ from domain.commands import access_list
 from localization import translate, languages, get_translations
 
 
-@register(NewMessage(access_list(Categories.REGISTERED), pattern=r'^/language$'))
+def handler_filter(event: NewMessage.Event):
+    return event.chat_id in access_list(Categories.REGISTERED)
+
+
+@register(NewMessage(func=handler_filter, pattern=r'^/language$'))
 @translate()
 async def handler(event: NewMessage.Event, _):
     text = _('Choose language')
