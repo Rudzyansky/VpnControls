@@ -5,12 +5,15 @@ import domain.common
 from bot_commands.categories import Categories
 from domain import accounting
 from domain.commands import access_list
-from entities.user import User
 from handlers.accounting.utils import generate_buttons, generate_credentials_text
 from localization import translate
 
 
-@register(NewMessage(access_list(Categories.CAN_CREATE_ACCOUNT), pattern=r'^/acquire$'))
+def handler_filter(event: NewMessage.Event):
+    return event.chat_id in access_list(Categories.CAN_CREATE_ACCOUNT)
+
+
+@register(NewMessage(func=handler_filter, pattern=r'^/acquire$'))
 @translate()
 async def handler(event: NewMessage.Event, _):
     if event.sender.username:

@@ -4,12 +4,18 @@ from telethon.errors import MessageNotModifiedError
 from telethon.events import register, CallbackQuery
 
 import domain.accounting
+from bot_commands.categories import Categories
+from domain.commands import access_list
 from handlers.accounting.utils import generate_credentials_text, generate_buttons
 from localization import translate
 from utils import contact_with_developer
 
 
-@register(CallbackQuery(pattern=rb'^password ([0-9]+)$'))
+def handler_filter(event: CallbackQuery.Event):
+    return event.sender_id in access_list(Categories.HAS_ACCOUNTS)
+
+
+@register(CallbackQuery(func=handler_filter, pattern=rb'^password ([0-9]+)$'))
 @translate()
 async def handler(event: CallbackQuery.Event, _):
     account = domain.accounting.reset_password(event.sender_id, int(event.pattern_match[1]))

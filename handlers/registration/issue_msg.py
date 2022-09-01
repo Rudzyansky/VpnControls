@@ -10,7 +10,11 @@ from domain.commands import access_list
 from localization import translate
 
 
-@register(NewMessage(access_list(Categories.CAN_ISSUE_TOKEN), pattern='^/issue$'))
+def handler_filter(event: NewMessage.Event):
+    return event.chat_id in access_list(Categories.CAN_ISSUE_TOKEN)
+
+
+@register(NewMessage(func=handler_filter, pattern='^/issue$'))
 @translate(current=True)
 async def handler(event: NewMessage.Event, _, t):
     limit = registration.get_tokens_limit(event.chat_id)

@@ -10,7 +10,11 @@ from entities.token import Token
 from localization import translate, languages
 
 
-@register(InlineQuery(access_list(Categories.HAS_ACTUAL_TOKENS), pattern=r'^invite$'))
+def handler_filter(event: InlineQuery.Event):
+    return event.chat_id in access_list(Categories.HAS_ACTUAL_TOKENS)
+
+
+@register(InlineQuery(func=handler_filter, pattern=r'^invite$'))
 @translate(text=False, translations=True)
 async def handler(event: InlineQuery.Event, translations):
     current_tokens = registration.get_current_tokens(event.chat_id)
@@ -20,7 +24,7 @@ async def handler(event: InlineQuery.Event, translations):
     await event.answer(articles)
 
 
-@register(InlineQuery(access_list(Categories.HAS_ACTUAL_TOKENS), pattern=r'^invite/$'))
+@register(InlineQuery(func=handler_filter, pattern=r'^invite/$'))
 @translate(text=False, translations=True)
 async def handler_space(event: InlineQuery.Event, translations):
     current_tokens = registration.get_current_tokens(event.chat_id)
@@ -31,7 +35,7 @@ async def handler_space(event: InlineQuery.Event, translations):
     await event.answer(articles)
 
 
-@register(InlineQuery(access_list(Categories.HAS_ACTUAL_TOKENS), pattern=r'^invite/([a-z]{2})$'))
+@register(InlineQuery(func=handler_filter, pattern=r'^invite/([a-z]{2})$'))
 @translate(text=False, translations=True)
 async def handler_lang(event: InlineQuery.Event, translations):
     lang = event.pattern_match[1]
@@ -43,7 +47,7 @@ async def handler_lang(event: InlineQuery.Event, translations):
     await event.answer(articles)
 
 
-@register(InlineQuery(access_list(Categories.HAS_ACTUAL_TOKENS),
+@register(InlineQuery(func=handler_filter,
                       pattern=r'^invite/([0-9A-F]{8}(?:-[0-9A-F]{4}){3}-[0-9A-F]{12})$'))
 @translate(text=False, translations=True)
 async def handler_token(event: InlineQuery.Event, translations):
@@ -55,7 +59,7 @@ async def handler_token(event: InlineQuery.Event, translations):
         await event.answer([await invite_article(event, token, lang, translations[lang].gettext)])
 
 
-@register(InlineQuery(access_list(Categories.HAS_ACTUAL_TOKENS),
+@register(InlineQuery(func=handler_filter,
                       pattern=r'^invite/([0-9A-F]{8}(?:-[0-9A-F]{4}){3}-[0-9A-F]{12})/$'))
 @translate(text=False, translations=True)
 async def handler_token_space(event: InlineQuery.Event, translations):
@@ -66,7 +70,7 @@ async def handler_token_space(event: InlineQuery.Event, translations):
         await event.answer([await invite_article(event, token, lang, translations[lang].gettext) for lang in languages])
 
 
-@register(InlineQuery(access_list(Categories.HAS_ACTUAL_TOKENS),
+@register(InlineQuery(func=handler_filter,
                       pattern=r'^invite/([0-9A-F]{8}(?:-[0-9A-F]{4}){3}-[0-9A-F]{12})/([a-z]{2})$'))
 @translate(text=False, translations=True)
 async def handler_token_lang(event: InlineQuery.Event, translations):

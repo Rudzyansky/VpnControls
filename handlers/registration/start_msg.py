@@ -8,7 +8,13 @@ from handlers.utils import extract
 from localization import translate
 
 
-@register(NewMessage(access_list(Categories.REGISTERED), blacklist_chats=True, pattern=r'^/start(?: ([a-z]{2}))?$'))
+def handler_filter(event: NewMessage.Event):
+    registered = event.chat_id in access_list(Categories.REGISTERED)
+    accepted_invite = domain.registration.is_accept_invite(event.chat_id)
+    return not registered and accepted_invite
+
+
+@register(NewMessage(func=handler_filter, pattern=r'^/start(?: ([a-z]{2}))?$'))
 @translate()
 async def handler(event: NewMessage.Event, _):
     user = domain.registration.register_user(event.chat_id, extract(event.pattern_match, 1, 'en'))

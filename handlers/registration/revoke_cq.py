@@ -7,7 +7,11 @@ from entities.token import Token
 from localization import translate
 
 
-@register(CallbackQuery(access_list(Categories.HAS_ACTUAL_TOKENS), pattern=rb'^revoke (.{16})$'))
+def handler_filter(event: CallbackQuery.Event):
+    return event.sender_id in access_list(Categories.HAS_ACTUAL_TOKENS)
+
+
+@register(CallbackQuery(func=handler_filter, pattern=rb'^revoke (.{16})$'))
 @translate()
 async def handler(event: CallbackQuery.Event, _):
     if registration.revoke_token(Token(event.pattern_match[1], owner_id=event.chat_id)):
