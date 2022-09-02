@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"POT-Creation-Date: 2022-09-02 01:43+0300\n"
-"PO-Revision-Date: 2022-09-02 02:10+0300\n"
+"POT-Creation-Date: 2022-09-02 13:18+0300\n"
+"PO-Revision-Date: 2022-09-02 13:18+0300\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: ru\n"
@@ -24,7 +24,7 @@ msgstr "Доступ запрещён"
 msgid "Invitation is invalid"
 msgstr "Приглашение недействительно"
 
-#: accept_cq.py:34
+#: accept_cq.py:35
 msgid "An error has occurred. Please contact your administrator"
 msgstr "Произошла ошибка. Обратитесь к администратору"
 
@@ -67,7 +67,7 @@ msgstr ""
 "Выпущен токен `%s`\n"
 "__Истекает__ **%s**"
 
-#: start_msg.py:21
+#: start_msg.py:23
 msgid "Something went wrong. Contact with developer"
 msgstr "Что-то пошло не так. Обратитесь к разработчику"
 
