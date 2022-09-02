@@ -32,6 +32,9 @@ sudo -u runner sh -c 'cd ~/actions-runner; sudo ./svc.sh install; sudo ./svc.sh 
 # Install dependencies
 sudo -u tgbot sh -c 'pip install --user -U pip; pip install --user -r /usr/src/tgbot/requirements.txt'
 
+# strongSwan configure
+echo 'include users/ipsec.*.secrets' >> /etc/strongswan/ipsec.secrets
+
 # Create directory for store credentials
 sh -c 'cd /etc/strongswan; mkdir users; chown tgbot:root users; chmod 750 users'
 
