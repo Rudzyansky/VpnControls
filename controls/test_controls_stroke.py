@@ -14,7 +14,7 @@ class ControlsTestCase(unittest.TestCase):
     @classmethod
     def setUpClass(cls) -> None:
         cls.controls = ControlsStroke(cls.file_pattern)
-        cls.controls.update_hook = lambda s: print('update hook')
+        cls.controls.update_hook = lambda: True
         open(cls.file_pattern % cls.user_id, 'w').close()
 
     @classmethod
