@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: 2022-09-02 13:18+0300\n"
-"PO-Revision-Date: 2022-09-02 13:18+0300\n"
+"PO-Revision-Date: 2022-09-02 13:28+0300\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: ru\n"
@@ -120,7 +120,7 @@ msgstr "Отозвать"
 
 #: utils.py:27
 msgid "Invite in another language"
-msgstr "Отправить приглашение на другом языке"
+msgstr "Пригласить на другом языке"
 
 #~ msgid "Something went wrong. Contact the developer"
 #~ msgstr "Что-то пошло не так. Обратитесь к разработчику"
