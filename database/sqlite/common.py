@@ -1,13 +1,12 @@
 from typing import Optional
 
 from entities.user import User
-from .connection import ConnectionSqlite, connection
-from ..abstract import Common
+from database.sqlite.connection import ConnectionSqlite
+from database.abstract import Common
 
 
 class CommonSqlite(Common):
     @classmethod
-    @connection(False)
     def get_all_users(cls, c: ConnectionSqlite = None) -> list[User]:
         sql = 'SELECT id, tokens_limit, accounts_limit, language, commands FROM users'
         return [User(id=id, tokens_limit=tokens_limit, accounts_limit=accounts_limit,
@@ -22,7 +21,6 @@ class CommonSqlite(Common):
                     language=language, _commands=commands)
 
     @classmethod
-    @connection()
     def set_language(cls, user_id: int, lang_code: str, c: ConnectionSqlite = None) -> bool:
         return c.update_one('UPDATE users SET language = ? WHERE id = ?', lang_code, user_id)
 

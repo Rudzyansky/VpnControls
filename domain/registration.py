@@ -18,11 +18,15 @@ async def register_user(user_id: int, language: str, c: Connection):
 
     database.registration.revoke_token_by_user_id(user_id, c=c)
     user = database.common.get_user(user_id, c)
-    domain.common.update_language(user.id, user.language)
+    domain.common.update_language_cache(user.id, user.language)
 
     await CategoriesUpdater(user.id) \
         .registered() \
         .can_create_account(0, user.accounts_limit) \
+        .has_accounts(0) \
+        .can_issue_token(0, user.tokens_limit) \
+        .has_tokens(0) \
+        .has_actual_tokens(0) \
         .finish(c)
 
     c.end_transaction()
