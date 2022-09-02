@@ -3,13 +3,27 @@ from telethon import TelegramClient
 import database
 
 client: TelegramClient
-_languages: dict[int, str] = {u.id: u.language for u in database.common.get_all_users()}
+_languages: dict[int, str]
+
+
+@database.connection()
+def _init(c):
+    global _languages
+    _languages = {u.id: u.language for u in database.common.get_all_users(c)}
+
+
+_init()
 
 
 def language(user_id: int):
     return _languages[user_id]
 
 
-def update_language(user_id: int, lang_code: str):
-    database.common.set_language(user_id, lang_code)
+@database.connection()
+def update_language(user_id: int, lang_code: str, c):
+    database.common.set_language(user_id, lang_code, c)
+    _languages[user_id] = lang_code
+
+
+def update_language_cache(user_id: int, lang_code: str):
     _languages[user_id] = lang_code

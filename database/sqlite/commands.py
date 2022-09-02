@@ -1,10 +1,9 @@
-from .connection import ConnectionSqlite, connection
-from .. import Commands
+from database.abstract import Commands
+from database.sqlite.connection import ConnectionSqlite
 
 
 class CommandsSqlite(Commands):
     @classmethod
-    @connection()
     def recalculate_commands(cls, user_id: int = None, c: ConnectionSqlite = None):
         sql = ('UPDATE users SET commands = (SELECT '
                '((accounts < accounts_limit) <<  1) | '  # CAN_CREATE_ACCOUNT
