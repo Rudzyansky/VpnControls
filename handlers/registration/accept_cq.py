@@ -29,7 +29,8 @@ async def handler(event: CallbackQuery.Event, _):
     token.used_by = event.sender_id
     if domain.registration.use_token(token):
         _un = (await event.client.get_me()).username
-        await event.answer(url=f'https://t.me/{_un}?start={event.pattern_match[2]}')
+        lang = event.pattern_match[2].decode()
+        await event.answer(url=f'https://t.me/{_un}?start={lang}')
     else:
         await event.answer(_('An error has occurred. Please contact your administrator'))
         await event.client.send_message(event.chat_id, contact_with_developer(
