@@ -14,11 +14,15 @@ def handler_filter(event: NewMessage.Event):
 
 
 @register(NewMessage(func=handler_filter, pattern=r'^/start(?: ([a-z]{2}))?$'))
-@translate()
-async def handler(event: NewMessage.Event, _):
-    user = await domain.registration.register_user(event.chat_id, extract(event.pattern_match, 1, 'en'))
+@translate(text=False, translations=True)
+async def handler(event: NewMessage.Event, translations):
+    lang = extract(event.pattern_match, 1, 'en')
+    user = await domain.registration.register_user(event.chat_id, lang)
     if user is None:
+        _ = translations['en'].gettext
         await event.client.send_message(event.chat_id, _('Something went wrong. Contact with developer'))
         return
+
+    _ = translations[user.language].gettext
 
     # todo say hello

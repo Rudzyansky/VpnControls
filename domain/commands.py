@@ -8,6 +8,7 @@ import bot_commands
 import database
 import domain.common
 from bot_commands.categories import Categories
+from database.abstract import Connection
 from domain import common
 from domain.types import *
 
@@ -77,11 +78,16 @@ async def telegram_set_commands(user_id: int):
 
 # Initialization
 
-async def init():
-    database.commands.recalculate_commands()
-    for __user in database.common.get_all_users():
+@database.connection(manual=True)
+async def init(c: Connection):
+    c.open()
+    c.begin_transaction()
+    database.commands.recalculate_commands(c=c)
+    for __user in database.common.get_all_users(c):
         _categories.add(__user.id, __user.commands)
         _commands[__user.id] = bot_commands.get(__user.language, __user.commands)
         for category in __user.commands:
             _access_lists.add(category, {__user.id})
         await telegram_set_commands(__user.id)
+    c.end_transaction()
+    c.close()
