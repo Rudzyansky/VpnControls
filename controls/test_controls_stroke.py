@@ -6,6 +6,7 @@ from controls.utils import to_hex
 
 
 class ControlsTestCase(unittest.TestCase):
+    controls = None
     file_pattern = 'test.%s.txt'
     user_id = 33123
     line_pattern = '"#%s" : EAP "0x%s"\n'
@@ -13,6 +14,7 @@ class ControlsTestCase(unittest.TestCase):
     @classmethod
     def setUpClass(cls) -> None:
         cls.controls = ControlsStroke(cls.file_pattern)
+        cls.controls.update_hook = lambda s: print('update hook')
         open(cls.file_pattern % cls.user_id, 'w').close()
 
     @classmethod

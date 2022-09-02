@@ -1,34 +1,29 @@
-from abc import ABC, abstractmethod
+from abc import ABC
+from functools import wraps
 from typing import Optional
 
-from entities.account import Account
+
+def update(func):
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        result = func(*args, **kwargs)
+        args[0].update_hook()
+        return result
+
+    return wrapper
 
 
 class Controls(ABC):
-    @classmethod
-    @abstractmethod
-    def add_user(cls, user_id: int, username: str, password: str) -> int: pass
+    def add_user(self, user_id: int, username: str, password: str) -> int: ...
 
-    @classmethod
-    @abstractmethod
-    def remove_user(cls, user_id: int, id: int) -> Optional[int]: pass
+    def remove_user(self, user_id: int, id: int) -> Optional[int]: ...
 
-    @classmethod
-    @abstractmethod
-    def set_password(cls, user_id: int, id: int, password: str) -> Optional[int]: pass
+    def set_password(self, user_id: int, id: int, password: str) -> Optional[int]: ...
 
-    @classmethod
-    @abstractmethod
-    def set_username(cls, user_id: int, id: int, username: str) -> Optional[int]: pass
+    def set_username(self, user_id: int, id: int, username: str) -> Optional[int]: ...
 
-    @classmethod
-    @abstractmethod
-    def get_account(cls, user_id: int, id: int) -> Optional[tuple[str, str]]: pass
+    def get_account(self, user_id: int, id: int) -> Optional[tuple[str, str]]: ...
 
-    @classmethod
-    @abstractmethod
-    def get_accounts(cls, user_id: int, *ids: int) -> list[tuple[str, str]]: pass
+    def get_accounts(self, user_id: int, *ids: int) -> list[tuple[str, str]]: ...
 
-    @classmethod
-    @abstractmethod
-    def change_hook(cls): pass
+    def update_hook(self): ...
