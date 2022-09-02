@@ -16,14 +16,17 @@ _init()
 
 
 def language(user_id: int):
+    global _languages
     return _languages[user_id]
 
 
 @database.connection()
 def update_language(user_id: int, lang_code: str, c):
+    global _languages
     database.common.set_language(user_id, lang_code, c)
     _languages[user_id] = lang_code
 
 
 def update_language_cache(user_id: int, lang_code: str):
+    global _languages
     _languages[user_id] = lang_code
