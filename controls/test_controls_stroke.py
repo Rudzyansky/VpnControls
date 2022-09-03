@@ -2,14 +2,14 @@ import os
 import unittest
 
 from controls.controls_stroke import ControlsStroke
-from controls.utils import to_hex
+from controls.utils import encode_base64, encode_hex
 
 
 class ControlsTestCase(unittest.TestCase):
     controls = None
     file_pattern = 'test.%s.txt'
     user_id = 33123
-    line_pattern = '"#%s" : EAP "0x%s"\n'
+    line_pattern = '"fqdn:#%s" : EAP 0s%s\n'
 
     @classmethod
     def setUpClass(cls) -> None:
@@ -27,10 +27,10 @@ class ControlsTestCase(unittest.TestCase):
         self.user2, self.pass2 = 'username2', 'password2'
         self.user3, self.pass3 = 'username3', 'password3'
         self.user4, self.pass4 = 'username4', 'password4'
-        self.line1 = self.line_pattern % (to_hex(self.user1), to_hex(self.pass1))
-        self.line2 = self.line_pattern % (to_hex(self.user2), to_hex(self.pass2))
-        self.line3 = self.line_pattern % (to_hex(self.user3), to_hex(self.pass3))
-        self.line4 = self.line_pattern % (to_hex(self.user4), to_hex(self.pass4))
+        self.line1 = self.line_pattern % (encode_hex(self.user1), encode_base64(self.pass1))
+        self.line2 = self.line_pattern % (encode_hex(self.user2), encode_base64(self.pass2))
+        self.line3 = self.line_pattern % (encode_hex(self.user3), encode_base64(self.pass3))
+        self.line4 = self.line_pattern % (encode_hex(self.user4), encode_base64(self.pass4))
         self.position1 = self.controls.add_user(self.user_id, self.user1, self.pass1)
         self.position2 = self.controls.add_user(self.user_id, self.user2, self.pass2)
         self.position3 = self.controls.add_user(self.user_id, self.user3, self.pass3)
@@ -78,7 +78,7 @@ class ControlsTestCase(unittest.TestCase):
 
     def test_set_password_equals(self):
         password = self.pass2[::-1]  # reversed str
-        line2 = self.line_pattern % (to_hex(self.user2), to_hex(password))
+        line2 = self.line_pattern % (encode_hex(self.user2), encode_base64(password))
         expected = self.line1 + line2 + self.line3 + self.line4
         diff = self.controls.set_password(self.user_id, self.position2, password)
         with open(self.file_pattern % self.user_id) as f:
@@ -88,22 +88,22 @@ class ControlsTestCase(unittest.TestCase):
 
     def test_set_password_greater(self):
         password = 'long_password'
-        line2 = self.line_pattern % (to_hex(self.user2), to_hex(password))
+        line2 = self.line_pattern % (encode_hex(self.user2), encode_base64(password))
         expected = self.line1 + line2 + self.line3 + self.line4
         diff = self.controls.set_password(self.user_id, self.position2, password)
         with open(self.file_pattern % self.user_id) as f:
             actual = f.read()
-        self.assertEqual(len(to_hex(password)) - len(to_hex(self.pass2)), diff)
+        self.assertEqual(len(encode_base64(password)) - len(encode_base64(self.pass2)), diff)
         self.assertEqual(expected, actual)
 
     def test_set_password_less(self):
         password = 'pass'
-        line2 = self.line_pattern % (to_hex(self.user2), to_hex(password))
+        line2 = self.line_pattern % (encode_hex(self.user2), encode_base64(password))
         expected = self.line1 + line2 + self.line3 + self.line4
         diff = self.controls.set_password(self.user_id, self.position2, password)
         with open(self.file_pattern % self.user_id) as f:
             actual = f.read()
-        self.assertEqual(len(to_hex(password)) - len(to_hex(self.pass2)), diff)
+        self.assertEqual(len(encode_base64(password)) - len(encode_base64(self.pass2)), diff)
         self.assertEqual(expected, actual)
 
     def test_set_password_out_of_range(self):
@@ -116,7 +116,7 @@ class ControlsTestCase(unittest.TestCase):
 
     def test_set_username_equals(self):
         username = self.user2[::-1]  # reversed str
-        line2 = self.line_pattern % (to_hex(username), to_hex(self.pass2))
+        line2 = self.line_pattern % (encode_hex(username), encode_base64(self.pass2))
         expected = self.line1 + line2 + self.line3 + self.line4
         diff = self.controls.set_username(self.user_id, self.position2, username)
         with open(self.file_pattern % self.user_id) as f:
@@ -126,22 +126,22 @@ class ControlsTestCase(unittest.TestCase):
 
     def test_set_username_greater(self):
         username = 'long_username'
-        line2 = self.line_pattern % (to_hex(username), to_hex(self.pass2))
+        line2 = self.line_pattern % (encode_hex(username), encode_base64(self.pass2))
         expected = self.line1 + line2 + self.line3 + self.line4
         diff = self.controls.set_username(self.user_id, self.position2, username)
         with open(self.file_pattern % self.user_id) as f:
             actual = f.read()
-        self.assertEqual(len(to_hex(username)) - len(to_hex(self.user2)), diff)
+        self.assertEqual(len(encode_hex(username)) - len(encode_hex(self.user2)), diff)
         self.assertEqual(expected, actual)
 
     def test_set_username_less(self):
         username = 'user'
-        line2 = self.line_pattern % (to_hex(username), to_hex(self.pass2))
+        line2 = self.line_pattern % (encode_hex(username), encode_base64(self.pass2))
         expected = self.line1 + line2 + self.line3 + self.line4
         diff = self.controls.set_username(self.user_id, self.position2, username)
         with open(self.file_pattern % self.user_id) as f:
             actual = f.read()
-        self.assertEqual(len(to_hex(username)) - len(to_hex(self.user2)), diff)
+        self.assertEqual(len(encode_hex(username)) - len(encode_hex(self.user2)), diff)
         self.assertEqual(expected, actual)
 
     def test_set_username_out_of_range(self):
