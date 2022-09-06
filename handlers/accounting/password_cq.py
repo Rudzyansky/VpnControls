@@ -18,14 +18,8 @@ def handler_filter(event: CallbackQuery.Event):
 @register(CallbackQuery(func=handler_filter, pattern=rb'^password ([0-9]+)$'))
 @translate()
 async def handler(event: CallbackQuery.Event, _):
-    account = domain.accounting.reset_password(event.sender_id, int(event.pattern_match[1]))
-    if account is not None:
-        try:
-            await event.edit(generate_credentials_text(account, _),
-                             buttons=generate_buttons(event.client, account, _=_))
-        except MessageNotModifiedError:
-            pass
-    else:
+    result = domain.accounting.reset_password(event.sender_id, int(event.pattern_match[1]))
+    if result.data is None:
         await event.client.send_message(event.sender_id, contact_with_developer(
             _,
             timestamp=datetime.utcnow(),
@@ -34,3 +28,14 @@ async def handler(event: CallbackQuery.Event, _):
             sender_id=event.sender_id,
             chat_id=event.chat_id,
         ))
+        return
+
+    if result.changed:
+        text = generate_credentials_text(result.data, _)
+        buttons = generate_buttons(event.client, result.data, _=_)
+        try:
+            await event.edit(text, buttons=buttons)
+        except MessageNotModifiedError:
+            pass
+    else:
+        await event.answer()
