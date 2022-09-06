@@ -159,11 +159,11 @@ def get_token(token: bytes, c: Connection):
 
 
 @database.connection(False)
-def fetch_token(token: bytes, owner_id: int, c: Connection):
+def fetch_token(token: Token, c: Connection):
     """
     Fetch all token's data by token + owner_id
     """
-    return database.registration.fetch_token(token, owner_id, c=c)
+    return database.registration.fetch_token(token.bytes, token.owner_id, c=c)
 
 
 @database.connection()
