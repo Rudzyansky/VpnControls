@@ -51,7 +51,7 @@ async def handler_lang(event: InlineQuery.Event, translations):
                       pattern=r'^invite/([0-9A-F]{8}(?:-[0-9A-F]{4}){3}-[0-9A-F]{12})$'))
 @translate(text=False, translations=True)
 async def handler_token(event: InlineQuery.Event, translations):
-    token = domain.registration.fetch_token(event.pattern_match[1], event.chat_id)
+    token = domain.registration.fetch_token(Token(event.pattern_match[1], owner_id=event.chat_id))
     if token is None:
         await event.answer()
     else:
@@ -63,7 +63,7 @@ async def handler_token(event: InlineQuery.Event, translations):
                       pattern=r'^invite/([0-9A-F]{8}(?:-[0-9A-F]{4}){3}-[0-9A-F]{12})/$'))
 @translate(text=False, translations=True)
 async def handler_token_space(event: InlineQuery.Event, translations):
-    token = domain.registration.fetch_token(event.pattern_match[1], event.chat_id)
+    token = domain.registration.fetch_token(Token(event.pattern_match[1], owner_id=event.chat_id))
     if token is None:
         await event.answer()
     else:
@@ -74,7 +74,7 @@ async def handler_token_space(event: InlineQuery.Event, translations):
                       pattern=r'^invite/([0-9A-F]{8}(?:-[0-9A-F]{4}){3}-[0-9A-F]{12})/([a-z]{2})$'))
 @translate(text=False, translations=True)
 async def handler_token_lang(event: InlineQuery.Event, translations):
-    token = domain.registration.fetch_token(event.pattern_match[1], event.chat_id)
+    token = domain.registration.fetch_token(Token(event.pattern_match[1], owner_id=event.chat_id))
     if token is None:
         await event.answer()
     else:
