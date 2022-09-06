@@ -5,7 +5,7 @@ from domain import common, commands, registration, accounting
 
 async def init(client: TelegramClient):
     common.client = client
-    await commands.init()
+    # await commands.init()
 
 
 __all__ = [

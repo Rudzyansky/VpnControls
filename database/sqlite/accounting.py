@@ -8,6 +8,16 @@ from ..abstract.accounting import Accounting
 class AccountingSqlite(Accounting):
 
     @classmethod
+    def get_users(cls, c: ConnectionSqlite = None) -> list[int]:
+        sql = 'SELECT DISTINCT user_id FROM accounts'
+        return [user_id for user_id in c.fetch_all(sql)]
+
+    @classmethod
+    def get_accounts(cls, user_id: int, c: ConnectionSqlite = None) -> list[Account]:
+        sql = 'SELECT ROWID, username, password FROM accounts WHERE user_id = ?'
+        return [Account(id=r[0], username=r[1], password=r[2]) for r in c.fetch_all(sql, user_id)]
+
+    @classmethod
     def get_account_position(cls, user_id: int, id: int, c: ConnectionSqlite = None) -> Optional[int]:
         sql = 'SELECT position FROM accounts WHERE ROWID = ? AND user_id = ?'
         return int(c.single(sql, id, user_id))
@@ -44,6 +54,10 @@ class AccountingSqlite(Accounting):
         return c.update_one(sql, password, user_id, id)
 
     @classmethod
+    def set_position(cls, id: int, position: int, c: ConnectionSqlite = None) -> bool:
+        return c.update_one('UPDATE accounts SET position = ? WHERE ROWID = ?', id, position)
+
+    @classmethod
     def move_accounts(cls, user_id: int, position: int, diff: int, c: ConnectionSqlite = None) -> bool:
         sql = 'UPDATE accounts SET position = position + ? WHERE user_id = ? AND position > ?'
         return c.update_many(sql, diff, user_id, position)
@@ -62,11 +76,6 @@ class AccountingSqlite(Accounting):
     def count_of_accounts(cls, user_id: int, c: ConnectionSqlite = None) -> int:
         sql = 'SELECT COUNT(ROWID) FROM accounts WHERE user_id = ?'
         return int(c.single(sql, user_id))
-
-    @classmethod
-    def get_next_account_data(cls, user_id: int, offset: int, c: ConnectionSqlite = None) -> tuple[int, int]:
-        sql = 'SELECT ROWID, position FROM accounts WHERE user_id = ? ORDER BY position LIMIT ?, 1'
-        return c.fetch_one(sql, user_id, offset)
 
 
 accounting: Accounting = AccountingSqlite()

@@ -1,20 +1,11 @@
 from abc import ABC
-from functools import wraps
 from typing import Optional
-
-
-def update(func):
-    @wraps(func)
-    def wrapper(*args, **kwargs):
-        result = func(*args, **kwargs)
-        args[0].update_hook()
-        return result
-
-    return wrapper
 
 
 class Controls(ABC):
     def add_user(self, user_id: int, username: str, password: str) -> int: ...
+
+    def remove_all(self, user_id: int): ...
 
     def remove_user(self, user_id: int, id: int) -> Optional[int]: ...
 

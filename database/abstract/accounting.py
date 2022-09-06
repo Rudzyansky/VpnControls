@@ -8,6 +8,14 @@ from .connection import Connection
 class Accounting(ABC):
     @classmethod
     @abstractmethod
+    def get_users(cls, c: Connection = None) -> list[int]: ...
+
+    @classmethod
+    @abstractmethod
+    def get_accounts(cls, user_id: int, c: Connection = None) -> list[Account]: ...
+
+    @classmethod
+    @abstractmethod
     def get_account_position(cls, user_id: int, id: int, c: Connection = None) -> Optional[int]: ...
 
     @classmethod
@@ -36,6 +44,10 @@ class Accounting(ABC):
 
     @classmethod
     @abstractmethod
+    def set_position(cls, id: int, position: int, c: Connection = None) -> bool: ...
+
+    @classmethod
+    @abstractmethod
     def move_accounts(cls, user_id: int, pos: int, diff: int, c: Connection = None) -> bool: pass
 
     @classmethod
@@ -49,7 +61,3 @@ class Accounting(ABC):
     @classmethod
     @abstractmethod
     def count_of_accounts(cls, user_id: int, c: Connection = None) -> int: ...
-
-    @classmethod
-    @abstractmethod
-    def get_next_account_data(cls, user_id: int, offset: int, c: Connection = None) -> tuple[int, int]: ...

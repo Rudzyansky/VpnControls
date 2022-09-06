@@ -4,7 +4,7 @@ from re import Pattern
 from typing import AnyStr, IO, Optional
 
 import env
-from controls.controls_abstract import Controls, update
+from controls.controls_abstract import Controls
 from controls.file_manipulator import FileManipulator
 from controls.utils import encode_base64, decode_base64, encode_hex, decode_hex
 
@@ -16,24 +16,23 @@ class ControlsStroke(Controls, FileManipulator):
         super().__init__(file_pattern)
         self.line_pattern = re.compile(r'^"fqdn:#([A-Za-z0-9]+)" : EAP 0s([A-Za-z0-9+/=]+)\n$')
 
-    @update
     def add_user(self, user_id: int, username: str, password: str) -> int:
         line = '"fqdn:#%s" : EAP 0s%s\n' % (encode_hex(username), encode_base64(password))
         with self.open(user_id, mode='ab') as f:
             return self.append(f, line)
 
-    @update
+    def remove_all(self, user_id: int):
+        self.open(user_id, 'wb').close()
+
     def remove_user(self, user_id: int, position: int) -> Optional[int]:
         with self.open(user_id) as f:
             return self.remove_line(f, position)
 
-    @update
     def set_password(self, user_id: int, position: int, password: str) -> Optional[int]:
         with self.open(user_id) as f:
             _position, _count = self.get_password_pos(f, position)
             return self.replace_by_position(f, _position, _count, encode_base64(password))
 
-    @update
     def set_username(self, user_id: int, position: int, username: str) -> Optional[int]:
         with self.open(user_id) as f:
             _position, _count = self.get_username_pos(f, position)

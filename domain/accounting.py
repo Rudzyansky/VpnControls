@@ -31,6 +31,7 @@ async def create_account(user_id: int, username: str, c: Connection) -> Optional
     account = Account(username=username, password=utils.gen_password())
     c.begin_transaction()
     account.position = controls.add_user(user_id, account.username, account.password)
+    controls.update_hook()
     account.id = database.accounting.add_account(user_id, account.position, account.username, account.password, c)
 
     # Commands and access lists
@@ -60,6 +61,8 @@ async def delete_account(user_id: int, id: int, c) -> bool:
     if diff is None:
         c.close()
         raise RuntimeError(f'Out of range {user_id}:{position}')
+
+    controls.update_hook()
 
     c.begin_transaction()
     if diff != 0:
@@ -94,6 +97,8 @@ def change_username(user_id: int, id: int, new_username: str, c) -> ChangeUserna
     if diff is None:
         raise RuntimeError(f'Out of range {user_id}:{position}')
 
+    controls.update_hook()
+
     if diff != 0:
         database.accounting.move_accounts(user_id, position, diff, c)
 
@@ -111,6 +116,8 @@ def reset_password(user_id: int, id: int, c) -> ChangePassword:
     diff = controls.set_password(user_id, position, password)
     if diff is None:
         raise RuntimeError(f'Out of range {user_id}:{position}')
+
+    controls.update_hook()
 
     if diff != 0:
         database.accounting.move_accounts(user_id, position, diff, c)
