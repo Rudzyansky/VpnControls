@@ -4,9 +4,9 @@ from re import Pattern
 from typing import AnyStr, IO, Optional
 
 import env
-from controls.controls_abstract import Controls, update
+from controls.controls_abstract import Controls
 from controls.file_manipulator import FileManipulator
-from controls.utils import to_hex, from_hex
+from controls.utils import encode_base64, decode_base64, encode_hex, decode_hex
 
 
 class ControlsStroke(Controls, FileManipulator):
@@ -14,37 +14,36 @@ class ControlsStroke(Controls, FileManipulator):
 
     def __init__(self, file_pattern: str = env.SECRETS_PATTERN):
         super().__init__(file_pattern)
-        self.line_pattern = re.compile(r'^"#([A-Z0-9]+)" : EAP "0x([A-Z0-9]+)"\n$', re.IGNORECASE)
+        self.line_pattern = re.compile(r'^"fqdn:#([A-Za-z0-9]+)" : EAP 0s([A-Za-z0-9+/=]+)\n$')
 
-    @update
     def add_user(self, user_id: int, username: str, password: str) -> int:
-        line = '"#%s" : EAP "0x%s"\n' % (to_hex(username), to_hex(password))
+        line = '"fqdn:#%s" : EAP 0s%s\n' % (encode_hex(username), encode_base64(password))
         with self.open(user_id, mode='ab') as f:
             return self.append(f, line)
 
-    @update
+    def remove_all(self, user_id: int):
+        self.open(user_id, mode='wb').close()
+
     def remove_user(self, user_id: int, position: int) -> Optional[int]:
         with self.open(user_id) as f:
             return self.remove_line(f, position)
 
-    @update
     def set_password(self, user_id: int, position: int, password: str) -> Optional[int]:
         with self.open(user_id) as f:
             _position, _count = self.get_password_pos(f, position)
-            return self.replace_by_position(f, _position, _count, to_hex(password))
+            return self.replace_by_position(f, _position, _count, encode_base64(password))
 
-    @update
     def set_username(self, user_id: int, position: int, username: str) -> Optional[int]:
         with self.open(user_id) as f:
             _position, _count = self.get_username_pos(f, position)
-            return self.replace_by_position(f, _position, _count, to_hex(username))
+            return self.replace_by_position(f, _position, _count, encode_hex(username))
 
     def get_account(self, user_id: int, position: int) -> Optional[tuple[str, str]]:
         with self.open(user_id, mode='r') as f:
             f.seek(position)
             matches = self.line_pattern.match(f.readline())
             if matches:
-                return from_hex(matches[1]), from_hex(matches[2])
+                return decode_hex(matches[1]), decode_base64(matches[2])
             return None
 
     def get_accounts(self, user_id: int, *positions: int) -> list[tuple[str, str]]:
@@ -53,7 +52,7 @@ class ControlsStroke(Controls, FileManipulator):
             for position in positions:
                 f.seek(position)
                 matches = self.line_pattern.match(f.readline())
-                result.append((from_hex(matches[1]), from_hex(matches[2])))
+                result.append((decode_hex(matches[1]), decode_base64(matches[2])))
         return result
 
     def update_hook(self):
@@ -63,14 +62,14 @@ class ControlsStroke(Controls, FileManipulator):
     def get_username_pos(f: IO, position: int):
         f.seek(position)
         line = f.readline().decode()
-        start = line.find('"') + 2
+        start = line.find('"fqdn:#') + 7
         end = line.find('"', start)
-        return position + start, end - start  # starts with '#'
+        return position + start, end - start
 
     @staticmethod
     def get_password_pos(f: IO, position: int):
         f.seek(position)
         line = f.readline().decode()
-        end = line.rfind('"')
-        start = line.rfind('"', 0, end) + 3
-        return position + start, end - start  # starts with '0x'
+        end = line.rfind('\n')
+        start = line.rfind('0s', 0, end) + 2
+        return position + start, end - start

@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"POT-Creation-Date: 2022-09-02 01:44+0300\n"
-"PO-Revision-Date: 2022-09-02 01:44+0300\n"
+"POT-Creation-Date: 2022-09-06 12:30+0300\n"
+"PO-Revision-Date: 2022-09-06 12:30+0300\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: ru\n"
@@ -23,17 +23,22 @@ msgstr "Аккаунт удалён"
 msgid "Account NOT removed"
 msgstr "Аккаунт НЕ удалён"
 
-#: username_cq.py:25
+#: username_cq.py:26
 msgid "Enter username to change it"
 msgstr "Введите новое имя пользователя"
 
-#: username_cq.py:27
+#: username_cq.py:28 username_cq.py:64
 msgid "Cancel"
 msgstr "Отменить"
 
-#: username_cq.py:45
+#: username_cq.py:46
 msgid "Operation canceled"
 msgstr "Операция отменена"
+
+#: username_cq.py:63
+#, python-format
+msgid "Username `%s` already exist. Enter another username to change it"
+msgstr "Имя пользователя `%s` уже существует. Введите другое имя пользователя"
 
 #: utils.py:10
 #, python-format
@@ -61,6 +66,9 @@ msgstr "Сбросить пароль"
 #: utils.py:23
 msgid "Delete account"
 msgstr "Удалить аккаунт"
+
+#~ msgid "No changes"
+#~ msgstr "Изменений нет"
 
 #~ msgid "**IKEv2**"
 #~ msgstr "**IKEv2**"

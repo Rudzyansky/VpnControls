@@ -17,16 +17,16 @@ def handler_filter(event: NewMessage.Event):
 @register(NewMessage(func=handler_filter, pattern=r'^/accounts$'))
 @translate()
 async def handler(event: NewMessage.Event, _):
-    account_data = domain.accounting.get_account(event.chat_id, 0)
-    if account_data:
-        offset, count, account = account_data
-        text = generate_credentials_text(account, _)
-        buttons = generate_buttons(event.client, account, offset, count, _)
-        await event.client.send_message(event.chat_id, text, buttons=buttons)
-    else:
+    result = domain.accounting.get_account(event.chat_id, 0)
+    if result.data is None:
         await event.client.send_message(event.chat_id, contact_with_developer(
             _,
             timestamp=datetime.utcnow(),
             action='accounts',
             chat_id=event.chat_id,
         ))
+        return
+
+    text = generate_credentials_text(result.data, _)
+    buttons = generate_buttons(event.client, result.data, result.offset, result.count, _)
+    await event.client.send_message(event.chat_id, text, buttons=buttons)
