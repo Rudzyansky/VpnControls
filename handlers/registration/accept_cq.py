@@ -24,9 +24,9 @@ async def handler_filter(event: CallbackQuery.Event, translations):
 async def handler(event: CallbackQuery.Event, translations):
     lang = event.pattern_match[2].decode()
     _ = translations[lang].gettext
-    token = domain.registration.fetch_token(Token(event.pattern_match[1], owner_id=event.chat_id))
+    token = domain.registration.get_token(event.pattern_match[1])
     if token is None or (token.used_by is not None and token.used_by != event.sender_id):
-        await event.edit(_('Invitation is invalid'))
+        await event.answer(_('Invitation is invalid'))
         return
 
     token.used_by = event.sender_id
