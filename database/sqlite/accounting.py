@@ -10,7 +10,7 @@ class AccountingSqlite(Accounting):
     @classmethod
     def get_users(cls, c: ConnectionSqlite = None) -> list[int]:
         sql = 'SELECT DISTINCT user_id FROM accounts'
-        return [user_id for user_id in c.fetch_all(sql)]
+        return [user_id for user_id, in c.fetch_all(sql)]
 
     @classmethod
     def get_accounts(cls, user_id: int, c: ConnectionSqlite = None) -> list[Account]:
@@ -55,7 +55,7 @@ class AccountingSqlite(Accounting):
 
     @classmethod
     def set_position(cls, id: int, position: int, c: ConnectionSqlite = None) -> bool:
-        return c.update_one('UPDATE accounts SET position = ? WHERE ROWID = ?', id, position)
+        return c.update_one('UPDATE accounts SET position = ? WHERE ROWID = ?', position, id)
 
     @classmethod
     def move_accounts(cls, user_id: int, position: int, diff: int, c: ConnectionSqlite = None) -> bool:

@@ -22,7 +22,7 @@ class ControlsStroke(Controls, FileManipulator):
             return self.append(f, line)
 
     def remove_all(self, user_id: int):
-        self.open(user_id, 'wb').close()
+        self.open(user_id, mode='wb').close()
 
     def remove_user(self, user_id: int, position: int) -> Optional[int]:
         with self.open(user_id) as f:
