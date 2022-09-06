@@ -14,7 +14,8 @@ useradd -mNrs /sbin/nologin tgbot
 
 # Sudo permissions setup
 sed -e '/^root/s|$|\n'\
-'tgbot\tALL=NOPASSWD:\t/sbin/strongswan rereadsecrets\n'\
+'tgbot\tALL=NOPASSWD:\t/sbin/strongswan rereadsecrets,\n'\
+'\t\t\t/sbin/swanctl -sc\n'\
 'runner\tALL=NOPASSWD:\t/home/runner/actions-runner/svc.sh, \\\n'\
 '\t\t\t/bin/rm -rf /usr/src/tgbot, \\\n'\
 '\t\t\t/bin/cp -Rf . /usr/src/tgbot, \\\n'\
