@@ -20,13 +20,17 @@ async def register_user(user_id: int, language: str, c: Connection):
     user = database.common.get_user(user_id, c)
     domain.common.update_language_cache(user.id, user.language)
 
+    count_of_accounts = database.accounting.count_of_accounts(user_id, c=c)
+    count_of_tokens = database.registration.count_of_tokens(user_id, c=c)
+    count_of_actual_tokens = database.registration.count_of_actual_tokens(user_id, c=c)
+
     await CategoriesUpdater(user.id) \
         .registered() \
-        .can_create_account(0, user.accounts_limit) \
-        .has_accounts(0) \
-        .can_issue_token(0, user.tokens_limit) \
-        .has_tokens(0) \
-        .has_actual_tokens(0) \
+        .can_create_account(count_of_accounts, user.accounts_limit) \
+        .has_accounts(count_of_accounts) \
+        .can_issue_token(count_of_tokens, user.tokens_limit) \
+        .has_tokens(count_of_tokens) \
+        .has_actual_tokens(count_of_actual_tokens) \
         .finish(c)
 
     c.end_transaction()
