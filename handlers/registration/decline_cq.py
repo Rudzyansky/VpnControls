@@ -7,17 +7,19 @@ from entities.token import Token
 from localization import translate
 
 
-@translate()
-async def handler_filter(event: CallbackQuery.Event, _):
+@translate(False, translations=True)
+async def handler_filter(event: CallbackQuery.Event, translations):
+    _ = translations[event.pattern_match[2].decode()].gettext
     registered = event.sender_id in access_list(Categories.REGISTERED)
     if registered:
         await event.answer(_('Access denied'))
     return not registered
 
 
-@register(CallbackQuery(func=handler_filter, pattern=rb'(?s)^decline (.{16})$'))
-@translate()
-async def handler(event: CallbackQuery.Event, _):
+@register(CallbackQuery(func=handler_filter, pattern=rb'(?s)^decline (.{16}) ([a-z]{2})$'))
+@translate(False, translations=True)
+async def handler(event: CallbackQuery.Event, translations):
+    _ = translations[event.pattern_match[2].decode()].gettext
     if await domain.registration.revoke_token(Token(event.pattern_match[1], owner_id=event.chat_id)):
         await event.edit(_('Invitation turned into a pumpkin'))
     else:
