@@ -100,4 +100,4 @@ async def invite_article(event, token, lang, _):
     return event.builder.article(_('Invite'), description, thumb=invite_thumb,
                                  text=_('You have been invited to use FalseЪ VPN'), buttons=[
             Button.inline(_('Accept'), b'accept ' + token.bytes + b' ' + lang.encode()),
-            Button.inline(_('Decline'), b'decline ' + token.bytes)])
+            Button.inline(_('Decline'), b'decline ' + token.bytes + b' ' + lang.encode())])

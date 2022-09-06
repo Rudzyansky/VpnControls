@@ -14,7 +14,7 @@ useradd -mNrs /sbin/nologin tgbot
 
 # Sudo permissions setup
 sed -e '/^root/s|$|\n'\
-'tgbot\tALL=NOPASSWD:\t/sbin/strongswan stroke rereadsecrets,\n'\
+'tgbot\tALL=NOPASSWD:\t/sbin/strongswan stroke rereadsecrets\n'\
 'runner\tALL=NOPASSWD:\t/home/runner/actions-runner/svc.sh, \\\n'\
 '\t\t\t/bin/rm -rf /usr/src/tgbot, \\\n'\
 '\t\t\t/bin/cp -Rf . /usr/src/tgbot, \\\n'\
@@ -66,7 +66,8 @@ semodule -DB && setenforce permissive
 sudo -u runner sh -c 'cd ~/actions-runner; sudo ./svc.sh start; sudo ./svc.sh stop'
 audit2allow -M "$PACKAGE_NAME" -b
 setenforce enforcing && semodule -B
-checkmodule -M -m -o "$PACKAGE_NAME".mod "$PACKAGE_NAME".te &&
-semodule_package -o "$PACKAGE_NAME".pp -m "$PACKAGE_NAME".mod &&
+# vim "$PACKAGE_NAME".te
+# checkmodule -M -m -o "$PACKAGE_NAME".mod "$PACKAGE_NAME".te && \
+# semodule_package -o "$PACKAGE_NAME".pp -m "$PACKAGE_NAME".mod && \
 semodule -i "$PACKAGE_NAME".pp
 ```
