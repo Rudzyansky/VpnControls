@@ -18,7 +18,7 @@ async def handler_filter(event: CallbackQuery.Event, _):
     return not registered
 
 
-@register(CallbackQuery(func=handler_filter, pattern=rb'^accept (.{16}) ([a-z]{2})$'))
+@register(CallbackQuery(func=handler_filter, pattern=rb'(?s)^accept (.{16}) ([a-z]{2})$'))
 @translate()
 async def handler(event: CallbackQuery.Event, _):
     token = domain.registration.fetch_token(Token(event.pattern_match[1], owner_id=event.chat_id))
