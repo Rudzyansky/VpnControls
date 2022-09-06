@@ -28,7 +28,8 @@ def init(c: ConnectionSqlite):
         'CREATE TABLE IF NOT EXISTS accounts ('
         'user_id INT NOT NULL, '
         'position INT NOT NULL, '
-        'FOREIGN KEY (user_id) REFERENCES users (id) ON UPDATE RESTRICT ON UPDATE RESTRICT); '
+        'username TEXT NOT NULL UNIQUE, '
+        'password TEXT NOT NULL); '
 
         'CREATE VIEW IF NOT EXISTS slaves AS '
         'WITH RECURSIVE slaves (leaf_id, id, tokens_limit) AS ('

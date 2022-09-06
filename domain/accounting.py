@@ -4,45 +4,42 @@ import database
 from controls import utils, controls
 from database.abstract import Connection
 from domain.types import CategoriesUpdater
+from domain.types.accounting_types import ChangeUsername, ChangePassword, GetAccount
 from entities.account import Account
 
 
-def _get_account(user_id: int, id: int, position: int):
-    user_data = controls.get_account(user_id, position)
-    if user_data is not None:
-        return Account(id, user_data[0], user_data[1])
-    else:
-        raise RuntimeError(f'Account {user_id}:{position} not found')
-
-
-@database.connection()
-def get_account(user_id: int, offset: int, c) -> Optional[tuple[int, int, Account]]:
+@database.connection(False)
+def get_account(user_id: int, offset: int, c) -> GetAccount:
     count = database.accounting.count_of_accounts(user_id, c)
     if count == 0:
-        return None
+        return GetAccount(offset=offset)
 
     if offset >= count:
         offset = 0
 
-    id, position = database.accounting.get_next_account_data(user_id, offset, c)
-    return offset, count, _get_account(user_id, id, position)
+    account = database.accounting.get_account_by_offset(user_id, offset, c)
+    return GetAccount(offset=offset, count=count, data=account)
 
 
 @database.connection(manual=True)
-async def create_account(user_id: int, username: str, c: Connection) -> Account:
-    account = Account(username=username, password=utils.gen_password())
-    account.position = controls.add_user(user_id, account.username, account.password)
+async def create_account(user_id: int, username: str, c: Connection) -> Optional[Account]:
     c.open()
+    if database.accounting.is_username_exist(username, c):
+        c.close()
+        return None
+
+    account = Account(username=username, password=utils.gen_password())
     c.begin_transaction()
-    account.id = database.accounting.add_account(user_id, account.position, c)
+    account.position = controls.add_user(user_id, account.username, account.password)
+    account.id = database.accounting.add_account(user_id, account.position, account.username, account.password, c)
 
     # Commands and access lists
-    accounts = database.accounting.count_of_accounts(user_id, c)
+    count_of_accounts = database.accounting.count_of_accounts(user_id, c)
     accounts_limit = database.common.get_user(user_id, c).accounts_limit
 
     await CategoriesUpdater(user_id) \
-        .can_create_account(accounts, accounts_limit) \
-        .has_accounts(accounts) \
+        .can_create_account(count_of_accounts, accounts_limit) \
+        .has_accounts(count_of_accounts) \
         .finish(c)
 
     c.end_transaction()
@@ -85,10 +82,13 @@ async def delete_account(user_id: int, id: int, c) -> bool:
 
 
 @database.connection()
-def change_username(user_id: int, id: int, new_username: str, c) -> Optional[Account]:
+def change_username(user_id: int, id: int, new_username: str, c) -> ChangeUsername:
     position = database.accounting.get_account_position(user_id, id, c)
     if position is None:
-        return None
+        return ChangeUsername()
+
+    if database.accounting.is_username_exist(new_username, c):
+        return ChangeUsername(username_exist=True)
 
     diff = controls.set_username(user_id, position, new_username)
     if diff is None:
@@ -96,14 +96,16 @@ def change_username(user_id: int, id: int, new_username: str, c) -> Optional[Acc
 
     if diff != 0:
         database.accounting.move_accounts(user_id, position, diff, c)
-    return _get_account(user_id, id, position)
+
+    changed = database.accounting.set_username(user_id, id, new_username, c)
+    return ChangeUsername(changed=changed, data=database.accounting.get_account(user_id, id, c))
 
 
 @database.connection()
-def reset_password(user_id: int, id: int, c) -> Optional[Account]:
+def reset_password(user_id: int, id: int, c) -> ChangePassword:
     position = database.accounting.get_account_position(user_id, id, c)
     if position is None:
-        return None
+        return ChangePassword()
 
     password = utils.gen_password()
     diff = controls.set_password(user_id, position, password)
@@ -112,4 +114,6 @@ def reset_password(user_id: int, id: int, c) -> Optional[Account]:
 
     if diff != 0:
         database.accounting.move_accounts(user_id, position, diff, c)
-    return _get_account(user_id, id, position)
+
+    changed = database.accounting.set_password(user_id, id, password, c)
+    return ChangePassword(changed, database.accounting.get_account(user_id, id, c))
