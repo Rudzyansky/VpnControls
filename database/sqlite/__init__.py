@@ -15,6 +15,7 @@ def init(c: ConnectionSqlite):
         'owner_id INT DEFAULT NULL, '
         'language TEXT NOT NULL, '
         'commands INT NOT NULL, '
+        'registration_time BLOB NOT NULL, '
         'FOREIGN KEY (owner_id) REFERENCES users (id) ON DELETE RESTRICT ON UPDATE RESTRICT); '
 
         'CREATE TABLE IF NOT EXISTS tokens ('
