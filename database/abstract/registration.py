@@ -37,7 +37,11 @@ class Registration(ABC):
 
     @classmethod
     @abstractmethod
-    def get_token(cls, token: bytes, owner_id: int, c: Connection = None) -> Optional[Token]: pass
+    def get_token(cls, token: bytes, c: Connection = None) -> Optional[Token]: pass
+
+    @classmethod
+    @abstractmethod
+    def fetch_token(cls, token: bytes, owner_id: int, c: Connection = None) -> Optional[Token]: pass
 
     @classmethod
     @abstractmethod

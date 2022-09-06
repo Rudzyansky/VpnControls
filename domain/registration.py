@@ -45,13 +45,33 @@ def is_accept_invite(user_id: int, c: Connection):
 
 
 @database.connection(manual=True)
-async def revoke_token(token: Token, c: Connection):
+async def revoke_token(token: bytes, owner_id: int, c: Connection):
     c.open()
     c.begin_transaction()
-    revoked = database.registration.revoke_token(token.bytes, token.owner_id, c=c)
-    actual_tokens = database.registration.count_of_actual_tokens(token.owner_id, c=c)
+    revoked = database.registration.revoke_token(token, owner_id, c=c)
+    actual_tokens = database.registration.count_of_actual_tokens(owner_id, c=c)
 
-    await CategoriesUpdater(token.owner_id) \
+    await CategoriesUpdater(owner_id) \
+        .has_actual_tokens(actual_tokens) \
+        .finish(c)
+
+    c.end_transaction()
+    c.close()
+    return revoked
+
+
+@database.connection(manual=True)
+async def revoke_token_force(token: bytes, c):
+    c.open()
+    t = database.registration.get_token(token, c=c)
+    if t is None:
+        c.close()
+        return False
+    c.begin_transaction()
+    revoked = database.registration.revoke_token(token, t.owner_id, c=c)
+    actual_tokens = database.registration.count_of_actual_tokens(t.owner_id, c=c)
+
+    await CategoriesUpdater(t.owner_id) \
         .has_actual_tokens(actual_tokens) \
         .finish(c)
 
@@ -88,7 +108,7 @@ async def create_token(user_id: int, c: Connection):
 
     c.end_transaction()
 
-    token_result = database.registration.get_token(token.bytes, user_id, c=c)
+    token_result = database.registration.fetch_token(token.bytes, user_id, c=c)
     c.close()
     return token_result
 
@@ -131,11 +151,19 @@ def get_actual_token(user_id: int, offset: int = 0, c: Connection = None) -> tup
 
 
 @database.connection(False)
-def fetch_token(token: Token, c: Connection):
+def get_token(token: bytes, c: Connection):
     """
     Fetch all token's data by token + owner_id
     """
-    return database.registration.get_token(token.bytes, token.owner_id, c=c)
+    return database.registration.get_token(token, c=c)
+
+
+@database.connection(False)
+def fetch_token(token: bytes, owner_id: int, c: Connection):
+    """
+    Fetch all token's data by token + owner_id
+    """
+    return database.registration.fetch_token(token, owner_id, c=c)
 
 
 @database.connection()

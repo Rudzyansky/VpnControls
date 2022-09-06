@@ -52,7 +52,18 @@ class RegistrationSqlite(Registration):
         return c.update_one(sql, token, owner_id)
 
     @classmethod
-    def get_token(cls, token: bytes, owner_id: int, c: ConnectionSqlite = None) -> Optional[Token]:
+    def get_token(cls, token: bytes, c: ConnectionSqlite = None) -> Optional[Token]:
+        sql = 'SELECT token, expire, used_by, owner_id FROM tokens ' \
+              'WHERE token = ? AND CURRENT_DATE < expire ' \
+              'AND (used_by NOT LIKE owner_id OR used_by IS NULL)'
+        result = c.fetch_one(sql, token)
+        if result is None:
+            return None
+        token, expire, used_by, owner_id = result
+        return Token(data=token, expire=expire, used_by=used_by, owner_id=owner_id)
+
+    @classmethod
+    def fetch_token(cls, token: bytes, owner_id: int, c: ConnectionSqlite = None) -> Optional[Token]:
         sql = 'SELECT token, expire, used_by FROM tokens ' \
               'WHERE token = ? AND owner_id = ? AND CURRENT_DATE < expire ' \
               'AND (used_by NOT LIKE owner_id OR used_by IS NULL)'
