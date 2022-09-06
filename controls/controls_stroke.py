@@ -56,7 +56,7 @@ class ControlsStroke(Controls, FileManipulator):
         return result
 
     def update_hook(self):
-        subprocess.run(['sudo', 'strongswan', 'rereadsecrets'])
+        subprocess.run(['sudo', 'strongswan', 'stroke', 'rereadsecrets'])
 
     @staticmethod
     def get_username_pos(f: IO, position: int):

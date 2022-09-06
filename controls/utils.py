@@ -3,7 +3,8 @@ import subprocess
 
 
 def gen_password():
-    return subprocess.run(['pwgen', '-s', '-1', '16', '1'], stdout=subprocess.PIPE, text=True).stdout
+    run = subprocess.run(['pwgen', '-s', '-1', '16', '1'], stdout=subprocess.PIPE, text=True)
+    return run.stdout[:-1]  # removes '\n' at end
 
 
 def decode_hex(_str: str):
