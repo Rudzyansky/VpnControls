@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"POT-Creation-Date: 2022-09-02 13:18+0300\n"
-"PO-Revision-Date: 2022-09-02 13:28+0300\n"
+"POT-Creation-Date: 2022-09-06 22:40+0300\n"
+"PO-Revision-Date: 2022-09-06 22:41+0300\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: ru\n"
@@ -16,19 +16,19 @@ msgstr ""
 "X-Poedit-KeywordsList: _;_n\n"
 "X-Poedit-SearchPath-0: .\n"
 
-#: accept_cq.py:17 decline_cq.py:14
+#: accept_cq.py:18 decline_cq.py:15
 msgid "Access denied"
 msgstr "Доступ запрещён"
 
-#: accept_cq.py:26 decline_cq.py:24 revoke_cq.py:20
+#: accept_cq.py:29 decline_cq.py:26 revoke_cq.py:20
 msgid "Invitation is invalid"
 msgstr "Приглашение недействительно"
 
-#: accept_cq.py:35
+#: accept_cq.py:37
 msgid "An error has occurred. Please contact your administrator"
 msgstr "Произошла ошибка. Обратитесь к администратору"
 
-#: decline_cq.py:22 revoke_cq.py:18
+#: decline_cq.py:24 revoke_cq.py:18
 msgid "Invitation turned into a pumpkin"
 msgstr "Приглашение превратилось в тыкву"
 
