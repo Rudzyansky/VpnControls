@@ -1,7 +1,7 @@
 from .controls_abstract import Controls
-from .controls_stroke_swanctl_hook import ControlsStrokeSwanctlHook
+from .controls_stroke import ControlsStroke
 
-controls: Controls = ControlsStrokeSwanctlHook()
+controls: Controls = ControlsStroke()
 
 __all__ = [
     'controls',
