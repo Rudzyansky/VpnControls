@@ -20,7 +20,7 @@ async def handler_filter(event: CallbackQuery.Event, translations):
 @translate(False, translations=True)
 async def handler(event: CallbackQuery.Event, translations):
     _ = translations[event.pattern_match[2].decode()].gettext
-    if await domain.registration.revoke_token(event.pattern_match[1]):
+    if await domain.registration.revoke_token_force(event.pattern_match[1]):
         await event.edit(_('Invitation turned into a pumpkin'))
     else:
         await event.answer(_('Invitation is invalid'))
