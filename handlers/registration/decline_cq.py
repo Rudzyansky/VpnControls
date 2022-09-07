@@ -3,7 +3,6 @@ from telethon.events import register, CallbackQuery
 import domain
 from bot_commands.categories import Categories
 from domain.commands import access_list
-from entities.token import Token
 from localization import translate
 
 
