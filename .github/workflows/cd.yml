@@ -13,11 +13,10 @@ jobs:
     - uses: actions/checkout@v3
       with:
         ref: ${{ github.event.pull_request.head.sha }}
-    - name: Stopping service
-      run: sudo systemctl stop VpnControls
-    - name: Removing files
-      run: sudo rm -rf /usr/src/tgbot
-    - name: Copying files
-      run: sudo cp -Rf . /usr/src/tgbot
-    - name: Starting service
-      run: sudo systemctl start VpnControls
+    - name: Stop existing containers
+      run: docker compose down
+    - name: Build and start containers
+      env:
+        APP_ENV_FILE: /etc/vpn-controls/app.env
+        APP_DATA_DIR: /var/lib/vpn-controls
+      run: docker compose up -d --build

@@ -1,0 +1,9 @@
+# Bot command descriptions
+new_account: "Новый аккаунт"
+accounts_management: "Управление аккаунтами"
+show_token: "Показать действующий токен"
+issue_token: "Выпустить новый токен"
+show_all_tokens: "Показать все токены"
+users_management: "Управление пользователями"
+change_language: "Сменить язык"
+refresh_menu: "Обновить меню" 

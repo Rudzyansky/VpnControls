@@ -1,0 +1,20 @@
+# Registration-related strings
+invite: "Приглашение"
+invite_message: "Вас пригласили использовать FalseЪ VPN"
+token_bound_to: "<code>%s</code> <i>истекает через</i> <b>%s</b>, <i>привязан к</i> <b>%s</b>"
+token_expires_in: "<code>%s</code> <i>истекает через</i> <b>%s</b>"
+accept_invite: "Принять"
+decline_invite: "Отклонить"
+invite_in_another_language: "Приглашение на другом языке"
+list_of_tokens: "<b>Список токенов</b>"
+token_revoked: "<code>%s</code> <i>отозван</i>, <i>истекает через</i> <b>%s</b>"
+invitation_accepted: "Приглашение принято"
+invitation_invalid: "Приглашение недействительно"
+invitation_revoked: "Приглашение превратилось в тыкву"
+access_denied: "Доступ запрещён"
+error_occurred: "Произошла ошибка. Обратитесь к администратору"
+no_tokens_found: "Токены не найдены"
+revoke: "Отозвать"
+token_issued: |
+  Выпущен токен <code>%s</code>
+  <i>Истекает через</i> <b>%s</b>

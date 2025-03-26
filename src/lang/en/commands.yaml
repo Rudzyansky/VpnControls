@@ -1,0 +1,9 @@
+# Bot command descriptions
+new_account: "New account"
+accounts_management: "Accounts management"
+show_token: "Show actual invitation token"
+issue_token: "Issue new invitation token"
+show_all_tokens: "Show all invitation tokens"
+users_management: "Users management"
+change_language: "Change language"
+refresh_menu: "Refresh menu" 

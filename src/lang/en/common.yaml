@@ -1,0 +1,9 @@
+# Common strings used across the application
+access_denied: "Access denied"
+operation_canceled: "Operation canceled"
+account_removed: "Account removed"
+account_not_removed: "Account NOT removed"
+invitation_invalid: "Invitation is invalid"
+invitation_revoked: "Invitation turned into a pumpkin"
+error_occurred: "An error has occurred. Please contact your administrator"
+cancel: "Cancel"

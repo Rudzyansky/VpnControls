@@ -1,0 +1,9 @@
+# Common strings used across the application
+access_denied: "Доступ запрещен"
+operation_canceled: "Операция отменена"
+account_removed: "Аккаунт удален"
+account_not_removed: "Аккаунт НЕ удален"
+invitation_invalid: "Приглашение недействительно"
+invitation_revoked: "Приглашение превратилось в тыкву"
+error_occurred: "Произошла ошибка. Пожалуйста, свяжитесь с администратором"
+cancel: "Отменить"

@@ -1,2 +1,0 @@
-telethon==1.25.0
-cryptg==0.3.1
