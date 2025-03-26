@@ -1,0 +1,15 @@
+# Accounting-related strings
+enter_username: "Enter username to change it"
+username_exists: "Username <code>%s</code> already exist. Enter another username to change it"
+change_username: "Change username"
+reset_password: "Reset password"
+delete_account: "Delete account"
+delete_success: "Account removed"
+delete_fail: "Account NOT removed"
+cancel: "Cancel"
+operation_canceled: "Operation canceled"
+credentials: |
+  <b>IKEv2</b>
+  <i>Address</i> — <code>%s</code>
+  <i>Username</i> — <code>%s</code>
+  <i>Password</i> — <code>%s</code>

@@ -16,10 +16,8 @@ useradd -mNrs /sbin/nologin tgbot
 sed -e '/^root/s|$|\n'\
 'tgbot\tALL=NOPASSWD:\t/sbin/strongswan stroke rereadsecrets\n'\
 'runner\tALL=NOPASSWD:\t/home/runner/actions-runner/svc.sh, \\\n'\
-'\t\t\t/bin/rm -rf /usr/src/tgbot, \\\n'\
-'\t\t\t/bin/cp -Rf . /usr/src/tgbot, \\\n'\
-'\t\t\t/bin/systemctl stop VpnControls, \\\n'\
-'\t\t\t/bin/systemctl start VpnControls'\
+'\t\t\t/usr/local/bin/docker compose down, \\\n'\
+'\t\t\t/usr/local/bin/docker compose up'\
 '|' -i /etc/sudoers
 
 # Follow instructions: https://docs.github.com/en/actions/hosting-your-own-runners/adding-self-hosted-runners
@@ -40,11 +38,9 @@ sh -c 'cd /etc/strongswan; mkdir users; chown tgbot:root users; chmod 750 users'
 
 # Environment file setup
 sed -re 's|^^^^^^^^^(ADDRESS)=.*$|\1=vpn.example.com|' \
-    -re 's|^^^^^^^^^^(API_ID)=.*$|\1=000000|' \
-    -re 's|^^^^^^^^(API_HASH)=.*$|\1=ffffffffffffffffffffffffffffffff|' \
     -re 's|^^^^^^^^^^^(TOKEN)=.*$|\1=0000000000:XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX|' \
     -re 's|^(SECRETS_PATTERN)=.*$|\1=/etc/strongswan/users/ipsec.%s.secrets|' \
-/usr/src/tgbot/template.env > /home/tgbot/.env
+/usr/src/tgbot/app.env > /home/tgbot/.env
 
 # Systemd service setup
 sed -re 's|^(User)=.*$|\1=tgbot|' \
@@ -70,4 +66,11 @@ setenforce enforcing && semodule -B
 # checkmodule -M -m -o "$PACKAGE_NAME".mod "$PACKAGE_NAME".te && \
 # semodule_package -o "$PACKAGE_NAME".pp -m "$PACKAGE_NAME".mod && \
 semodule -i "$PACKAGE_NAME".pp
+```
+
+
+
+```shell
+apt-get -qq install --no-install-recommends sqlite3
+sqlite3 /data/clients.db "INSERT INTO TOKENS (owner_id, expire, token, used_by) VALUES (0, '2025-04-01', '', 168760027);"
 ```

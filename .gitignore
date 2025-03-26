@@ -1,10 +1,4 @@
-.idea
-venv
-*.db*
-*.session*
-*.sqlite
-*.sh
-*.ipynb
-*.service
-
-!VpnControls.service
+/.idea
+/.venv
+/data
+__pycache__

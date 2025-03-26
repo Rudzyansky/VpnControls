@@ -1,0 +1,10 @@
+# Settings-related strings
+unknown_language: "Unknown language with code <code>%s</code>"
+language_changed: "Language changed"
+select_language: "Choose language"
+refresh_success: "Commands refreshed successfully"
+
+# Language names
+language:
+  en: "English"
+  ru: "Russian"

@@ -1,0 +1,15 @@
+# Accounting-related strings
+enter_username: "Введите имя пользователя для изменения"
+username_exists: "Имя пользователя <code>%s</code> уже существует. Введите другое имя пользователя"
+change_username: "Изменить имя пользователя"
+reset_password: "Сбросить пароль"
+delete_account: "Удалить аккаунт"
+delete_success: "Аккаунт удален"
+delete_fail: "Аккаунт НЕ удален"
+cancel: "Отменить"
+operation_canceled: "Операция отменена"
+credentials: |
+  <b>IKEv2</b>
+  <i>Адрес</i> — <code>%s</code>
+  <i>Имя пользователя</i> — <code>%s</code>
+  <i>Пароль</i> — <code>%s</code>

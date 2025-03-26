@@ -1,0 +1,39 @@
+services:
+  app:
+    build:
+      context: src
+      dockerfile: Dockerfile
+    image: vpn-controls:1.1
+    restart: unless-stopped
+    user: "tgbot"
+    env_file:
+      - "${APP_ENV_FILE:-./app.env}"
+    volumes:
+      - type: bind
+        source: "${APP_DATA_DIR:-./data}"
+        target: /data
+      - type: bind
+        source: /var/run/charon.ctl
+        target: /var/run/charon.ctl
+      - type: bind
+        source: /usr/sbin/strongswan
+        target: /usr/sbin/strongswan
+        read_only: true
+      - type: bind
+        source: /etc/strongswan/users
+        target: /etc/strongswan/users
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+        compress: "true"
+    networks:
+      common-network:
+        aliases:
+          - "vpn-controls"
+
+networks:
+  common-network:
+    name: "common-network"
+    external: true
