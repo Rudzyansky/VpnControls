@@ -1,4 +1,4 @@
-from telegram import InlineKeyboardButton, InlineKeyboardMarkup
+from telegram import InlineKeyboardButton, InlineKeyboardMarkup, SwitchInlineQueryChosenChat
 
 from entities.token import Token
 from localization.context import ContextProto
@@ -16,11 +16,20 @@ def generate_invite_text(context: ContextProto, token: Token, count=1):
 def generate_buttons(context: ContextProto, token: Token, offset: int = None, count: int = 1):
     buttons_matrix = [
         [
-            InlineKeyboardButton(context.localize('registration.invite'), callback_data=f'invite {token}'),
+            InlineKeyboardButton(context.localize('registration.invite'),
+                                 switch_inline_query_chosen_chat=SwitchInlineQueryChosenChat(
+                                     query=f'invite/{token}',
+                                     allow_user_chats=True
+                                 )),
             InlineKeyboardButton(context.localize('registration.revoke'), callback_data=f'revoke {token}'),
         ],
-        [InlineKeyboardButton(context.localize('registration.invite_in_another_language'),
-                              callback_data=f'invite {token}/')],
+        [
+            InlineKeyboardButton(context.localize('registration.invite_in_another_language'),
+                                 switch_inline_query_chosen_chat=SwitchInlineQueryChosenChat(
+                                     query=f'invite/{token}/',
+                                     allow_user_chats=True
+                                 ))
+        ],
     ]
     if count > 1:
         _prev = offset - 1 if offset > 0 else count - 1
