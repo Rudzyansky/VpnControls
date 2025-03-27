@@ -1,22 +1,67 @@
-FROM python:3.10-alpine AS base
+FROM alpine:3.17 AS glibc-builder
+ARG TARGETARCH
+ARG GLIBC_VERSION=2.36
 
-# --- Install dependencies and download sgerrand’s key ---
-RUN apk add --no-cache --virtual .build-deps wget ca-certificates \
- && update-ca-certificates \
- && wget -q -O /etc/apk/keys/sgerrand.rsa.pub https://alpine-pkgs.sgerrand.com/sgerrand.rsa.pub
+RUN apk add --no-cache \
+    build-base \
+    bash \
+    coreutils \
+    binutils \
+    linux-headers \
+    bison \
+    gawk \
+    texinfo \
+    wget \
+    patch
 
-# --- Install glibc from sgerrand’s releases ---
-#   • Check https://github.com/sgerrand/alpine-pkg-glibc/releases
-#     for the latest version number (e.g., 2.35-r0 or later).
-#
-#   Example below uses 2.35-r0. Replace to the exact version you want.
-RUN GLIBC_VERSION="2.35-r1" \
- && wget -q "https://github.com/sgerrand/alpine-pkg-glibc/releases/download/${GLIBC_VERSION}/glibc-${GLIBC_VERSION}.apk" \
- && apk add --no-cache "glibc-${GLIBC_VERSION}.apk" \
- && rm "glibc-${GLIBC_VERSION}.apk"
+WORKDIR /tmp
+RUN wget https://ftp.gnu.org/gnu/glibc/glibc-${GLIBC_VERSION}.tar.gz \
+    && tar -xf glibc-${GLIBC_VERSION}.tar.gz
 
-# --- (Optional) Clean up .build-deps if you don’t need them anymore ---
-RUN apk del .build-deps
+WORKDIR /tmp/glibc-${GLIBC_VERSION}
+RUN mkdir build
+
+RUN set -eux; \
+    if [ "${TARGETARCH}" = "amd64" ]; then \
+      GLIBC_HOST="x86_64-unknown-linux-gnu" \
+      GLIBC_BUILD="x86_64-unknown-linux-musl" \
+      LD_SO="ld-linux-x86-64.so.2" \
+    elif [ "${TARGETARCH}" = "arm64" ]; then \
+      GLIBC_HOST="aarch64-unknown-linux-gnu" \
+      GLIBC_BUILD="aarch64-unknown-linux-musl" \
+      LD_SO="ld-linux-aarch64.so.1" \
+    else \
+      echo "Unsupported architecture: ${TARGETARCH}"; \
+      exit 1; \
+    fi; \
+    cd build; \
+    ../configure \
+      --prefix=/usr/glibc-compat \
+      --host="${GLIBC_HOST}" \
+      --build="${GLIBC_BUILD}" \
+      --enable-obsolete-rpc \
+      --enable-kernel=3.7.0; \
+    make -j"$(nproc)"; \
+    make install DESTDIR=/tmp/glibc-staging
+
+
+
+FROM python:3.10-alpine
+ARG TARGETARCH
+ARG GLIBC_VERSION=2.36
+
+COPY --from=glibc-builder /tmp/glibc-staging/ /
+RUN set -eux; \
+    if [ "${TARGETARCH}" = "amd64" ]; then \
+      export LD_SO="ld-linux-x86_64.so.1"; \
+    elif [ "${TARGETARCH}" = "arm64" ]; then \
+      export LD_SO="ld-linux-aarch64.so.1"; \
+    else \
+      echo "Unsupported architecture: ${TARGETARCH}"; \
+      exit 1; \
+    fi; \
+    ln -s "/usr/glibc-compat/lib/${LD_SO}" "/lib/${LD_SO}"; \
+    echo "Successfully symlinked loader for ${TARGETARCH}."
 
 # Timezone
 RUN apk add --no-cache tzdata && \
