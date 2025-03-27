@@ -1,6 +1,6 @@
-FROM alpine:3.17 AS glibc-builder
+FROM alpine:latest AS glibc-builder
 ARG TARGETARCH
-ARG GLIBC_VERSION=2.36
+ARG GLIBC_VERSION=2.41
 
 RUN apk add --no-cache \
     build-base \
