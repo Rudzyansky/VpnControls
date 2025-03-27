@@ -31,8 +31,8 @@ services:
         target: /usr/lib64/strongswan
         read_only: true
       - type: bind
-        source: /etc/strongswan/users
-        target: /etc/strongswan/users
+        source: /etc/strongswan
+        target: /etc/strongswan
     logging:
       driver: "json-file"
       options:
