@@ -19,7 +19,7 @@ async def handler(update: Update, context: LocalizedContext):
     position = int(context.match.group(1))
 
     offset, count, token = domain.registration.get_actual_token(context.chat_id, position)
-    text = await generate_invite_text(context, token, count)
+    text = generate_invite_text(context, token, count)
     buttons = generate_buttons(context, token, offset, count) if token is not None else None
     await update.effective_message.edit_text(text, reply_markup=buttons, parse_mode=ParseMode.HTML)
 

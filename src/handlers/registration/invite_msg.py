@@ -10,7 +10,7 @@ from localization import LocalizedContext
 
 async def handler(update: Update, context: LocalizedContext):
     offset, count, token = domain.registration.get_actual_token(context.chat_id)
-    text = await generate_invite_text(context, token, count)
+    text = generate_invite_text(context, token, count)
     buttons = generate_buttons(context, token, offset, count) if token is not None else None
     await update.effective_chat.send_message(text=text, reply_markup=buttons, parse_mode=ParseMode.HTML)
 
