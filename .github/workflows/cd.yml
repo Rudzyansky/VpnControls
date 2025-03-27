@@ -113,7 +113,7 @@ jobs:
         podman system migrate
     
     - name: Pull latest image
-      run: docker pull docker.io/${{ secrets.DOCKERHUB_USERNAME }}/${{ steps.get_tag.outputs.base_tag }}:latest
+      run: sudo docker pull docker.io/${{ secrets.DOCKERHUB_USERNAME }}/${{ steps.get_tag.outputs.base_tag }}:latest
     
     - name: Stop existing containers
       run: sudo docker compose down
@@ -122,10 +122,15 @@ jobs:
       env:
         APP_ENV_FILE: /etc/vpn-controls/app.env
         APP_DATA_DIR: /var/lib/vpn-controls
-        IMAGE_NAME: ${{ secrets.DOCKERHUB_USERNAME }}/${{ steps.get_tag.outputs.base_tag }}
+        IMAGE_NAME: docker.io/${{ secrets.DOCKERHUB_USERNAME }}/${{ steps.get_tag.outputs.base_tag }}
         IMAGE_TAG: latest
       run: |
-        sudo docker compose up -d --no-build
+        # Create a temporary env file with our variables
+        echo "IMAGE_NAME=${IMAGE_NAME}" > .env
+        echo "IMAGE_TAG=${IMAGE_TAG}" >> .env
+        echo "APP_ENV_FILE=${APP_ENV_FILE}" >> .env
+        echo "APP_DATA_DIR=${APP_DATA_DIR}" >> .env
+        sudo docker compose --env-file .env up -d --no-build
         # Wait a few seconds to check if container is running
         sleep 5
         if ! docker compose ps | grep -q "Up"; then
