@@ -27,6 +27,10 @@ services:
         target: /run/strongswan
         read_only: true
       - type: bind
+        source: /usr/lib64/strongswan
+        target: /usr/lib64/strongswan
+        read_only: true
+      - type: bind
         source: /etc/strongswan/users
         target: /etc/strongswan/users
     logging:
