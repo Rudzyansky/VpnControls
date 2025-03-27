@@ -11,12 +11,6 @@ RUN apk add --no-cache pwgen
 COPY requirements.txt /
 RUN pip install --no-cache-dir --disable-pip-version-check -r /requirements.txt
 
-# Cleanup
-RUN rm -rf  \
-    /usr/lib/python3/dist-packages/pip-*.dist-info \
-    /usr/lib/python3/dist-packages/setuptools-*.egg-info \
-    /usr/lib/python3/dist-packages/wheel-*.egg-info
-
 WORKDIR /app
 ADD . .
 
