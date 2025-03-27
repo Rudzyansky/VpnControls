@@ -1,9 +1,6 @@
 services:
   app:
-    build:
-      context: src
-      dockerfile: Dockerfile
-    image: vpn-controls:1.1
+    image: rudzyansky/vpn-controls:1.1
     restart: unless-stopped
     user: "tgbot"
     env_file:
