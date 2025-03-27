@@ -42,6 +42,7 @@ jobs:
         context: ./src
         file: ./src/Dockerfile
         push: true
+        platforms: linux/amd64,linux/arm64
         tags: |
           ${{ secrets.DOCKERHUB_USERNAME }}/${{ steps.get_tag.outputs.base_tag }}:${{ steps.get_tag.outputs.version }}
           ${{ secrets.DOCKERHUB_USERNAME }}/${{ steps.get_tag.outputs.base_tag }}:latest
@@ -53,6 +54,11 @@ jobs:
     runs-on: self-hosted
     steps:
     - uses: actions/checkout@v3
+    
+    - name: Install yq
+      run: |
+        sudo wget -qO /usr/local/bin/yq https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64
+        sudo chmod a+x /usr/local/bin/yq
     
     - name: Get image tag from docker-compose.yml
       id: get_tag
