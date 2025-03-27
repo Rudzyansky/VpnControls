@@ -123,7 +123,7 @@ jobs:
         APP_ENV_FILE: /etc/vpn-controls/app.env
         APP_DATA_DIR: /var/lib/vpn-controls
         IMAGE_NAME: ${{ secrets.DOCKERHUB_USERNAME }}/${{ steps.get_tag.outputs.base_tag }}
-        IMAGE_TAG: ${{ steps.get_tag.outputs.version }}
+        IMAGE_TAG: latest
       run: |
         sudo docker compose up -d --no-build
         # Wait a few seconds to check if container is running
