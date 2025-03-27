@@ -121,8 +121,8 @@ jobs:
         sudo docker compose --env-file .env up -d
         # Wait a few seconds to check if container is running
         sleep 5
-        if ! docker compose ps | grep -q "Up"; then
+        if ! sudo docker compose ps | grep -q "Up"; then
           echo "Container failed to start"
-          docker compose logs
+          sudo docker compose logs
           exit 1
         fi
