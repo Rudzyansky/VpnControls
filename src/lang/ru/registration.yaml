@@ -1,11 +1,9 @@
 # Registration-related strings
-invite: "Приглашение"
-invite_message: "Вас пригласили использовать FalseЪ VPN"
-token_bound_to: "<code>%s</code> <i>истекает через</i> <b>%s</b>, <i>привязан к</i> <b>%s</b>"
+invite_message: "Вам предложили использовать FalseЪ VPN"
+token_bound_to: "<code>%s</code> <i>истекает через</i> <b>%s</b>, <i>связан с</i> <b>%s</b>"
 token_expires_in: "<code>%s</code> <i>истекает через</i> <b>%s</b>"
 accept_invite: "Принять"
 decline_invite: "Отклонить"
-invite_in_another_language: "Приглашение на другом языке"
 list_of_tokens: "<b>Список токенов</b>"
 token_revoked: "<code>%s</code> <i>отозван</i>, <i>истекает через</i> <b>%s</b>"
 invitation_accepted: "Приглашение принято"
@@ -13,8 +11,31 @@ invitation_invalid: "Приглашение недействительно"
 invitation_revoked: "Приглашение превратилось в тыкву"
 access_denied: "Доступ запрещён"
 error_occurred: "Произошла ошибка. Обратитесь к администратору"
-no_tokens_found: "Токены не найдены"
-revoke: "Отозвать"
+
+bound_to: "Связан с %s"
+expires_in: "Истекает %s"
+next_token: "Следующий токен (%d из %d)"
+slot_free: "<i>слот освободится</i> <b>%s</b>"
+invitation_limit_reached: |
+  Невозмоно выпустить токен
+  <i>Вы достигли лимита в <b>%d</b> приглашений в неделю</i>
+
+# Issue menu
 token_issued: |
   Выпущен токен <code>%s</code>
-  <i>Истекает через</i> <b>%s</b>
+  <i>Истекает</i> <b>%s</b>
+
+# Invite menu
+token_info_no_tokens: "Токены не найдены"
+token_info_expires: |
+  Токен <code>%s</code>
+  <i>Истекает</i> <b>%s</b>
+token_info_expires_bounded: |
+  Токен <code>%s</code>
+  <i>Истекает</i> <b>%s</b>
+  <i>Связан с</i> <b>%s</b>
+
+# Invite menu: Buttons
+invite_in_another_language: "Пригласить на другом языке"
+invite: "Пригласить"
+revoke: "Отозвать"

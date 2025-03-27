@@ -97,8 +97,8 @@ async def invite_article(context: LocalizedContext, token: Token, lang: str):
         display_name = user.first_name
         if user.last_name:
             display_name += f" {user.last_name}"
-        description = (context.localize('registration.token_bound_to', lang) % display_name) + ', '
-    description += (context.localize('registration.token_expires_in', lang) % token.expire) + '\n' + token.string
+        description = (context.localize('registration.bound_to', lang) % display_name) + ', '
+    description += (context.localize('registration.expires_in', lang) % token.expire) + '\n' + token.string
 
     buttons = InlineKeyboardMarkup([[
         InlineKeyboardButton(context.localize('registration.accept_invite', lang),

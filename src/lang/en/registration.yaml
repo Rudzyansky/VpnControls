@@ -1,9 +1,7 @@
 # Registration-related strings
-invite: "Invite"
 invite_message: "You have been invited to use FalseЪ VPN"
 accept_invite: "Accept"
 decline_invite: "Decline"
-invite_in_another_language: "Invite in another language"
 list_of_tokens: "<b>List of tokens</b>"
 token_expires_in: "<code>%s</code> <i>expires in</i> <b>%s</b>"
 token_revoked: "<code>%s</code> <i>revoked</i>, <i>expires in</i> <b>%s</b>"
@@ -11,10 +9,35 @@ token_bound_to: "<code>%s</code> <i>expires in</i> <b>%s</b>, <i>bound to</i> <b
 invitation_accepted: "Invitation accepted"
 invitation_invalid: "Invitation is invalid"
 invitation_revoked: "Invitation turned into a pumpkin"
+access_denied: "Access denied"
+error_occurred: "An error has occurred. Please contact your administrator"
+
+bound_to: "Bound to %s"
+expires_in: "Expires in %s"
+next_token: "Next token (%d of %d)"
+slot_free: "<i>slot will be reset in</i> <b>%s</b>"
+invitation_limit_reached: |
+  Unable to issue token
+  <i>The limit of <b>%d</b> invitations per week has been reached</i>
+
+
+
+# Issue menu
 token_issued: |
   Token <code>%s</code> issued
   <i>Expires in</i> <b>%s</b>
-access_denied: "Access denied"
-error_occurred: "An error has occurred. Please contact your administrator"
-no_tokens_found: "No tokens found"
+
+# Invite menu
+token_info_no_tokens: "No tokens found"
+token_info_expires: |
+  Token <code>%s</code>
+  <i>Expires in</i> <b>%s</b>
+token_info_expires_bounded: |
+  Token <code>%s</code>
+  <i>Expires in</i> <b>%s</b>
+  <i>Bound to</i> <b>%s</b>
+
+# Invite menu: Buttons
+invite_in_another_language: "Invite in another language"
+invite: "Invite"
 revoke: "Revoke"
