@@ -11,12 +11,12 @@ RUN apk add --no-cache \
     bison \
     gawk \
     texinfo \
-    wget \
+    curl \
     patch
 
 WORKDIR /tmp
-RUN wget https://ftp.gnu.org/gnu/glibc/glibc-${GLIBC_VERSION}.tar.gz \
-    && tar -xf glibc-${GLIBC_VERSION}.tar.gz
+RUN curl https://ftp.gnu.org/gnu/glibc/glibc-${GLIBC_VERSION}.tar.gz -o glibc-${GLIBC_VERSION}.tar.gz && \
+    tar -xf glibc-${GLIBC_VERSION}.tar.gz
 
 WORKDIR /tmp/glibc-${GLIBC_VERSION}
 RUN mkdir build
