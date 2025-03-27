@@ -12,10 +12,7 @@ from utils import contact_with_developer
 async def handler(update: Update, context: LocalizedContext):
     result = domain.accounting.get_account(update.effective_chat.id, 0)
     if result.data is None:
-        await update.effective_chat.send_message(
-            text=contact_with_developer(context, action='accounts'),
-            parse_mode=ParseMode.HTML,
-        )
+        await update.effective_chat.send_message(contact_with_developer(context, action='accounts'))
         return
 
     text = generate_credentials_text(context, result.data)

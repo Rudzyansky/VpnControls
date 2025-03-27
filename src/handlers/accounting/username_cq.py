@@ -47,9 +47,9 @@ async def handler_cancel(update: Update, context: LocalizedContext):
 
 async def handler_text(update: Update, context: LocalizedContext):
     username_change.remove_user(update.effective_user.id)
-    account_id, message_id, message_id_2 = _queue.pop(update.effective_user.id)
+    account_pos, message_id, message_id_2 = _queue.pop(update.effective_user.id)
     username = update.message.text
-    result = domain.accounting.change_username(update.effective_user.id, account_id, username)
+    result = domain.accounting.change_username(update.effective_user.id, account_pos, username)
 
     if result.username_exist:
         text = context.localize('accounting.username_exists') % username
@@ -68,7 +68,12 @@ async def handler_text(update: Update, context: LocalizedContext):
             pass  # Ignore message not modified errors
         await update.message.delete()
         username_change.add_user(update.effective_user.id)
-        _queue[update.effective_user.id] = account_id, message_id, message_id_2
+        _queue[update.effective_user.id] = account_pos, message_id, message_id_2
+        return
+
+    account_info = domain.accounting.get_account(update.effective_user.id, account_pos)
+    if account_info.data is None:
+        await update.effective_chat.send_message(contact_with_developer(context, action='username'))
         return
 
     await context.bot.delete_message(update.effective_chat.id, message_id_2)
@@ -79,18 +84,17 @@ async def handler_text(update: Update, context: LocalizedContext):
 
     if result.data is None:
         await update.message.reply_text(
-            text=contact_with_developer(
+            contact_with_developer(
                 context,
                 action='username',
-                id=account_id,
+                id=account_pos,
                 raw_text=update.message.text,
-            ),
-            parse_mode=ParseMode.HTML,
+            )
         )
         return
 
     text = generate_credentials_text(context, result.data)
-    buttons = generate_credentials_buttons(context, result.data)
+    buttons = generate_credentials_buttons(context, result.data, account_info.offset, account_info.count)
     await context.bot.edit_message_text(
         chat_id=update.effective_chat.id,
         message_id=message_id,

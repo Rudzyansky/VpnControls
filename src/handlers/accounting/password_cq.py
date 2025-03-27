@@ -1,7 +1,6 @@
 import re
 
 from telegram import Update
-from telegram.constants import ParseMode
 from telegram.ext import CallbackQueryHandler
 
 import domain
@@ -18,24 +17,28 @@ async def handler(update: Update, context: LocalizedContext):
         return
 
     sender_id = update.callback_query.from_user.id
-    account_id = int(context.match.group(1))
+    position = int(context.match.group(1))
 
-    result = domain.accounting.reset_password(update.effective_user.id, account_id)
+    account_info = domain.accounting.get_account(update.effective_user.id, position)
+    if account_info.data is None:
+        await update.effective_chat.send_message(contact_with_developer(context, action='password'))
+        return
+
+    result = domain.accounting.reset_password(update.effective_user.id, position)
     if result.data is None:
         await update.effective_message.reply_text(
-            text=contact_with_developer(
+            contact_with_developer(
                 context,
                 action='password',
                 data=update.callback_query.data,
                 sender_id=sender_id,
-            ),
-            parse_mode=ParseMode.HTML,
+            )
         )
         return
 
     if result.changed:
         text = generate_credentials_text(context, result.data)
-        buttons = generate_credentials_buttons(context, result.data)
+        buttons = generate_credentials_buttons(context, result.data, account_info.offset, account_info.count)
         try:
             await update.effective_message.edit_text(text, reply_markup=buttons)
         except Exception:

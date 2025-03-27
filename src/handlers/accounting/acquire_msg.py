@@ -22,8 +22,7 @@ async def handler(update: Update, context: LocalizedContext):
             await update.effective_chat.send_message(text, reply_markup=buttons)
         else:
             await update.effective_chat.send_message(
-                text=contact_with_developer(context, action='acquire', username=username),
-                parse_mode=ParseMode.HTML,
+                contact_with_developer(context, action='acquire', username=username)
             )
     except Exception as e:
         logging.error(e, exc_info=True)
