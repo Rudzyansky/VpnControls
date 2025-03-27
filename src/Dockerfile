@@ -23,13 +23,13 @@ RUN mkdir build
 
 RUN set -eux; \
     if [ "${TARGETARCH}" = "amd64" ]; then \
-      GLIBC_HOST="x86_64-unknown-linux-gnu" \
-      GLIBC_BUILD="x86_64-unknown-linux-musl" \
-      LD_SO="ld-linux-x86-64.so.2" \
+      GLIBC_HOST="x86_64-unknown-linux-gnu"; \
+      GLIBC_BUILD="x86_64-unknown-linux-musl"; \
+      LD_SO="ld-linux-x86-64.so.2"; \
     elif [ "${TARGETARCH}" = "arm64" ]; then \
-      GLIBC_HOST="aarch64-unknown-linux-gnu" \
-      GLIBC_BUILD="aarch64-unknown-linux-musl" \
-      LD_SO="ld-linux-aarch64.so.1" \
+      GLIBC_HOST="aarch64-unknown-linux-gnu"; \
+      GLIBC_BUILD="aarch64-unknown-linux-musl"; \
+      LD_SO="ld-linux-aarch64.so.1"; \
     else \
       echo "Unsupported architecture: ${TARGETARCH}"; \
       exit 1; \
@@ -43,7 +43,6 @@ RUN set -eux; \
       --enable-kernel=3.7.0; \
     make -j"$(nproc)"; \
     make install DESTDIR=/tmp/glibc-staging
-
 
 
 FROM python:3.10-alpine
