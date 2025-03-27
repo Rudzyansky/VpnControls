@@ -2,17 +2,7 @@ FROM alpine:latest AS glibc-builder
 ARG TARGETARCH
 ARG GLIBC_VERSION=2.41
 
-RUN apk add --no-cache \
-    build-base \
-    bash \
-    coreutils \
-    binutils \
-    linux-headers \
-    bison \
-    gawk \
-    texinfo \
-    curl \
-    patch
+RUN apk add --no-cache build-base bash coreutils binutils linux-headers bison gawk texinfo curl patch python3
 
 WORKDIR /tmp
 RUN curl https://ftp.gnu.org/gnu/glibc/glibc-${GLIBC_VERSION}.tar.gz -o glibc-${GLIBC_VERSION}.tar.gz && \
