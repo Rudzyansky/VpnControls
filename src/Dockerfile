@@ -1,56 +1,42 @@
 FROM alpine:latest AS glibc-builder
+
 ARG TARGETARCH
 ARG GLIBC_VERSION=2.41
 
 RUN apk add --no-cache build-base bash coreutils binutils linux-headers bison gawk texinfo curl patch python3
 
 WORKDIR /tmp
-RUN curl https://ftp.gnu.org/gnu/glibc/glibc-${GLIBC_VERSION}.tar.gz -o glibc-${GLIBC_VERSION}.tar.gz && \
-    tar -xf glibc-${GLIBC_VERSION}.tar.gz
+
+# Download & unpack glibc sources
+RUN curl -sSL "https://ftp.gnu.org/gnu/glibc/glibc-${GLIBC_VERSION}.tar.gz" -o glibc.tar.gz && tar -xf glibc.tar.gz
 
 WORKDIR /tmp/glibc-${GLIBC_VERSION}
 RUN mkdir build
+WORKDIR /tmp/glibc-${GLIBC_VERSION}/build
 
 RUN set -eux; \
-    if [ "${TARGETARCH}" = "amd64" ]; then \
-      GLIBC_HOST="x86_64-unknown-linux-gnu"; \
-      GLIBC_BUILD="x86_64-unknown-linux-musl"; \
-      LD_SO="ld-linux-x86-64.so.2"; \
-    elif [ "${TARGETARCH}" = "arm64" ]; then \
-      GLIBC_HOST="aarch64-unknown-linux-gnu"; \
-      GLIBC_BUILD="aarch64-unknown-linux-musl"; \
-      LD_SO="ld-linux-aarch64.so.1"; \
-    else \
-      echo "Unsupported architecture: ${TARGETARCH}"; \
-      exit 1; \
-    fi; \
-    cd build; \
     ../configure \
       --prefix=/usr/glibc-compat \
-      --host="${GLIBC_HOST}" \
-      --build="${GLIBC_BUILD}" \
       --enable-obsolete-rpc \
-      --enable-kernel=3.7.0; \
+      --enable-kernel=3.7.0 \
+      --disable-werror; \
     make -j"$(nproc)"; \
     make install DESTDIR=/tmp/glibc-staging
 
 
 FROM python:3.10-alpine
-ARG TARGETARCH
-ARG GLIBC_VERSION=2.36
 
+ARG TARGETARCH
+ARG GLIBC_VERSION=2.41
+
+# Copy the glibc artifacts from builder
 COPY --from=glibc-builder /tmp/glibc-staging/ /
+
+# Symlink the correct loader for each architecture
 RUN set -eux; \
-    if [ "${TARGETARCH}" = "amd64" ]; then \
-      export LD_SO="ld-linux-x86_64.so.1"; \
-    elif [ "${TARGETARCH}" = "arm64" ]; then \
-      export LD_SO="ld-linux-aarch64.so.1"; \
-    else \
-      echo "Unsupported architecture: ${TARGETARCH}"; \
-      exit 1; \
-    fi; \
-    ln -s "/usr/glibc-compat/lib/${LD_SO}" "/lib/${LD_SO}"; \
-    echo "Successfully symlinked loader for ${TARGETARCH}."
+    if [ "${TARGETARCH}" = "amd64" ]; then ln -s /usr/glibc-compat/lib/ld-linux-x86-64.so.2 /lib/ld-linux-x86-64.so.2; \
+    elif [ "${TARGETARCH}" = "arm64" ]; then ln -s /usr/glibc-compat/lib/ld-linux-aarch64.so.1 /lib/ld-linux-aarch64.so.1; \
+    else echo "Unsupported architecture: ${TARGETARCH}"; exit 1; fi
 
 # Timezone
 RUN apk add --no-cache tzdata && \
