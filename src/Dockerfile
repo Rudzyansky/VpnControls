@@ -1,12 +1,12 @@
-FROM python:3.10-slim AS base
+FROM python:3.10-alpine AS base
 
 # Timezone
-RUN apt-get -qq update && apt-get -qq install --no-install-recommends tzdata && \
+RUN apk add --no-cache tzdata && \
     ln -sf /usr/share/zoneinfo/Europe/Moscow /etc/localtime && \
-    dpkg-reconfigure -f noninteractive tzdata
+    echo "Europe/Moscow" > /etc/timezone
 
 # Pwgen
-RUN apt-get -qq update && apt-get -qq install --no-install-recommends pwgen
+RUN apk add --no-cache pwgen
 
 COPY requirements.txt /
 RUN pip install --no-cache-dir --disable-pip-version-check -r /requirements.txt
