@@ -103,6 +103,9 @@ jobs:
         # Ensure podman system is ready
         podman system migrate
 
+    - name: Pull latest image
+      run: sudo docker pull docker.io/${{ secrets.DOCKERHUB_USERNAME }}/${{ steps.get_tag.outputs.base_tag }}:latest
+
     - name: Stop existing containers
       run: sudo docker compose down
 
