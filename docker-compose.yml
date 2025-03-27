@@ -13,8 +13,8 @@ services:
         source: "${APP_DATA_DIR:-./data}"
         target: /data
       - type: bind
-        source: /var/run/charon.ctl
-        target: /var/run/charon.ctl
+        source: /var/run/strongswan
+        target: /var/run/strongswan
       - type: bind
         source: /usr/sbin/strongswan
         target: /usr/sbin/strongswan
