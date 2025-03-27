@@ -3,7 +3,7 @@ services:
     build:
       context: src
       dockerfile: Dockerfile
-    image: vpn-controls:1.1
+    image: ${IMAGE_NAME:-vpn-controls}:${IMAGE_TAG:-1.1}
     restart: unless-stopped
     user: "tgbot"
     env_file:

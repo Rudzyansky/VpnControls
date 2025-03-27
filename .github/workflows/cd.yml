@@ -44,6 +44,15 @@ jobs:
         password: ${{ secrets.DOCKERHUB_TOKEN }}
         registry: https://index.docker.io/v1/
     
+    - name: Setup Podman user namespace
+      run: |
+        # Create podman config directory if it doesn't exist
+        mkdir -p ~/.config/containers
+        # Configure podman to use user namespace
+        echo -e '[engine]\nuserns = "host"' > ~/.config/containers/containers.conf
+        # Ensure podman system is ready
+        podman system migrate
+    
     - name: Build and push Docker image
       uses: docker/build-push-action@v4
       with:
@@ -92,6 +101,15 @@ jobs:
         password: ${{ secrets.DOCKERHUB_TOKEN }}
         registry: https://index.docker.io/v1/
     
+    - name: Setup Podman user namespace
+      run: |
+        # Create podman config directory if it doesn't exist
+        mkdir -p ~/.config/containers
+        # Configure podman to use user namespace
+        echo -e '[engine]\nuserns = "host"' > ~/.config/containers/containers.conf
+        # Ensure podman system is ready
+        podman system migrate
+    
     - name: Pull latest image
       run: docker pull docker.io/${{ secrets.DOCKERHUB_USERNAME }}/${{ steps.get_tag.outputs.base_tag }}:latest
     
@@ -102,4 +120,14 @@ jobs:
       env:
         APP_ENV_FILE: /etc/vpn-controls/app.env
         APP_DATA_DIR: /var/lib/vpn-controls
-      run: docker compose up -d --no-build
+        IMAGE_NAME: ${{ secrets.DOCKERHUB_USERNAME }}/${{ steps.get_tag.outputs.base_tag }}
+        IMAGE_TAG: ${{ steps.get_tag.outputs.version }}
+      run: |
+        docker compose up -d --no-build
+        # Wait a few seconds to check if container is running
+        sleep 5
+        if ! docker compose ps | grep -q "Up"; then
+          echo "Container failed to start"
+          docker compose logs
+          exit 1
+        fi
