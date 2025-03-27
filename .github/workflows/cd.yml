@@ -30,10 +30,11 @@ jobs:
     - name: Get image tag from docker-compose.yml
       id: get_tag
       run: |
-        IMAGE_TAG=$(yq e '.services.app.image' docker-compose.yml)
-        # Split into base tag and version
-        BASE_TAG=$(echo $IMAGE_TAG | cut -d':' -f1)
-        VERSION=$(echo $IMAGE_TAG | cut -d':' -f2)
+        # Extract the image name and tag pattern from docker-compose.yml
+        IMAGE_PATTERN=$(yq e '.services.app.image' docker-compose.yml)
+        # Remove the ${} syntax and get the default values
+        BASE_TAG=$(echo $IMAGE_PATTERN | sed 's/\${IMAGE_NAME:-\([^}]*\)}/\1/')
+        VERSION=$(echo $IMAGE_PATTERN | sed 's/.*\${IMAGE_TAG:-\([^}]*\)}/\1/')
         echo "base_tag=$BASE_TAG" >> $GITHUB_OUTPUT
         echo "version=$VERSION" >> $GITHUB_OUTPUT
     
@@ -87,10 +88,11 @@ jobs:
     - name: Get image tag from docker-compose.yml
       id: get_tag
       run: |
-        IMAGE_TAG=$(yq e '.services.app.image' docker-compose.yml)
-        # Split into base tag and version
-        BASE_TAG=$(echo $IMAGE_TAG | cut -d':' -f1)
-        VERSION=$(echo $IMAGE_TAG | cut -d':' -f2)
+        # Extract the image name and tag pattern from docker-compose.yml
+        IMAGE_PATTERN=$(yq e '.services.app.image' docker-compose.yml)
+        # Remove the ${} syntax and get the default values
+        BASE_TAG=$(echo $IMAGE_PATTERN | sed 's/\${IMAGE_NAME:-\([^}]*\)}/\1/')
+        VERSION=$(echo $IMAGE_PATTERN | sed 's/.*\${IMAGE_TAG:-\([^}]*\)}/\1/')
         echo "base_tag=$BASE_TAG" >> $GITHUB_OUTPUT
         echo "version=$VERSION" >> $GITHUB_OUTPUT
     
