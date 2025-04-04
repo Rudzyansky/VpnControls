@@ -7,7 +7,30 @@ on:
     branches: [ master ]
 
 jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.x'
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install flake8 pytest
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+      - name: Lint with flake8
+        run: |
+          # stop the build if there are Python syntax errors or undefined names
+          flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+          # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
+          flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+      - name: Test with pytest
+        run: |
+          pytest
+
   build:
+    needs: test
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
@@ -17,24 +40,20 @@ jobs:
 
     - name: Install yq
       run: |
-        mkdir -p ~/.local/bin
-        ARCH=$(uname -m)
-        if [ "$ARCH" = "aarch64" ] || [ "$ARCH" = "arm64" ]; then
-          wget -qO ~/.local/bin/yq https://github.com/mikefarah/yq/releases/latest/download/yq_linux_arm64
-        else
-          wget -qO ~/.local/bin/yq https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64
+        if [ ! -f ~/.local/bin/yq ]; then
+          mkdir -p ~/.local/bin; ARCH=$(uname -m)
+          if [ "$ARCH" = "aarch64" ] || [ "$ARCH" = "arm64" ]; then ARCH_NAME='arm64'; else ARCH_NAME='amd64' fi
+          wget -qO ~/.local/bin/yq https://github.com/mikefarah/yq/releases/latest/download/yq_linux_$ARCH_NAME
+          chmod a+x ~/.local/bin/yq
         fi
-        chmod a+x ~/.local/bin/yq
         echo "$HOME/.local/bin" >> $GITHUB_PATH
 
     - name: Get image tag from docker-compose.yml
       id: get_tag
       run: |
-        # Extract the image name and tag pattern from docker-compose.yml
         IMAGE_PATTERN=$(yq e '.services.app.image' docker-compose.yml)
-        # Remove the ${} syntax and get the default values
-        BASE_TAG=$(echo $IMAGE_PATTERN | sed 's/\${IMAGE_NAME:-\([^}]*\)}.*/\1/')
-        VERSION=$(echo $IMAGE_PATTERN | sed 's/.*\${IMAGE_TAG:-\([^}]*\)}/\1/')
+        BASE_TAG=$(echo $IMAGE_PATTERN | sed 's/\${IMAGE_TAG:-\([^}]*\)}.*/\1/')
+        VERSION=$(echo $IMAGE_PATTERN | sed 's/.*\${IMAGE_VERSION:-\([^}]*\)}/\1/')
         echo "base_tag=$BASE_TAG" >> $GITHUB_OUTPUT
         echo "version=$VERSION" >> $GITHUB_OUTPUT
 
@@ -66,24 +85,20 @@ jobs:
 
     - name: Install yq
       run: |
-        mkdir -p ~/.local/bin
-        ARCH=$(uname -m)
-        if [ "$ARCH" = "aarch64" ] || [ "$ARCH" = "arm64" ]; then
-          wget -qO ~/.local/bin/yq https://github.com/mikefarah/yq/releases/latest/download/yq_linux_arm64
-        else
-          wget -qO ~/.local/bin/yq https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64
+        if [ ! -f ~/.local/bin/yq ]; then
+          mkdir -p ~/.local/bin; ARCH=$(uname -m)
+          if [ "$ARCH" = "aarch64" ] || [ "$ARCH" = "arm64" ]; then ARCH_NAME='arm64'; else ARCH_NAME='amd64' fi
+          wget -qO ~/.local/bin/yq https://github.com/mikefarah/yq/releases/latest/download/yq_linux_$ARCH_NAME
+          chmod a+x ~/.local/bin/yq
         fi
-        chmod a+x ~/.local/bin/yq
         echo "$HOME/.local/bin" >> $GITHUB_PATH
 
     - name: Get image tag from docker-compose.yml
       id: get_tag
       run: |
-        # Extract the image name and tag pattern from docker-compose.yml
         IMAGE_PATTERN=$(yq e '.services.app.image' docker-compose.yml)
-        # Remove the ${} syntax and get the default values
-        BASE_TAG=$(echo $IMAGE_PATTERN | sed 's/\${IMAGE_NAME:-\([^}]*\)}.*/\1/')
-        VERSION=$(echo $IMAGE_PATTERN | sed 's/.*\${IMAGE_TAG:-\([^}]*\)}/\1/')
+        BASE_TAG=$(echo $IMAGE_PATTERN | sed 's/\${IMAGE_TAG:-\([^}]*\)}.*/\1/')
+        VERSION=$(echo $IMAGE_PATTERN | sed 's/.*\${IMAGE_VERSION:-\([^}]*\)}/\1/')
         echo "base_tag=$BASE_TAG" >> $GITHUB_OUTPUT
         echo "version=$VERSION" >> $GITHUB_OUTPUT
 
@@ -96,12 +111,11 @@ jobs:
 
     - name: Setup Podman user namespace
       run: |
-        # Create podman config directory if it doesn't exist
-        mkdir -p ~/.config/containers
-        # Configure podman to use user namespace
-        echo -e '[engine]\nuserns = "host"' > ~/.config/containers/containers.conf
-        # Ensure podman system is ready
-        podman system migrate
+        podman >/dev/null 2>&1; if [ $? -ne 127 ] && [ ! -f ~/.config/containers/containers.conf ]; then
+          mkdir -p ~/.config/containers
+          echo -e '[engine]\nuserns = "host"' > ~/.config/containers/containers.conf
+          podman system migrate
+        fi
 
     - name: Pull latest image
       run: sudo docker pull docker.io/${{ secrets.DOCKERHUB_USERNAME }}/${{ steps.get_tag.outputs.base_tag }}:latest
@@ -113,12 +127,12 @@ jobs:
       env:
         APP_ENV_FILE: /etc/vpn-controls/app.env
         APP_DATA_DIR: /var/lib/vpn-controls
-        IMAGE_NAME: docker.io/${{ secrets.DOCKERHUB_USERNAME }}/${{ steps.get_tag.outputs.base_tag }}
-        IMAGE_TAG: latest
+        IMAGE_TAG: docker.io/${{ secrets.DOCKERHUB_USERNAME }}/${{ steps.get_tag.outputs.base_tag }}
+        IMAGE_VERSION: latest
       run: |
         # Create a temporary env file with our variables
-        echo "IMAGE_NAME=${IMAGE_NAME}" > .env
-        echo "IMAGE_TAG=${IMAGE_TAG}" >> .env
+        echo "IMAGE_TAG=${IMAGE_TAG}" > .env
+        echo "IMAGE_VERSION=${IMAGE_VERSION}" >> .env
         echo "APP_ENV_FILE=${APP_ENV_FILE}" >> .env
         echo "APP_DATA_DIR=${APP_DATA_DIR}" >> .env
         sudo docker compose --env-file .env up -d

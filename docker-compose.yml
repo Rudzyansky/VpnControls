@@ -3,7 +3,7 @@ services:
     build:
       context: src
       dockerfile: Dockerfile
-    image: ${IMAGE_NAME:-vpn-controls}:${IMAGE_TAG:-1.1}
+    image: ${IMAGE_TAG:-vpn-controls}:${IMAGE_VERSION:-1.2}
     restart: unless-stopped
     env_file:
       - "${APP_ENV_FILE:-./app.env}"
@@ -11,36 +11,12 @@ services:
       - type: bind
         source: "${APP_DATA_DIR:-./data}"
         target: /data
-      - type: bind
-        source: /var/run/strongswan
-        target: /var/run/strongswan
-      - type: bind
-        source: /usr/sbin/strongswan
-        target: /usr/sbin/strongswan
-        read_only: true
-      - type: bind
-        source: /usr/libexec/strongswan
-        target: /usr/libexec/strongswan
-        read_only: true
-      - type: bind
-        source: /run/strongswan
-        target: /run/strongswan
-        read_only: true
-      - type: bind
-        source: /usr/lib64/strongswan
-        target: /usr/lib64/strongswan
-        read_only: true
-      - type: bind
-        source: /etc/strongswan
-        target: /etc/strongswan
+      - "/run/strongswan:/run/strongswan:ro"
+      - "/etc/strongswan:/etc/strongswan:ro"
+      - "/etc/strongswan/users:/etc/strongswan/users"
     logging:
       driver: "json-file"
       options:
         max-size: "10m"
         max-file: "3"
         compress: "true"
-    networks:
-      default:
-
-networks:
-  default:

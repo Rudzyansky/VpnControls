@@ -1,8 +1,7 @@
-FROM python:3.10-slim
+FROM python:3.10-alpine
 
-RUN apt-get -qq update && apt-get -qq install --no-install-recommends pwgen tzdata && \
-    ln -sf /usr/share/zoneinfo/Europe/Moscow /etc/localtime && \
-    dpkg-reconfigure -f noninteractive tzdata
+RUN apk add --no-cache strongswan pwgen tzdata && \
+    ln -sf /usr/share/zoneinfo/Europe/Moscow /etc/localtime && echo "Europe/Moscow" > /etc/timezone
 
 COPY requirements.txt /
 RUN pip install --no-cache-dir --disable-pip-version-check -r /requirements.txt

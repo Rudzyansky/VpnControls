@@ -64,7 +64,7 @@ class SQLiteContext:
     def fetchone(self, columns: bool = False) -> Any:
         row = self.__cursor.fetchone()
         if columns and row:
-            __columns = [d[0] for d in self.__cursor.description[0]]
+            __columns = [d[0] for d in self.__cursor.description]
             return {key: value for key, value in zip(__columns, row)}
         else:
             return row
@@ -72,7 +72,7 @@ class SQLiteContext:
     def fetchall(self, columns: bool = False) -> List | List[Dict[str, Any]]:
         rows = self.__cursor.fetchall()
         if columns and rows:
-            __columns = [d[0] for d in self.__cursor.description[0]]
+            __columns = [d[0] for d in self.__cursor.description]
             return [{key: value for key, value in zip(__columns, row)} for row in rows]
         else:
             return rows
@@ -80,7 +80,7 @@ class SQLiteContext:
     def fetchmany(self, size: int | None = 1, columns: bool = False) -> List:
         rows = self.__cursor.fetchmany(size)
         if columns and rows:
-            __columns = [d[0] for d in self.__cursor.description[0]]
+            __columns = [d[0] for d in self.__cursor.description]
             return [{key: value for key, value in zip(__columns, row)} for row in rows]
         else:
             return rows
